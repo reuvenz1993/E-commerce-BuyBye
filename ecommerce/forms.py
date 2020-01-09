@@ -3,8 +3,8 @@ from flask_wtf import FlaskForm
 from wtforms import (IntegerField, PasswordField, StringField, SubmitField, BooleanField ,TextAreaField,
                      ValidationError , FileField)
 from wtforms.validators import DataRequired, Email, EqualTo
-from blog.models import User
-from blog import db
+from ecommerce.models import User
+from ecommerce import db
 
 
 class SignupForm(FlaskForm):
