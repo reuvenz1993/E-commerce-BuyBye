@@ -78,3 +78,44 @@ class Post(db.Model, UserMixin):
         
     def __repr__(self):
         return f'by user : {self.username} , post : {self.post}  '
+    
+    
+class Buyer(db.Model, UserMixin):
+    
+    __tablename__ = 'buyers'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(256), default='N/A')
+    address = db.Column(db.String(256), default='N/A')
+    photo = db.Column(db.String(64), default='default.jpg')
+    
+
+class Supplier(db.Model, UserMixin):
+    
+    __tablename__ = 'suppliers'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.String(256), default='N/A')
+    type_of = db.Column(db.String(256), default='N/A')
+    address = db.Column(db.String(256), default='N/A')
+    photo = db.Column(db.String(64), default='default.jpg')
+    
+
+class Product(db.Model, UserMixin):
+    
+    __tablename__ = 'products'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(256), nullable=False)
+    desc = db.Column(db.String(1024), default='N/A')
+    supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id') , nullable=False)
+    username = db.Column(db.String(64), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    full_name = db.Column(db.String(256), default='N/A')
+    type_of = db.Column(db.String(256), default='N/A')
+    address = db.Column(db.String(256), default='N/A')
+    photo = db.Column(db.String(64), default='default.jpg')
