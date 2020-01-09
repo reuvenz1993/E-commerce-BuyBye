@@ -131,6 +131,7 @@ class Product(db.Model, UserMixin):
     brand = db.Column(db.String(256), default='N/A')
     price = db.Column(db.Numeric , nullable=False )
     picture = db.Column(db.String(64), default='default.jpg')
+    Additional_information = db.Column(db.String(1024), default='N/A')
 
     def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' ):
         self.name = name
