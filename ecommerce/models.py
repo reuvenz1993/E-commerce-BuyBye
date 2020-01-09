@@ -112,7 +112,7 @@ class Supplier(db.Model, UserMixin):
     photo = db.Column(db.String(64), default='default.jpg')
     product = db.relationship('Product', backref='supplier', lazy=True)
     
-        def __init__(self, email, username , password ):
+    def __init__(self, email, username , password ):
         self.email = email
         self.username = username
         self.password_hash = generate_password_hash(password)
@@ -135,7 +135,7 @@ class Product(db.Model, UserMixin):
 
 class Order(db.Model, UserMixin):
 
-    __tablename__ = 'orders'
+    __tablename__ = 'the_orders'
 
     id = db.Column(db.Integer, primary_key = True)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)
@@ -147,17 +147,4 @@ class Order(db.Model, UserMixin):
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
     
-
-class Order(db.Model, UserMixin):
     
-    __tablename__ = 'orders'
-
-    id = db.Column(db.Integer, primary_key = True)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)
-    buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , nullable=False)
-    supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id') , nullable=False)
-    order_time = db.Column(db.DateTime, default=datetime.utcnow)
-    qty = db.Column(db.Integer, nullable=False , default=1 )
-    status = db.Column(db.String(256), default='open')
-    unit_price = db.Column(db.Numeric , nullable=False )
-    total_price = db.Column(db.Numeric , nullable=False )
