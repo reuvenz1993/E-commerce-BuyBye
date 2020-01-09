@@ -132,10 +132,20 @@ class Product(db.Model, UserMixin):
     price = db.Column(db.Numeric , nullable=False )
     picture = db.Column(db.String(64), default='default.jpg')
 
+    def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' ):
+        self.name = name
+        self.supplier_id = supplier_id
+        self.price = price
+        self.product_type = product_type
+        self.product_sub_type = product_sub_type
+        self.desc = desc
+        self.brand = brand
+        self.picture = picture
+
 
 class Order(db.Model, UserMixin):
 
-    __tablename__ = 'the_orders'
+    __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key = True)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)
@@ -147,4 +157,30 @@ class Order(db.Model, UserMixin):
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
     
+    def __init__(self, product_id, buyer_id, supplier_id, unit_price, qty=1 , status='open'):
+        self.product_id = product_id
+        self.buyer_id = buyer_id
+        self.supplier_id = supplier_id
+        self.order_time = datetime.utcnow()
+        self.qty = qty
+        self.status = status
+        self.unit_price = unit_price
+        self.total_price = qty * unit_price
     
+    
+class Reviews(db.Model, UserMixin):
+    
+    __tablename__ = 'reviews'
+
+    id = db.Column(db.Integer, primary_key = True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id') , nullable=False)
+    stars = db.Column(db.Integer , default=5)
+    review_content = db.Column(db.String(512), default="N/A")
+    review_time = db.Column(db.DateTime, default=datetime.utcnow)
+
+    
+    def __init__(self, order_id, stars=5 , review_content="N/A"):
+        self.order_id = order_id
+        self.stars = stars
+        self.review_content = review_content
+        self.review_time = datetime.utcnow()
