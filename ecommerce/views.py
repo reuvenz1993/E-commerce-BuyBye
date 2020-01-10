@@ -21,6 +21,7 @@ def check_login():
     if ( buyer_logging is not None and buyer_logging.check_password(loginform.password.data) ) :
         to_remember = login_form.remember.data
         login_user(buyer_logging , remember = to_remember)
+        print ('login scss')
 
 
 
