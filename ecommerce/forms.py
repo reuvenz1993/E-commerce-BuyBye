@@ -46,3 +46,28 @@ class UpdateForm(FlaskForm):
 class UpdatePhoto(FlaskForm):
     photo = FileField()
     Upload = SubmitField("update")
+    
+    
+class Buyer_Login(FlaskForm):
+    username = StringField('Enter Username : ' , validators=[DataRequired()] )
+    password = PasswordField('Enter Password: ', validators=[DataRequired()] )
+    remember = BooleanField('Remember Me')
+    login = SubmitField("Log in")
+    
+    def reset(self):
+        self.username.data = ""
+        self.password.data = ""
+        
+
+
+class Buyer_Signup(FlaskForm):
+    email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
+    username = StringField('Enter Username : ' , validators=[DataRequired()] )
+    password = PasswordField('Enter Password: ',validators=[DataRequired()] )
+    signup = SubmitField("Sign up")
+
+
+    def reset(self):
+        self.email.data = ""
+        self.username.data = ""
+        self.password.data = ""

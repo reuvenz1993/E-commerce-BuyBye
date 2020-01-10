@@ -1,11 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 
-
 {% include 'index/upper_index.html' %}
 
+<main>
+    <div class="container">
 
-{% include 'index/shop_by_supplier.html' %}
+{% include 'index/shop_by_category.html' %}
+
+{% include 'index/buyer_login_modal.html' %}
 
 {% endblock %}
 

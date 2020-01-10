@@ -1,7 +1,7 @@
 from ecommerce import app,db
 from flask import render_template, redirect, request, url_for, flash,abort
 from flask_login import login_user,login_required,logout_user, current_user
-from ecommerce.forms import LoginForm , SignupForm, AddPost , UpdateForm , UpdatePhoto
+from ecommerce.forms import *
 from ecommerce.models import User , Post
 import secrets
 import os
@@ -10,7 +10,13 @@ import os
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    login_form = Buyer_Login()
+    return render_template('index.html' , login_form=login_form)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    login_form = Buyer_Login()
+    return render_template('login.html' , login_form=login_form)
 
 
 '''
