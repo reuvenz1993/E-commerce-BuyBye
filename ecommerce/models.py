@@ -91,7 +91,7 @@ class Buyer(db.Model, UserMixin):
     name = db.Column(db.String(256), default='N/A')
     address = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
-    orders = db.relationship('Order', backref='buyer', lazy=True)
+    orders = db.relationship('Order', backref='the_buyer', lazy=True)
     
     def __init__(self, email, username , password , name='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email
@@ -163,7 +163,7 @@ class Order(db.Model, UserMixin):
     status = db.Column(db.String(256), default='open')
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
-    orders = db.relationship('Order', backref='product', lazy=True)
+    reviews = db.relationship('Reviews', backref='order', lazy=True)
     
     def __init__(self, product_id, buyer_id, supplier_id, unit_price, qty=1 , status='open'):
         self.product_id = product_id

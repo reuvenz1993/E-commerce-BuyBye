@@ -17,7 +17,7 @@ def index():
     return render_template('index.html' , login_form=login_form)
 
 def check_login():
-    buyer_logging = Buyer..filter_by(username=login_form.username.data).first()
+    buyer_logging = Buyer.filter_by(username=login_form.username.data).first()
     if ( buyer_logging is not None and buyer_logging.check_password(loginform.password.data) ) :
         to_remember = login_form.remember.data
         login_user(buyer_logging , remember = to_remember)
