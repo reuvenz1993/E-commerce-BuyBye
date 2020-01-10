@@ -1,11 +1,11 @@
-from blog import app,db
+from ecommerce import app,db
 from flask import render_template, redirect, request, url_for, flash,abort
 from flask_login import login_user,login_required,logout_user, current_user
-from blog.forms import LoginForm , SignupForm, AddPost , UpdateForm , UpdatePhoto
-from blog.models import User , Post
+from ecommerce.forms import LoginForm , SignupForm, AddPost , UpdateForm , UpdatePhoto
+from ecommerce.models import User , Post
 import secrets
 import os
-from PIL import Image
+#from PIL import Image
 
 
 @app.route('/', methods=['GET', 'POST'])
