@@ -97,6 +97,9 @@ class Buyer(db.Model, UserMixin):
         self.email = email
         self.username = username
         self.password_hash = generate_password_hash(password)
+        
+    def check_password(self,password):
+        return check_password_hash(self.password_hash , password)
 
 
 class Supplier(db.Model, UserMixin):

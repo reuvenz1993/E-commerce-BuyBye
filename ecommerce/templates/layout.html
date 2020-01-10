@@ -101,6 +101,14 @@
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
           </li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a id='buyer_login_toggle' class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-user mr-2"></i>{{current_user.username}}
+            </a>
+          </li>
+          {% else %}
           <li class="nav-item">
             <a id='buyer_login_toggle' class="nav-link border border-light rounded waves-effect"
               target="_blank">
@@ -113,6 +121,7 @@
               <i class="fas fa-user-plus mr-2"></i>Join
             </a>
           </li>
+          {% endif %}
         </ul>
 
       </div>
