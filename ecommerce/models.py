@@ -91,8 +91,9 @@ class Buyer(db.Model, UserMixin):
     name = db.Column(db.String(256), default='N/A')
     address = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
+    orders = db.relationship('Order', backref='buyer', lazy=True)
     
-    def __init__(self, email, username , password ):
+    def __init__(self, email, username , password , name='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email
         self.username = username
         self.password_hash = generate_password_hash(password)
@@ -110,9 +111,10 @@ class Supplier(db.Model, UserMixin):
     type_of = db.Column(db.String(256), default='N/A')
     address = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
-    product = db.relationship('Product', backref='supplier', lazy=True)
+    products = db.relationship('Product', backref='supplier', lazy=True)
+    orders = db.relationship('Order', backref='supplier', lazy=True)
     
-    def __init__(self, email, username , password ):
+    def __init__(self, email, username , password , name='N/A' , type_of='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email
         self.username = username
         self.password_hash = generate_password_hash(password)
@@ -132,8 +134,9 @@ class Product(db.Model, UserMixin):
     price = db.Column(db.Numeric , nullable=False )
     picture = db.Column(db.String(64), default='default.jpg')
     Additional_information = db.Column(db.String(1024), default='N/A')
+    orders = db.relationship('Order', backref='product', lazy=True)
 
-    def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' ):
+    def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A' ):
         self.name = name
         self.supplier_id = supplier_id
         self.price = price
@@ -157,6 +160,7 @@ class Order(db.Model, UserMixin):
     status = db.Column(db.String(256), default='open')
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
+    orders = db.relationship('Order', backref='product', lazy=True)
     
     def __init__(self, product_id, buyer_id, supplier_id, unit_price, qty=1 , status='open'):
         self.product_id = product_id

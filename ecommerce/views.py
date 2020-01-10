@@ -7,12 +7,13 @@ import secrets
 import os
 from PIL import Image
 
-def addpost( userid , title , content):
-    new_post = Post(userid , title, content)
-    db.session.add(new_post)
-    db.session.commit()
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template('index.html')
 
 
+'''
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if current_user.is_authenticated:
@@ -116,3 +117,11 @@ def home2():
 @login_required
 def index2():
     return render_template('index2.html')
+
+
+def addpost( userid , title , content):
+    new_post = Post(userid , title, content)
+    db.session.add(new_post)
+    db.session.commit()
+
+'''
