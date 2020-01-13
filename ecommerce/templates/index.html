@@ -1,10 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<link href="{{url_for('static',filename='css/index.css')}}" rel="stylesheet">
+
 {% include 'index/upper_index.html' %}
 
 <main>
     <div class="container">
+
+{% include 'search.html' %}
 
 {% include 'index/shop_by_category.html' %}
 

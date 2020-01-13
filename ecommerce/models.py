@@ -14,7 +14,7 @@ from datetime import datetime
 # and grab their id.
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return Buyer.query.get(user_id)
 
 class User(db.Model, UserMixin):
 
@@ -148,7 +148,13 @@ class Product(db.Model, UserMixin):
         self.desc = desc
         self.brand = brand
         self.picture = picture
+        
+        
+    def __repr__(self):
+        return f"id:{self.id} , name:{self.name}, desc:{self.desc}"
 
+    def as_list(self):
+        return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
 
 class Order(db.Model, UserMixin):
 
@@ -174,6 +180,8 @@ class Order(db.Model, UserMixin):
         self.status = status
         self.unit_price = unit_price
         self.total_price = qty * unit_price
+        
+
     
     
 class Reviews(db.Model, UserMixin):

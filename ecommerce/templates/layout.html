@@ -96,16 +96,28 @@
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item">
             <a class="nav-link waves-effect">
-              <span class="badge red z-depth-1 mr-1"> 1 </span>
+              <span class="badge red z-depth-1 mr-1"></span>
               <i class="fas fa-shopping-cart"></i>
               <span class="clearfix d-none d-sm-inline-block"> Cart </span>
             </a>
           </li>
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a id='buyer_login_toggle' class="nav-link border border-light rounded waves-effect"
+            <a class="nav-link rounded waves-effect"
               target="_blank">
               <i class="fas fa-user mr-2"></i>{{current_user.username}}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-user mr-2"></i>My Account
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{url_for('logout')}}" target='_self	' class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
             </a>
           </li>
           {% else %}
@@ -132,6 +144,9 @@
 
 {%block content%}
 {%endblock%}
+
+
+
 
 <script type="text/javascript" src="{{url_for('static',filename='js/index/index.js')}}" ></script>
 

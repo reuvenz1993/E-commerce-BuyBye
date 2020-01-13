@@ -1,27 +1,80 @@
 from ecommerce import app,db
-from flask import render_template, redirect, request, url_for, flash,abort
+from flask import render_template, redirect, request, url_for, flash,abort , jsonify
 from flask_login import login_user,login_required,logout_user, current_user
 from ecommerce.forms import *
-from ecommerce.models import User , Post
+from ecommerce.models import *
 import secrets
 import os
+import json
 #from PIL import Image
+
+categories = ['Sports' ,'House' ,'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
+
+@app.route('/get_categories', methods=['GET', 'POST'])
+def get_categories():
+    categories = ['Sports' ,'House' ,'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
+    return jsonify(categories)
+
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     login_form = Buyer_Login()
     if login_form.login.data and login_form.validate_on_submit():
-        check_login()
+        check_login(login_form)
 
-    return render_template('index.html' , login_form=login_form)
+    return render_template('index.html' , login_form=login_form , )
 
-def check_login():
-    buyer_logging = Buyer.filter_by(username=login_form.username.data).first()
-    if ( buyer_logging is not None and buyer_logging.check_password(loginform.password.data) ) :
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    logout_user()
+    return redirect (url_for('index'))
+
+def check_login(login_form):
+    buyer_logging = Buyer.query.filter_by(username=login_form.username.data).first()
+    if ( buyer_logging is not None and buyer_logging.check_password(login_form.password.data) ) :
         to_remember = login_form.remember.data
         login_user(buyer_logging , remember = to_remember)
         print ('login scss')
+        
+
+@app.route('/results', methods=['GET', 'POST'])
+def results():
+    login_form = Buyer_Login()
+    print('fdgdfg')
+    category = request.args.get('category')
+    products = Product.query.all()
+    product_list = []
+    for p in products:
+        product_list.append( p.as_list() )
+    print (category)
+    return render_template('results.html' , product_list=product_list)
+
+
+@app.route('/product', methods=['GET', 'POST'])
+def results_item():
+    if request.args.get('category',False):
+        pid = request.args.get('category')
+        req_product = Product.query.filter_by(id=pid).one()
+        product_data = req_product.as_list()
+        product_order_ids = Order.query.filter_by(product_id=pid).all()
+        order_list = []
+        for order in product_order_ids:
+            order_list.append( order.as_list()[0] )
+        reviews = Reviews.query.filter_by(order_id=order_list).all()
+        
+        return render_template('product.html', product_data=product_data , reviews=reviews)
+    login_form = Buyer_Login()
+    print('fdgdfg')
+    category = request.args.get('category')
+    products = Product.query.all()
+    product_list = []
+    for p in products:
+        product_list.append( p.as_list() )
+    print (category)
+    return render_template('results.html' , product_list=product_list)
+        
+
 
 
 
