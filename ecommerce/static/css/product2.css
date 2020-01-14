@@ -1,0 +1,16 @@
+.product_img {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+#cont_product{
+    margin-top: 70px;
+    margin-bottom: 70px;
+    padding: 40px;
+}
+
+.review 
+{
+    border-style: solid;
+    border-width: 2px;
+}

@@ -48,8 +48,16 @@ def results():
     for p in products:
         product_list.append( p.as_list() )
     print (category)
-    return render_template('results.html' , product_list=product_list)
+    return render_template('results.html' , product_list=product_list , login_form=login_form)
 
+@app.route('/product2/<pid>', methods=['GET', 'POST'])
+def product(pid):
+    product_data = Product.query.filter_by(id=pid).first()
+    if product_data is None :
+        return redirect (url_for('index'))
+    product_data = product_data.as_list()
+    reviews = get_reviews(pid)
+    return render_template('product2.html' , product_data=product_data , reviews=reviews )
 
 @app.route('/product', methods=['GET', 'POST'])
 def results_item():
@@ -62,8 +70,9 @@ def results_item():
         for order in product_order_ids:
             order_list.append( order.as_list()[0] )
         reviews = Reviews.query.filter_by(order_id=order_list).all()
-        
+
         return render_template('product.html', product_data=product_data , reviews=reviews)
+
     login_form = Buyer_Login()
     print('fdgdfg')
     category = request.args.get('category')
@@ -75,7 +84,18 @@ def results_item():
     return render_template('results.html' , product_list=product_list)
         
 
-
+def get_reviews(pid):
+    orders = Order.query.filter_by(product_id = pid).all()
+    order_list = []
+    reviews = []
+    for order in orders:
+        order_list.append( order.as_list() )
+        reviews.append(order.as_list()[9][0].as_list())
+    for review in reviews:
+        review_order = Order.query.filter_by(id=review[1]).one()
+        buyer = Buyer.query.filter_by(id=review_order.buyer_id).one()
+        review.append(buyer.name)
+    return reviews
 
 
 
