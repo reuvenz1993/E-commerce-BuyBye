@@ -88,6 +88,12 @@ def results_item():
     return render_template('results.html' , product_list=product_list)
         
 
+
+@app.route('/get_results', methods=['GET', 'POST'])
+def get_results():
+    return "hi"
+
+
 def get_reviews(pid):
     orders = Order.query.filter_by(product_id = pid).all()
     order_list = []

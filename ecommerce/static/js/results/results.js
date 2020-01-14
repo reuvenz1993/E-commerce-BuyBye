@@ -1,4 +1,18 @@
+    var categories ;
+
+    function get_categories(){
+    $.ajax({
+        type: "POST",
+        url: '/get_categories',
+        success: function (response) {
+            categories = response
+            put_categories();
+
+            }})};
+
 $(document).ready(function () {
+
+
     if ( product_list )
     {
         product_list.forEach(product => {
@@ -9,8 +23,6 @@ $(document).ready(function () {
             name_row =$("<div></div>").text(product[1]).addClass('row').appendTo(name_desc_col);
             desc_row =$("<div></div>").text(product[2]).addClass('row').appendTo(name_desc_col);
             price_col = $("<div></div>").text(product[7] + "$").addClass('col').appendTo(product_parent);
-            
-            
         });
     }
 
@@ -21,11 +33,90 @@ $(document).ready(function () {
         location.href =  '/product2/' + pid;
     });
 
-    if (categories)
-    {
-    categories.forEach(category => {
-        category_li = $("<li></li>").appendTo($('#sidebar_categories'));
-        category_a_href = $("<a></a>").attr('data-category' , category).appendTo(category_li);
 
+    setTimeout(do_stuff , 1500);
+
+    function do_stuff()
+    {
+        put_categories();
+    }
+
+    function put_categories(){
+        console.log('put cat runing');
+        if (categories)
+        {
+        categories.forEach(category => {
+            category_li = $("<li></li>").addClass('filter_category').css('cursor' , 'pointer').attr('data-category' , category).text(category).appendTo($('#sidebar_categories'));
         })
-    }});
+        make_categories_clickable();
+        }};
+
+
+    function make_categories_clickable(){
+    $('.filter_category').click(function (e) { 
+        e.preventDefault();
+        filter_product_type = e.currentTarget.dataset.category;
+        console.log(filter_product_type);
+        $('#current_cat').html(filter_product_type);
+        $('#current_cat_view , #sidebar_categories').toggle();
+        update_view();
+
+        });
+    };
+
+    $('#go_back_cat').click(function (e) { 
+        e.preventDefault();
+        $('#current_cat').html('all');
+        $('#current_cat_view , #sidebar_categories').toggle();
+        update_view();
+    });
+/*
+    $('#min , #max').click(function (e) { 
+        e.preventDefault();
+        filter_product_type = "";
+        min_price = $('#min').val()
+        max_price = $('#max').val()
+        console.log('min' + min_price)
+        console.log('max' + max_price)
+    });*/
+
+
+    $("input[type='radio'] , #min , #max").change(function (e) { 
+        e.preventDefault();
+        console.log('change');
+        update_view();
+
+    });
+
+    function update_view()
+    {
+        min_stars = $("input[type='radio']:checked").val();
+        min_price = $('#min').val();
+        max_price = $('#max').val();
+        filter_product_type = $('#current_cat').html();
+        data = [];
+        data['filter_product_type'] = filter_product_type;
+        data['min_price'] = min_price;
+        data['max_price'] = max_price;
+        data['min_stars'] = min_stars;
+        console.log('update_view_run');
+        console.log(data);
+
+        $.ajax({
+            type: "POST",
+            url: "/get_results",
+            data: data,
+            success: function (response) {
+                console.log(response);
+                b = 555;
+            }
+        });
+    };
+    
+/*
+    function update_view()
+    {
+        
+    }*/
+
+});
