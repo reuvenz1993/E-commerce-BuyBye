@@ -10,20 +10,28 @@
 
             }})};
 
+
+function show_products()
+{
+    $('#products').empty()
+    product_list.forEach(product => {
+        product_parent = $("<li></li>").addClass('row text-center item align-items-center').attr('id' ,'product num: ' + product[0]).attr('data-pid' ,product[0] ).appendTo($('#products'));
+        photo_col = $("<div></div>").attr("id" ,"product_pic" + product[0]).addClass('col').appendTo(product_parent);
+        photo = $('<img>').attr("src" , product[8] ).addClass('pic').appendTo(photo_col);
+        name_desc_col = $("<div></div>").addClass('col-6 pnt').attr('id' ,product[0]).appendTo(product_parent);
+        name_row =$("<div></div>").text(product[1]).addClass('row').appendTo(name_desc_col);
+        desc_row =$("<div></div>").text(product[2]).addClass('row').appendTo(name_desc_col);
+        price_col = $("<div></div>").text(product[7] + "$").addClass('col').appendTo(product_parent);
+    });
+};
+
 $(document).ready(function () {
 
 
     if ( product_list )
     {
-        product_list.forEach(product => {
-            product_parent = $("<li></li>").addClass('row text-center item align-items-center').attr('id' ,'product num: ' + product[0]).attr('data-pid' ,product[0] ).appendTo($('#products'));
-            photo_col = $("<div></div>").attr("id" ,"product_pic" + product[0]).addClass('col').appendTo(product_parent);
-            photo = $('<img>').attr("src" , product[8] ).addClass('pic').appendTo(photo_col);
-            name_desc_col = $("<div></div>").addClass('col-6 pnt').attr('id' ,product[0]).appendTo(product_parent);
-            name_row =$("<div></div>").text(product[1]).addClass('row').appendTo(name_desc_col);
-            desc_row =$("<div></div>").text(product[2]).addClass('row').appendTo(name_desc_col);
-            price_col = $("<div></div>").text(product[7] + "$").addClass('col').appendTo(product_parent);
-        });
+        show_products();
+        
     }
 
     $(".item").click(function (e) { 
@@ -93,22 +101,24 @@ $(document).ready(function () {
         min_stars = $("input[type='radio']:checked").val();
         min_price = $('#min').val();
         max_price = $('#max').val();
-        filter_product_type = $('#current_cat').html();
+        product_type = $('#current_cat').html();
         data = [];
-        data['filter_product_type'] = filter_product_type;
+        data['product_type'] = product_type;
         data['min_price'] = min_price;
         data['max_price'] = max_price;
-        data['min_stars'] = min_stars;
+        data['max_price'] = min_stars;
         console.log('update_view_run');
         console.log(data);
 
         $.ajax({
             type: "POST",
             url: "/get_results",
-            data: data,
+            data: {'product_type' : product_type , 'min_price' :min_price , 'max_price': max_price ,'min_stars' : min_stars },
             success: function (response) {
                 console.log(response);
                 b = 555;
+                product_list = response
+                show_products();
             }
         });
     };

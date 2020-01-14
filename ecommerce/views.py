@@ -6,14 +6,20 @@ from ecommerce.models import *
 import secrets
 import os
 import json
+from sqlalchemy.sql import text
 #from PIL import Image
 
 categories = ['Sports' ,'House' ,'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
 @app.route('/get_categories', methods=['GET', 'POST'])
 def get_categories():
+    
     categories = ['Sports' ,'House' ,'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
-    return jsonify(categories)
+    categories_arr = [[0] * 2 for i in range(len(categories))]
+    for i in range(len(categories)):
+        categories_arr[i][0] = categories[i]
+        categories_arr[i][1] = Product.query.filter(Product.product_type==categories[i].lower()).count()
+    return jsonify(categories_arr)
 
 
 
@@ -91,7 +97,12 @@ def results_item():
 
 @app.route('/get_results', methods=['GET', 'POST'])
 def get_results():
-    return "hi"
+    product_type = request.form['product_type'].lower()
+    min_price = request.form['min_price']
+    max_price = request.form['max_price']
+    min_stars = request.form['min_stars']
+    products = get_relvent_results(product_type ,min_price , max_price , min_stars)
+    return jsonify( products )
 
 
 def get_reviews(pid):
@@ -123,7 +134,20 @@ def get_products(filters):
     return products
     
 
+def get_relvent_results(product_type ,min_price , max_price , min_stars):
+    if product_type != 'all':
+        temp = str(product_type)
+        products = Product.query.filter(Product.product_type==temp)
+    else:
+        products = Product.query
 
+    products = products.filter(Product.price > min_price , Product.price < max_price )
+    products = products.all()
+    product_list = []
+    for p in products:
+        product_list.append( p.as_list() )
+    return product_list
+    
 
 
 
