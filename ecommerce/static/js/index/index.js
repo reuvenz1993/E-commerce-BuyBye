@@ -10,7 +10,7 @@ $.ajax({
 
         i = 0
         $( ".category" ).each(function() {
-        $( this ).attr( "data-category_num" , i );
+        $( this ).attr( "data-product_type" , categories[i].toLowerCase() );
         $( this ).find('.dark-grey-text').html( categories[i] );
         $( this ).attr( "href" , '/results?category=' + i );
         i = i+1;
@@ -32,8 +32,9 @@ $("#buyer_login_toggle").click(function (e) {
 
 $('.category').click(function (e) { 
     e.preventDefault();
-    chosen_category = e.currentTarget.getAttribute('data-category_num') ;
+    chosen_category = e.currentTarget.getAttribute('data-product_type') ;
     console.log(chosen_category);
+    location.href =  '/results?product_type=' + chosen_category;
 });
 
 });

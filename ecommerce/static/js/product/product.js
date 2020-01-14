@@ -4,6 +4,7 @@ $(document).ready(function () {
         $("#name").html(product_data[1]);
         $("#desc").html(product_data[2]);
         $("#price").html(product_data[7] + ' $');
+        $('#product_img').attr('src' , product_data[8] );
     };
 
 

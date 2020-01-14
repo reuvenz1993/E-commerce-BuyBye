@@ -41,23 +41,27 @@ def check_login(login_form):
 @app.route('/results', methods=['GET', 'POST'])
 def results():
     login_form = Buyer_Login()
-    print('fdgdfg')
-    category = request.args.get('category')
-    products = Product.query.all()
+    filters = {}
+    filters['product_type'] = request.args.get('product_type')
+    filters['product_sub_type'] = request.args.get('product_sub_type')
+    filters['brand'] = request.args.get('brand')
+    filters['supplier_id'] = request.args.get('supplier_id')
+
+    products = get_products(filters)
     product_list = []
     for p in products:
         product_list.append( p.as_list() )
-    print (category)
     return render_template('results.html' , product_list=product_list , login_form=login_form)
 
 @app.route('/product2/<pid>', methods=['GET', 'POST'])
 def product(pid):
+    login_form = Buyer_Login()
     product_data = Product.query.filter_by(id=pid).first()
     if product_data is None :
         return redirect (url_for('index'))
     product_data = product_data.as_list()
     reviews = get_reviews(pid)
-    return render_template('product2.html' , product_data=product_data , reviews=reviews )
+    return render_template('product2.html' , product_data=product_data , reviews=reviews , login_form=login_form )
 
 @app.route('/product', methods=['GET', 'POST'])
 def results_item():
@@ -98,7 +102,20 @@ def get_reviews(pid):
     return reviews
 
 
+def get_products(filters):
+    products = Product.query
+    
+    for key , value in filters.items():
+        if value is not None :
+            temp = str(key+"=='"+value+"'")
+            temp2 = str(key+"=="+value)
+            temp3 = str(key+"=='"+value+"'")
+            products = products.filter(temp)
 
+    print('gfhfgh')
+    products = products.all()
+    return products
+    
 
 
 

@@ -15,7 +15,7 @@ reviews = JSON.parse('{{ reviews | tojson | safe}}');
 <div id='cont_product' class="container dark-grey-text">
     <div class="row justify-content-center">
         <div class="col">
-            <img class='product_img' src="{{url_for('static',filename='img/sample.jpg')}}">
+            <img id='product_img' class='product_img' src="{{url_for('static',filename='img/sample.jpg')}}">
         </div>
         <div class="col">
             <p>product name : <span id='name'></span></p>
@@ -46,6 +46,7 @@ reviews = JSON.parse('{{ reviews | tojson | safe}}');
 
 </div>
 
+{% include 'index/buyer_login_modal.html' %}
 
 <script type="text/javascript" src="{{url_for('static',filename='js/product/product.js')}}" ></script>
 

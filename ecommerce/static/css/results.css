@@ -1,6 +1,18 @@
 .item{
     border-style: solid;
-    border-width: 2px;max-width: 950px;
+    border-width: 2px;
+    max-width: 950px;
+    border-radius: 20px;
 }
 
 .pnt{ cursor: pointer; }
+
+.pic
+{
+    max-width: 120px;
+    max-width: 120px;
+}
+
+li:hover {
+    background: gainsboro;
+    cursor: pointer;}

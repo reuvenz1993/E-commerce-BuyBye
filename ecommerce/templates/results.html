@@ -18,23 +18,26 @@
 
 {% include 'search.html' %}
 
+<div class="row">
 
-<ul id='products'>
-
-    {% for product in product_list %}
-
-    <li> {{product[0]}} + "-" + {{product[1]}} </li>
-
-
-    {% endfor %}
+    <div class="col-3" style="background-color: green;">
+        
+        {% include 'sidebar.html' %}
+    </div>
 
 
-</ul>
+    <div class="col-9">
 
 
+        <ul id='products'>
+
+        </ul>
+
+    </div>
+</div>
 
 
-
+{% include 'index/buyer_login_modal.html' %}
 
 
 <script type="text/javascript" src="{{url_for('static',filename='js/results/results.js')}}" ></script>
