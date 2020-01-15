@@ -5,6 +5,7 @@
 
 <div id="sup_login_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
+        
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">Byebuy Suppliers login</h5>
@@ -35,10 +36,14 @@
             </form>
             <hr>
             <button id='toggle1' class="tgl btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Add your store </button>
-          </div>
+            {% if messages['connection_error'] %}
+            {{messages['connection_error']}}
+            {% endif %}
+        </div>
         </div>
       </div>
     </div>
+    
   </div>
 
   <div id="sup_signup_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -83,10 +88,14 @@
             </form>
             <hr>
             <button id='toggle2' class="tgl btn btn-lg btn-secondary btn-block text-uppercase" type="submit"> Have an account? Log in</button>
-          </div>
+            {% if messages['signup_error'] %}
+            {{messages['signup_error']}}
+            {% endif %}
+        </div>
         </div>
       </div>
     </div>
+
   </div>
 
 

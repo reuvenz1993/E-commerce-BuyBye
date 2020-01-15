@@ -16,11 +16,11 @@ def check_sup_login(sup_loginform):
     supplier_logging = Supplier.query.filter_by(username=sup_loginform.username.data).first()
     if ( supplier_logging is not None and supplier_logging.check_password(sup_loginform.password.data) ) :
         session['supplier_username'] = sup_loginform.username.data
-        print ('login scss')
+        return True
     elif supplier_logging is not None :
-        print ('password is not correct')
+        return 'password is not correct'
     else :
-        print ('username does not exists')
+        return 'username does not exists'
     
 def sup_signup(sup_signupform):
     print ('sup_signup run');
@@ -28,20 +28,41 @@ def sup_signup(sup_signupform):
         new_supplier = Supplier(sup_signupform.email.data , sup_signupform.username.data , sup_signupform.password.data ,sup_signupform.name.data ,sup_signupform.type_of.data ,sup_signupform.address.data)
         db.session.add(new_supplier)
         db.session.commit()
-        print ('sup_signup scss');
+        return True;
     except:
-        print ('sup_signup fail');
+        return 'signup failed';
 
 @app.route('/suppliers/', methods=['GET', 'POST'])
 def suppliers_index():
+    messages = dict()
+    if session.get('supplier_username', None) is not None:
+        return redirect(url_for('suppliers_main'))
     sup_loginform = SupplierLoginForm()
     sup_signupform = SupplierSignupForm()
     if sup_loginform.supplier_login.data and sup_loginform.validate_on_submit():
-        check_sup_login(sup_loginform)
+        validate = check_sup_login(sup_loginform)
+        if validate == True :
+            return redirect(url_for('suppliers_main'))
+        else:
+            messages['connection_error'] = validate
     if sup_signupform.supplier_signup.data and sup_signupform.validate_on_submit():
-        sup_signup(sup_signupform)
-    return render_template('/suppliers/index.html' , sup_loginform=sup_loginform , sup_signupform=sup_signupform)
+        signup = sup_signup(sup_signupform)
+        if signup != True :
+            messages['signup_error'] = signup
+    return render_template('/suppliers/index.html' , sup_loginform=sup_loginform , sup_signupform=sup_signupform , messages=messages)
 
+
+@app.route('/suppliers/main', methods=['GET', 'POST'])
+def suppliers_main():
+    if session.get('supplier_username', None) is None:
+        return redirect(url_for('suppliers_index'))
+    sup_username = session.get('supplier_username')
+    return render_template('/suppliers/main.html' , sup_username=sup_username)
+
+@app.route('/suppliers/logout', methods=['GET', 'POST'])
+def suppliers_logout():
+    session.pop('supplier_username')
+    return redirect(url_for('suppliers_index'))
 
 
 @app.route('/get_categories', methods=['GET', 'POST'])
