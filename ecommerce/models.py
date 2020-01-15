@@ -126,6 +126,13 @@ class Supplier(db.Model, UserMixin):
         self.email = email
         self.username = username
         self.password_hash = generate_password_hash(password)
+        self.name = name
+        self.type_of = type_of
+        self.address = address
+        self.photo = photo
+    
+    def check_password(self,password):
+        return check_password_hash(self.password_hash , password)
 
 
 class Product(db.Model, UserMixin):

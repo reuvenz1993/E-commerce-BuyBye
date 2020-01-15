@@ -21,7 +21,17 @@ function show_products()
         name_desc_col = $("<div></div>").addClass('col-6 pnt').attr('id' ,product[0]).appendTo(product_parent);
         name_row =$("<div></div>").text(product[1]).addClass('row').appendTo(name_desc_col);
         desc_row =$("<div></div>").text(product[2]).addClass('row').appendTo(name_desc_col);
-        price_col = $("<div></div>").text(product[7] + "$").addClass('col').appendTo(product_parent);
+        supplier_name_row =$("<div></div>").text(product[10]["supplier_name"]).addClass('row text-black-50 text-monospace').appendTo(name_desc_col);
+        price_col = $("<div></div>").addClass('col font-weight-bold').appendTo(product_parent);
+        price_row = $("<div></div>").text(product[7] + "$").addClass('row').appendTo(price_col);
+        stars_row = $("<div></div>").addClass('row').appendTo(price_col);
+        order_count_row = $("<div></div>").text(product[10]["order_count"]+ " Sold").addClass('row').appendTo(price_col);
+        if ( product [10]['review_count'] > 0 )
+        {
+            $(stars_row).append(product[10]["avg_stars"] + " ");
+            $(stars_row).append("<div class='icon'><i class='far fa-star' aria-hidden='true'></i></div>");
+            $(stars_row).append("  , " + product[10]["review_count"] + " reviews" );
+        }
         $(product_parent).click(function (e) { 
             e.preventDefault();
             console.log(e.currentTarget.dataset.pid);

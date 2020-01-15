@@ -1,5 +1,5 @@
 from ecommerce import app,db
-from flask import render_template, redirect, request, url_for, flash,abort , jsonify
+from flask import render_template, redirect, request, url_for, flash,abort , jsonify, session
 from flask_login import login_user,login_required,logout_user, current_user
 from ecommerce.forms import *
 from ecommerce.models import *
@@ -10,6 +10,39 @@ from sqlalchemy.sql import text
 #from PIL import Image
 
 categories = ['Sports' ,'House' ,'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
+
+def check_sup_login(sup_loginform):
+    print ('check_sup_login run');
+    supplier_logging = Supplier.query.filter_by(username=sup_loginform.username.data).first()
+    if ( supplier_logging is not None and supplier_logging.check_password(sup_loginform.password.data) ) :
+        session['supplier_username'] = sup_loginform.username.data
+        print ('login scss')
+    elif supplier_logging is not None :
+        print ('password is not correct')
+    else :
+        print ('username does not exists')
+    
+def sup_signup(sup_signupform):
+    print ('sup_signup run');
+    try:
+        new_supplier = Supplier(sup_signupform.email.data , sup_signupform.username.data , sup_signupform.password.data ,sup_signupform.name.data ,sup_signupform.type_of.data ,sup_signupform.address.data)
+        db.session.add(new_supplier)
+        db.session.commit()
+        print ('sup_signup scss');
+    except:
+        print ('sup_signup fail');
+
+@app.route('/suppliers/', methods=['GET', 'POST'])
+def suppliers_index():
+    sup_loginform = SupplierLoginForm()
+    sup_signupform = SupplierSignupForm()
+    if sup_loginform.supplier_login.data and sup_loginform.validate_on_submit():
+        check_sup_login(sup_loginform)
+    if sup_signupform.supplier_signup.data and sup_signupform.validate_on_submit():
+        sup_signup(sup_signupform)
+    return render_template('/suppliers/index.html' , sup_loginform=sup_loginform , sup_signupform=sup_signupform)
+
+
 
 @app.route('/get_categories', methods=['GET', 'POST'])
 def get_categories():

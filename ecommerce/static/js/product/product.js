@@ -5,6 +5,17 @@ $(document).ready(function () {
         $("#desc").html(product_data[2]);
         $("#price").html(product_data[7] + ' $');
         $('#product_img').attr('src' , product_data[8] );
+        $("#brand").html(product_data[6] );
+        $("#seller").html(product_data[10]['supplier_name']);
+        $("#sold").html(product_data[10]['order_count']);
+        $("#more_info").html(product_data[9]);
+        
+        if (product_data[10]['review_count'] > 0)
+        {
+            $("#stars").html("")
+            $("#stars").append("<div class='icon'>" + product_data[10]["avg_stars"] +  "<i class='far fa-star' aria-hidden='true'></i>" + "  , " + product_data[10]["review_count"] + " reviews" + "</div>");
+        }
+        
     };
 
 

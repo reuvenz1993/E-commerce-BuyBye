@@ -7,6 +7,22 @@ from ecommerce.models import User
 from ecommerce import db
 
 
+class SupplierSignupForm(FlaskForm):
+    email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
+    username = StringField('Enter Username : ' , validators=[DataRequired()] )
+    password = PasswordField('Enter Password: ',validators=[DataRequired()] )
+    name = StringField('Enter your store name : ' , validators=[DataRequired()] )
+    type_of = StringField('Enter your type_of : ' , validators=[DataRequired()] )
+    address = StringField('Enter your address : ' , validators=[DataRequired()] )
+    supplier_signup = SubmitField("Sign up")
+
+
+class SupplierLoginForm(FlaskForm):
+    username = StringField('Enter Username : ' , validators=[DataRequired()] )
+    password = PasswordField('Enter Password: ', validators=[DataRequired()] )
+    remember = BooleanField('Remember Me')
+    supplier_login = SubmitField("Log in")
+
 class SignupForm(FlaskForm):
     email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
     username = StringField('Enter Username : ' , validators=[DataRequired()] )
