@@ -10,8 +10,8 @@ $.ajax({
 
         i = 0
         $( ".category" ).each(function() {
-        $( this ).attr( "data-product_type" , categories[i].toLowerCase() );
-        $( this ).find('.dark-grey-text').html( categories[i] );
+        $( this ).attr( "data-product_type" , categories[i][0].toLowerCase() );
+        $( this ).find('.dark-grey-text').html( categories[i][0] );
         $( this ).attr( "href" , '/results?category=' + i );
         i = i+1;
         });

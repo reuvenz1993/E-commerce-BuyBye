@@ -47,16 +47,22 @@ def check_login(login_form):
 @app.route('/results', methods=['GET', 'POST'])
 def results():
     login_form = Buyer_Login()
+    product_type = 'all'
     filters = {}
     filters['product_type'] = request.args.get('product_type')
     filters['product_sub_type'] = request.args.get('product_sub_type')
     filters['brand'] = request.args.get('brand')
     filters['supplier_id'] = request.args.get('supplier_id')
 
-    products = get_products(filters)
-    product_list = []
-    for p in products:
-        product_list.append( p.as_list() )
+    for key , value in filters.items():
+        if value is not None :
+            product_type = value
+    
+    #products = get_products(filters)
+    #product_list = []
+    #for p in products:
+    #    product_list.append( p.as_list() )
+    product_list = get_relvent_results(product_type)
     return render_template('results.html' , product_list=product_list , login_form=login_form)
 
 @app.route('/product2/<pid>', methods=['GET', 'POST'])
@@ -66,6 +72,7 @@ def product(pid):
     if product_data is None :
         return redirect (url_for('index'))
     product_data = product_data.as_list()
+    product_data.append(get_product_extra_info(product_data[0]))
     reviews = get_reviews(pid)
     return render_template('product2.html' , product_data=product_data , reviews=reviews , login_form=login_form )
 
@@ -134,7 +141,7 @@ def get_products(filters):
     return products
     
 
-def get_relvent_results(product_type ,min_price , max_price , min_stars):
+def get_relvent_results(product_type ,min_price=0 , max_price=100000 , min_stars=1):
     if product_type != 'all':
         temp = str(product_type)
         products = Product.query.filter(Product.product_type==temp)
@@ -146,10 +153,40 @@ def get_relvent_results(product_type ,min_price , max_price , min_stars):
     product_list = []
     for p in products:
         product_list.append( p.as_list() )
+    for prod in product_list:
+        prod.append(get_product_extra_info(prod[0]))
     return product_list
+
+
+
+def get_product_extra_info(pid):
+    product = Product.query.filter_by(id=pid).first()
+    if product==None:
+        print('product number : ' + str(pid) + ' not exists')
+        return False 
     
+    order_count = product.orders.count()
+    order_list = product.orders.all()
+    stars = 0
+    reviews = []
+    for order in order_list:
+        for review in order.reviews:
+            reviews.append(review)
+            stars += review.stars
+    
+    review_count = len(reviews) 
+    if review_count > 0 :
+        avg = stars / len(reviews)
+    else :
+        avg = 5
 
+    supplier_name = product_supplier_name(pid)
+    return { 'order_count' : order_count , 'review_count':review_count , 'avg_stars': avg , 'supplier_name':supplier_name }
 
+def product_supplier_name(pid):
+    product = Product.query.filter_by(id=pid).first()
+    supplier = Supplier.query.filter_by(id=product.supplier_id).first()
+    return supplier.name
 
 
 '''

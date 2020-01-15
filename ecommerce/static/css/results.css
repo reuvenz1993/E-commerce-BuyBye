@@ -3,6 +3,7 @@
     border-width: 2px;
     max-width: 950px;
     border-radius: 20px;
+    cursor: pointer;
 }
 
 .pnt{ cursor: pointer; }

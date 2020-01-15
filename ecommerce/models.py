@@ -9,7 +9,6 @@ from datetime import datetime
 # is_anonymous()
 # get_id()
 
-
 # The user_loader decorator allows flask-login to load the current user
 # and grab their id.
 @login_manager.user_loader
@@ -91,7 +90,7 @@ class Buyer(db.Model, UserMixin):
     name = db.Column(db.String(256), default='N/A')
     address = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
-    orders = db.relationship('Order', backref='the_buyer', lazy=True)
+    orders = db.relationship('Order', backref='the_buyer', lazy='dynamic')
     
     def __init__(self, email, username , password , name='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email
@@ -120,8 +119,8 @@ class Supplier(db.Model, UserMixin):
     type_of = db.Column(db.String(256), default='N/A')
     address = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
-    products = db.relationship('Product', backref='supplier', lazy=True)
-    orders = db.relationship('Order', backref='supplier', lazy=True)
+    products = db.relationship('Product', backref='supplier', lazy='dynamic')
+    orders = db.relationship('Order', backref='supplier', lazy='dynamic')
     
     def __init__(self, email, username , password , name='N/A' , type_of='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email
@@ -132,6 +131,7 @@ class Supplier(db.Model, UserMixin):
 class Product(db.Model, UserMixin):
 
     __tablename__ = 'products'
+    __searchable__ = ['name', 'desc']
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(256), nullable=False)
@@ -143,7 +143,7 @@ class Product(db.Model, UserMixin):
     price = db.Column(db.Numeric , nullable=False )
     picture = db.Column(db.String(64), default='default.jpg')
     Additional_information = db.Column(db.String(1024), default='N/A')
-    orders = db.relationship('Order', backref='product', lazy=True)
+    orders = db.relationship('Order', backref='product', lazy='dynamic')
 
     def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A' ):
         self.name = name
@@ -175,7 +175,7 @@ class Order(db.Model, UserMixin):
     status = db.Column(db.String(256), default='open')
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
-    reviews = db.relationship('Reviews', backref='order', lazy=True)
+    reviews = db.relationship('Reviews', backref='order', lazy='dynamic')
     
     def __init__(self, product_id, buyer_id, supplier_id, unit_price, qty=1 , status='open'):
         self.product_id = product_id
@@ -218,3 +218,5 @@ class Reviews(db.Model, UserMixin):
 
     def as_list(self):
         return [self.id ,self.order_id ,self.stars,self.review_content,self.review_time]
+
+

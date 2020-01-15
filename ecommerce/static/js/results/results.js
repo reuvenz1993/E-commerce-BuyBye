@@ -22,6 +22,13 @@ function show_products()
         name_row =$("<div></div>").text(product[1]).addClass('row').appendTo(name_desc_col);
         desc_row =$("<div></div>").text(product[2]).addClass('row').appendTo(name_desc_col);
         price_col = $("<div></div>").text(product[7] + "$").addClass('col').appendTo(product_parent);
+        $(product_parent).click(function (e) { 
+            e.preventDefault();
+            console.log(e.currentTarget.dataset.pid);
+            pid = e.currentTarget.dataset.pid
+            location.href =  '/product2/' + pid;
+            
+        });
     });
 };
 
@@ -34,12 +41,7 @@ $(document).ready(function () {
         
     }
 
-    $(".item").click(function (e) { 
-        e.preventDefault();
-        console.log(e.currentTarget.dataset.pid);
-        pid = e.currentTarget.dataset.pid
-        location.href =  '/product2/' + pid;
-    });
+
 
 
     setTimeout(do_stuff , 1500);
@@ -54,7 +56,8 @@ $(document).ready(function () {
         if (categories)
         {
         categories.forEach(category => {
-            category_li = $("<li></li>").addClass('filter_category').css('cursor' , 'pointer').attr('data-category' , category).text(category).appendTo($('#sidebar_categories'));
+            category_li = $("<li></li>").addClass('filter_category').css('cursor' , 'pointer').attr('data-category' , category[0]).text(category[0]).appendTo($('#sidebar_categories'));
+            category_items= $("<span></span>").addClass('close text-black-50').text(category[1]).appendTo(category_li);
         })
         make_categories_clickable();
         }};
@@ -128,5 +131,16 @@ $(document).ready(function () {
     {
         
     }*/
+/*
+    setTimeout(handle_click , 1500);
 
+    function handle_click(){
+    $(".item").click(function (e) { 
+        e.preventDefault();
+        console.log(e.currentTarget.dataset.pid);
+        pid = e.currentTarget.dataset.pid
+        location.href =  '/product2/' + pid;
+    });
+};
+*/
 });
