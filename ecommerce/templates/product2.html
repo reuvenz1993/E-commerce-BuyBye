@@ -15,7 +15,7 @@ reviews = JSON.parse('{{ reviews | tojson | safe}}');
 <div id='cont_product' class="container dark-grey-text">
     <div class="row justify-content-center">
         <div class="col">
-            <img id='product_img' class='product_img' src="{{url_for('static',filename='img/sample.jpg')}}">
+            <img id='product_img' class='product_img product_pic' src="{{url_for('static',filename='img/sample.jpg')}}">
         </div>
         <div class="col">
             <p>Product name : <span id='name'></span></p>
@@ -31,7 +31,7 @@ reviews = JSON.parse('{{ reviews | tojson | safe}}');
     <hr>
     <div class="row justify-content-center">
         <div class="col-9">
-            <h4 class="text-center">more info</h4>
+            <h4 class="text-center">Additional information</h4>
             <p id='more_info'>bdfkg flkhjdf gdkljgdf khjfdhl hfdiho hfdlkhf</p>
         </div>
     </div>
@@ -48,6 +48,12 @@ reviews = JSON.parse('{{ reviews | tojson | safe}}');
         </div>
     </div>
     <hr>
+    <div class="row justify-content-center">
+        <div class="col-9 text-center">
+            <h4 class="text-center">Pictures</h4>
+            <img class='product_img product_pic big_product_imgs' src="{{url_for('static',filename='img/sample.jpg')}}">
+        </div>
+    </div>
     <hr>
     <h4 class="text-center">Reviews <span id='reviews_count'></span></h4>
     <div class="row justify-content-center">

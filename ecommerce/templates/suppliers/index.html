@@ -58,33 +58,33 @@
         <div class="modal-body">
           <div class="card-body">
             <form id='signup_form' method="POST"  class="form-signin">
-                {{ supplier_add_product.hidden_tag() }}
+                {{ sup_signupform.hidden_tag() }}
               <label for="inputEmail">Email :</label>
               <div class="form-label-group">
-                {{ supplier_add_product.email() }}
+                {{ sup_signupform.email() }}
               </div>
               <label for="inputEmail">Username :</label>
               <div class="form-label-group">
-                {{ supplier_add_product.username() }}
+                {{ sup_signupform.username() }}
               </div>
               <label for="inputPassword">Password</label>
               <div class="form-label-group">
-                {{ supplier_add_product.password() }}
+                {{ sup_signupform.password() }}
               </div>
               <label for="inputEmail">name :</label>
               <div class="form-label-group">
-                {{ supplier_add_product.name() }}
+                {{ sup_signupform.name() }}
               </div>
               <label for="inputEmail">type_of :</label>
               <div class="form-label-group">
-                {{ supplier_add_product.type_of() }}
+                {{ sup_signupform.type_of() }}
               </div>
               <label for="inputEmail">address :</label>
               <div class="form-label-group">
-                {{ supplier_add_product.address() }}
+                {{ sup_signupform.address() }}
               </div>
               <hr class="my-4">
-              {{ supplier_add_product.supplier_signup() }}
+              {{ sup_signupform.supplier_signup() }}
             </form>
             <hr>
             <button id='toggle2' class="tgl btn btn-lg btn-secondary btn-block text-uppercase" type="submit"> Have an account? Log in</button>

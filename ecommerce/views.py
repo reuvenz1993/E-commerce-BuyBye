@@ -7,7 +7,7 @@ import secrets
 import os
 import json
 from sqlalchemy.sql import text
-# from PIL import Image
+from PIL import Image
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
@@ -77,12 +77,12 @@ def sup_products():
 def add_product(supplier_add_product):
     
     if supplier_add_product.picture.data :
-        picture_path = save_product_picture(supplier_add_product.picture.data)
+        picture_fn = save_product_picture(supplier_add_product.picture.data)
     else:
-        picture_path= '/static/img/products/default.png'
+        picture_fn= 'default.png'
 
     supplier_id = session['supplier_id']
-    new_product = Product (name=supplier_add_product.name.data , supplier_id=supplier_id , price=supplier_add_product.price.data , product_type=supplier_add_product.product_type, product_sub_type=supplier_add_product.product_sub_type.data ,desc=supplier_add_product.desc.data , brand=supplier_add_product.brand.data, picture=picture_path, Additional_information=supplier_add_product.Additional_information.data )
+    new_product = Product (name=supplier_add_product.name.data , supplier_id=supplier_id , price=supplier_add_product.price.data , product_type=supplier_add_product.product_type.data, product_sub_type=supplier_add_product.product_sub_type.data ,desc=supplier_add_product.desc.data , brand=supplier_add_product.brand.data, picture=picture_fn, Additional_information=supplier_add_product.Additional_information.data )
     db.session.add(new_product)
     db.session.commit()
 
@@ -94,11 +94,11 @@ def save_product_picture(picture):
     _ , f_ext = os.path.splitext(picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/img/products' , picture_fn )
-    output_size = (125 , 125)
+    output_size = (800 , 800)
     image = Image.open(picture)
     image.thumbnail(output_size)
     image.save(picture_path)
-    return picture_path
+    return picture_fn
 
 
 

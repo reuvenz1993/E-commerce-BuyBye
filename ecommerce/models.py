@@ -160,7 +160,7 @@ class Product(db.Model, UserMixin):
         self.product_sub_type = product_sub_type
         self.desc = desc
         self.brand = brand
-        self.picture = picture
+        self.picture = "/static/img/products/" + picture
         
         
     def __repr__(self):

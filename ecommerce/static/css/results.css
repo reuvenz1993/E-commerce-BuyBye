@@ -4,6 +4,7 @@
     max-width: 950px;
     border-radius: 20px;
     cursor: pointer;
+    height: 145px;
 }
 
 .pnt{ cursor: pointer; }
@@ -11,7 +12,9 @@
 .pic
 {
     max-width: 120px;
-    max-width: 120px;
+    max-height: 120px;
+    min-width: 90px;
+    min-height: 90px;
 }
 
 li:hover {

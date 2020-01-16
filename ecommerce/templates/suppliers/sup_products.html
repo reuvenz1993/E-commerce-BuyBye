@@ -9,47 +9,93 @@ you are logged in !
 {% endfor %}
 
 <div class="container">
+    <div class="row justify-content-center row">
+        
+    <div class="col-auto col-lg-9 text-center">
+        
+    
 
-    <form id='add_product_form' method="post" action="" enctype="multipart/form-data">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#add_product_form" aria-expanded="false" aria-controls="collapseExample">
+        Add a new product
+    </button>
 
-    {{ supplier_add_product.hidden_tag() }}
-    <label for="inputEmail">name :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.name() }}
-    </div>
-    <label for="inputEmail">desc :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.desc() }}
-    </div>
-    <label for="inputPassword">product_type</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.product_type() }}
-    </div>
-    <label for="inputEmail">product_sub_type :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.product_sub_type() }}
-    </div>
-    <label for="inputEmail">brand :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.brand() }}
-    </div>
-    <label for="inputEmail">price :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.price() }}
-    </div>
-    <label for="inputEmail">Additional_information :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.Additional_information() }}
-    </div>
-    <label for="inputEmail">picture :</label>
-    <div class="form-label-group">
-      {{ supplier_add_product.picture() }}
-    </div>
-    <hr class="my-4">
-    {{ supplier_add_product.add_product() }}
+    <form id='add_product_form' class='collapse' method="post" action="" enctype="multipart/form-data">
 
+        <div id='add_product_card' class="card card-body text-center" style="padding: 5% 10% 5% 10%;">
+            {{ supplier_add_product.hidden_tag() }}
+
+            <div class="form-group row">
+                <label for="inputEmail" class='col-sm-4 col-form-label'>*Name :</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.name(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputEmail" class='col-sm-4 col-form-label'>*Description :</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.desc(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class='col-sm-4 col-form-label'>*Category</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.product_type(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputEmail" class='col-sm-4 col-form-label'>Subcategory :</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.product_sub_type(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputEmail" class='col-sm-4 col-form-label'>Brand :</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.brand(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group row" >
+                <label for="inputEmail" class='col-sm-4 col-form-label'>*Price :</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.price(class="form-control") }}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputEmail" class='col-sm-4 col-form-label'>Additional information :</label>
+                <div class="col-sm-8">
+                {{ supplier_add_product.Additional_information(class="form-control") }}
+                </div>
+            </div>
+            <div class="custom-file">
+                {{ supplier_add_product.picture(class="custom-file-input" ,id="customFileLang") }}
+                <label class="custom-file-label" for="customFileLang">Product picture</label>
+            </div>
+            <hr class="my-4">
+            {{ supplier_add_product.add_product() }}
+
+        </div>
     </form>
+    </div>
+    </div>
 
+    
+</div>
+
+<hr>
+
+<div class="container">
+
+    <div class="row justify-content-center row">
+        <h4>My products :</h4>
+    </div>
+
+    <div class="row justify-content-center row">
+        <div class="col-lg-9">
+            <ul id='my_products'>>
+            </ul>
+
+        </div>
+    </div>
 </div>
 
 

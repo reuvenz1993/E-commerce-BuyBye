@@ -4,7 +4,7 @@ $(document).ready(function () {
         $("#name").html(product_data[1]);
         $("#desc").html(product_data[2]);
         $("#price").html(product_data[7] + ' $');
-        $('#product_img').attr('src' , product_data[8] );
+        $('.product_pic').attr('src' , product_data[8] );
         $("#brand").html(product_data[6] );
         $("#seller").html(product_data[10]['supplier_name']);
         $("#sold").html(product_data[10]['order_count']);
