@@ -1,10 +1,23 @@
 from flask_dance.utils import first
 from flask_wtf import FlaskForm
 from wtforms import (IntegerField, PasswordField, StringField, SubmitField, BooleanField ,TextAreaField,
-                     ValidationError , FileField)
-from wtforms.validators import DataRequired, Email, EqualTo
+                     ValidationError , FileField , DecimalField )
+from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 from ecommerce.models import User
 from ecommerce import db
+
+
+class SupplierAddProduct(FlaskForm):
+    name = StringField('*name : ' , validators=[DataRequired() ])
+    desc = StringField('*desc : ' , validators=[DataRequired()] )
+    product_type = PasswordField('*catgory: ',validators=[DataRequired()] )
+    product_sub_type = StringField('sub_catgory : ' )
+    brand = StringField('brand : ' )
+    price = DecimalField('*price : ' , validators=[NumberRange(min=0 , max=100000000)] )
+    Additional_information = StringField('Additional information : ' )
+    picture = FileField('picture : ')
+    add_product = SubmitField("Add Product")
+    
 
 
 class SupplierSignupForm(FlaskForm):
@@ -15,6 +28,7 @@ class SupplierSignupForm(FlaskForm):
     type_of = StringField('Enter your type_of : ' , validators=[DataRequired()] )
     address = StringField('Enter your address : ' , validators=[DataRequired()] )
     supplier_signup = SubmitField("Sign up")
+
 
 
 class SupplierLoginForm(FlaskForm):

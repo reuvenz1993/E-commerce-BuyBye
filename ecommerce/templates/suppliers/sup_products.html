@@ -1,0 +1,55 @@
+{% extends "suppliers/sup_layout.html" %}
+{% block content %}
+
+you are logged in !
+{{sup_username}}
+
+<div class="container">
+
+    <form id='add_product_form' method="post">
+
+    {{ supplier_add_product.hidden_tag() }}
+    <label for="inputEmail">name :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.name() }}
+    </div>
+    <label for="inputEmail">desc :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.desc() }}
+    </div>
+    <label for="inputPassword">product_type</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.product_type() }}
+    </div>
+    <label for="inputEmail">product_sub_type :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.product_sub_type() }}
+    </div>
+    <label for="inputEmail">brand :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.brand() }}
+    </div>
+    <label for="inputEmail">price :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.price() }}
+    </div>
+    <label for="inputEmail">Additional_information :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.Additional_information() }}
+    </div>
+    <label for="inputEmail">picture :</label>
+    <div class="form-label-group">
+      {{ supplier_add_product.picture() }}
+    </div>
+    <hr class="my-4">
+    {{ supplier_add_product.add_product() }}
+
+    </form>
+
+</div>
+
+
+
+
+
+{% endblock %}
