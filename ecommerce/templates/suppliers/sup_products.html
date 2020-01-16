@@ -4,6 +4,10 @@
 you are logged in !
 {{sup_username}}
 
+{% for message in messages %}
+{{message}}
+{% endfor %}
+
 <div class="container">
 
     <form id='add_product_form' method="post">

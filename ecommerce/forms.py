@@ -10,7 +10,7 @@ from ecommerce import db
 class SupplierAddProduct(FlaskForm):
     name = StringField('*name : ' , validators=[DataRequired() ])
     desc = StringField('*desc : ' , validators=[DataRequired()] )
-    product_type = PasswordField('*catgory: ',validators=[DataRequired()] )
+    product_type = StringField('*catgory: ',validators=[DataRequired()] )
     product_sub_type = StringField('sub_catgory : ' )
     brand = StringField('brand : ' )
     price = DecimalField('*price : ' , validators=[NumberRange(min=0 , max=100000000)] )

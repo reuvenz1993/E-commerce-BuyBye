@@ -16,6 +16,7 @@ def check_sup_login(sup_loginform):
     supplier_logging = Supplier.query.filter_by(username = sup_loginform.username.data).first()
     if ( supplier_logging is not None and supplier_logging.check_password(sup_loginform.password.data) ) :
         session['supplier_username'] = sup_loginform.username.data
+        session['supplier_id'] = Supplier.query.filter_by(username = sup_loginform.username.data).first().id
         return True
     elif supplier_logging is not None :
         return 'password is not correct'
@@ -62,11 +63,43 @@ def suppliers_main():
 
 @app.route('/suppliers/sup_products', methods = ['GET', 'POST'])
 def sup_products():
+    messages =[]
     if session.get('supplier_username', None) is None:
         return redirect(url_for('suppliers_index'))
     sup_username = session.get('supplier_username')
     supplier_add_product = SupplierAddProduct()
-    return render_template('/suppliers/sup_products.html' , sup_username = sup_username , supplier_add_product=supplier_add_product)
+    if supplier_add_product.add_product.data and supplier_add_product.validate_on_submit():
+        add_product(supplier_add_product)
+        messages.append('New Produce added !')
+    return render_template('/suppliers/sup_products.html' , sup_username = sup_username , supplier_add_product=supplier_add_product ,messages=messages)
+
+
+def add_product(supplier_add_product):
+    
+    if supplier_add_product.picture.data :
+        picture_path = save_product_picture(supplier_add_product.picture.data)
+    else:
+        picture_path= '/static/img/products/default.png'
+
+    supplier_id = session['supplier_id']
+    new_product = Product (name=supplier_add_product.name.data , supplier_id=supplier_id , price=supplier_add_product.price.data , product_type=supplier_add_product.product_type, product_sub_type=supplier_add_product.product_sub_type.data ,desc=supplier_add_product.desc.data , brand=supplier_add_product.brand.data, picture=picture_path, Additional_information=supplier_add_product.Additional_information.data )
+    db.session.add(new_product)
+    db.session.commit()
+
+
+
+
+def save_product_picture(picture):
+    random_hex = secrets.token_hex(8)
+    _ , f_ext = os.path.splitext(picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/img/products' , picture_fn )
+    output_size = (125 , 125)
+    image = Image.open(picture)
+    image.thumbnail(output_size)
+    image.save(picture_path)
+    return picture_path
+
 
 
 @app.route('/suppliers/logout', methods = ['GET', 'POST'])
