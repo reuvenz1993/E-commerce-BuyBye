@@ -133,6 +133,23 @@ class Supplier(db.Model, UserMixin):
     
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
+    
+    # gets an Supplier object and return list of his products
+    def get_products(self):
+        products = Product.query.filter_by(supplier_id = self.id).all()
+        return products
+    
+    def get_orders(self):
+        orders = Order.query.filter_by(supplier_id = self.id).all()
+        return orders
+    
+    def get_reviews(self):
+        reviews = []
+        orders = Order.query.filter_by(supplier_id = self.id).all()
+        for order in orders:
+            rev = Reviews.query.filter_by(supplier_id = order.id).first()
+            reviews.append(rev)
+        return reviews
 
 
 class Product(db.Model, UserMixin):
@@ -168,6 +185,18 @@ class Product(db.Model, UserMixin):
 
     def as_list(self):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
+    
+    def get_orders(self):
+        orders = Order.query.filter_by(product_id=self.id).all()
+        return orders
+    
+    def get_review(self):
+        reviews = []
+        orders = Order.query.filter_by(product_id=self.id).all()
+        for order in orders():
+            rev = Reviews.query.filter_by(supplier_id = order.id).first()
+            reviews.append(rev)
+        return orders
 
 class Order(db.Model, UserMixin):
 
@@ -199,6 +228,10 @@ class Order(db.Model, UserMixin):
 
     def as_list(self):
         return [self.id ,self.product_id ,self.buyer_id,self.supplier_id,self.order_time,self.qty,self.status,self.unit_price,self.total_price,self.reviews]
+    
+    def get_reviews(self):
+        review = Reviews.query.filter_by(order_id=self.id).first()
+        return review
         
 
     
