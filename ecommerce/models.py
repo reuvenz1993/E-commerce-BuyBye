@@ -147,9 +147,10 @@ class Supplier(db.Model, UserMixin):
         reviews = []
         orders = Order.query.filter_by(supplier_id = self.id).all()
         for order in orders:
-            rev = Reviews.query.filter_by(supplier_id = order.id).first()
+            rev = order.get_reviews()
             reviews.append(rev)
         return reviews
+    
 
 
 class Product(db.Model, UserMixin):
@@ -187,16 +188,16 @@ class Product(db.Model, UserMixin):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
     
     def get_orders(self):
-        orders = Order.query.filter_by(product_id=self.id).all()
+        orders = Order.query.filter_by(id=self.id).all()
         return orders
     
     def get_review(self):
         reviews = []
         orders = Order.query.filter_by(product_id=self.id).all()
-        for order in orders():
-            rev = Reviews.query.filter_by(supplier_id = order.id).first()
+        for order in orders:
+            rev = order.get_reviews()
             reviews.append(rev)
-        return orders
+        return reviews
 
 class Order(db.Model, UserMixin):
 
