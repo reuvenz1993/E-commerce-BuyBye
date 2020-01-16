@@ -1,8 +1,9 @@
 from flask_dance.utils import first
 from flask_wtf import FlaskForm
 from wtforms import (IntegerField, PasswordField, StringField, SubmitField, BooleanField ,TextAreaField,
-                     ValidationError , FileField , DecimalField )
+                     ValidationError , DecimalField )
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
+from flask_wtf.file import FileField
 from ecommerce.models import User
 from ecommerce import db
 
@@ -15,7 +16,7 @@ class SupplierAddProduct(FlaskForm):
     brand = StringField('brand : ' )
     price = DecimalField('*price : ' , validators=[NumberRange(min=0 , max=100000000)] )
     Additional_information = StringField('Additional information : ' )
-    picture = FileField('picture : ')
+    picture = FileField()
     add_product = SubmitField("Add Product")
     
 
