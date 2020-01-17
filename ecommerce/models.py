@@ -48,8 +48,6 @@ class User(db.Model, UserMixin):
         else:
             return True
 
-    def __repr__(self):
-        return f'username : {self.username} , email : {self.email} , password : {self.password_hash} ,photo = {self.photo}  '
 
     def update_photo(self,photo):
         self.photo = photo
@@ -75,8 +73,7 @@ class Post(db.Model, UserMixin):
         self.content = content
         self.time = datetime.utcnow()
 
-    def __repr__(self):
-        return f'by user : {self.username} , post : {self.post}  '
+
 
 
 class Buyer(db.Model, UserMixin):
@@ -103,8 +100,6 @@ class Buyer(db.Model, UserMixin):
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
     
-    def __repr__(self):
-        return f"id:{self.id} , email:{self.email}, username:{self.username}, name:{self.name}, address:{self.address}, photo:{self.photo}, orders:{self.orders}"
 
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
@@ -204,8 +199,6 @@ class Product(db.Model, UserMixin):
         self.picture = "/static/img/products/" + picture
 
 
-    def __repr__(self):
-        return f"id:{self.id} , name:{self.name}, desc:{self.desc}"
 
     def as_list(self):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
@@ -265,9 +258,7 @@ class Order(db.Model, UserMixin):
         self.unit_price = Product.query.get(product_id).price
         self.total_price = qty * unit_price
         
-    def __repr__(self):
-        return f"id:{self.id} , product_id:{self.product_id}, buyer_id:{self.buyer_id}, supplier_id:{self.supplier_id}, qty:{self.qty}, status:{self.status}, unit_price:{self.unit_price}, total_price:{self.total_price}, reviews:{self.reviews}"
-
+        
     def as_list(self):
         return [self.id ,self.product_id ,self.buyer_id,self.supplier_id,self.order_time,self.qty,self.status,self.unit_price,self.total_price,self.reviews]
     
@@ -305,8 +296,6 @@ class Reviews(db.Model, UserMixin):
         self.review_content = review_content
         self.review_time = datetime.utcnow()
         
-    def __repr__(self):
-            return f"id:{self.id} , order_id:{self.order_id}, stars:{self.stars}, review_content:{self.review_content}, review_time:{self.review_content}"
 
     def as_list(self):
         return [self.id ,self.order_id ,self.stars,self.review_content,self.review_time]
