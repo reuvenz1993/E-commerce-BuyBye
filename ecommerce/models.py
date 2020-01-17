@@ -93,9 +93,12 @@ class Buyer(db.Model, UserMixin):
     orders = db.relationship('Order', backref='the_buyer', lazy='dynamic')
     
     def __init__(self, email, username , password , name='N/A', address='N/A' , photo='default.jpg' ):
-        self.email = email
+        self.email = email.lower()
         self.username = username
         self.password_hash = generate_password_hash(password)
+        self.name = name.lower()
+        self.address = address.lower()
+        self.photo = photo
         
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
@@ -132,12 +135,12 @@ class Supplier(db.Model, UserMixin):
     orders = db.relationship('Order', backref='supplier', lazy='dynamic')
     
     def __init__(self, email, username , password , name='N/A' , type_of='N/A', address='N/A' , photo='default.jpg' ):
-        self.email = email
+        self.email = email.lower()
         self.username = username
         self.password_hash = generate_password_hash(password)
         self.name = name
-        self.type_of = type_of
-        self.address = address
+        self.type_of = type_of.lower()
+        self.address = address.lower()
         self.photo = photo
     
     def check_password(self,password):
@@ -218,12 +221,18 @@ class Product(db.Model, UserMixin):
 
         return [ orders, {'num_of_orders':num_of_orders} ,{'sold':sold} ]
 
-    def get_review(self):
+    def get_review(self , avg_star_rating=False):
         reviews = []
+        stars = 0
         orders = Order.query.filter_by(product_id=self.id).all()
         for order in orders:
             rev = order.get_reviews()
+            stars += rev.stars
             reviews.append(rev)
+        
+        if avg_star_rating:
+            h= 'h'
+        
         return reviews
 
 class Order(db.Model, UserMixin):
