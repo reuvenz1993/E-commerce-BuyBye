@@ -106,6 +106,15 @@ class Buyer(db.Model, UserMixin):
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
 
+    def get_orders(self):
+        return self.orders
+    
+    def get_reviews(self):
+        reviews = []
+        for order in self.orders:
+            rev = order.get_review()
+            reviews.append(rev)
+        return reviews
 
 class Supplier(db.Model, UserMixin):
 
@@ -139,18 +148,29 @@ class Supplier(db.Model, UserMixin):
         products = Product.query.filter_by(supplier_id = self.id).all()
         return products
     
-    def get_orders(self):
-        orders = Order.query.filter_by(supplier_id = self.id).all()
+    def get_orders(self , status=None , pid=None):
+        orders = Order.query.filter_by(supplier_id = self.id)
+        if status :
+            orders = orders.filter_by(status = status)
+        if status :
+            orders = orders.filter_by(product_id = pid)
+
+        orders = orders.all()
         return orders
-    
-    def get_reviews(self):
+
+    def get_reviews(self , pid=None ):
         reviews = []
-        orders = Order.query.filter_by(supplier_id = self.id).all()
+        orders = Order.query.filter_by(supplier_id = self.id )
+        if pid:
+            orders = orders.filter_by(product_id = pid)
+
+        orders = orders.all()
         for order in orders:
             rev = order.get_reviews()
             reviews.append(rev)
+
         return reviews
-    
+
 
 
 class Product(db.Model, UserMixin):
@@ -179,18 +199,25 @@ class Product(db.Model, UserMixin):
         self.desc = desc
         self.brand = brand
         self.picture = "/static/img/products/" + picture
-        
-        
+
+
     def __repr__(self):
         return f"id:{self.id} , name:{self.name}, desc:{self.desc}"
 
     def as_list(self):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
-    
-    def get_orders(self):
-        orders = Order.query.filter_by(id=self.id).all()
-        return orders
-    
+
+    # returns an array of 3 - [1]=array of order objects , [2]-num of orders , [3]=units sold
+    def get_orders_info(self):
+        orders = Order.query.filter_by(product_id=self.id).all()
+        num_of_orders = orders.count()
+        orders = orders.all()
+        sold = 0
+        for order in orders:
+            sold += order.qty
+
+        return [ orders, {'num_of_orders':num_of_orders} ,{'sold':sold} ]
+
     def get_review(self):
         reviews = []
         orders = Order.query.filter_by(product_id=self.id).all()
@@ -233,6 +260,16 @@ class Order(db.Model, UserMixin):
     def get_reviews(self):
         review = Reviews.query.filter_by(order_id=self.id).first()
         return review
+    
+    def get_buyer(self):
+        return Buyer.query.filter_by(id=self.buyer_id).first()
+    
+    def get_supplier(self):
+        return Supplier.query.filter_by(id=self.supplier_id).first()
+    
+    def get_product(self):
+        return Product.query.filter_by(id=self.product_id).first()
+    
         
 
     
@@ -259,5 +296,16 @@ class Reviews(db.Model, UserMixin):
 
     def as_list(self):
         return [self.id ,self.order_id ,self.stars,self.review_content,self.review_time]
+    
+    def get_order(self):
+        return Order.query.filter_by(id=self.order_id).first()
+
+    def get_buyer(self):
+        order = self.get_order()
+        return order.get_buyer()
+
+    def get_supplier(self):
+        order = self.get_order()
+        return order.get_supplier()
 
 
