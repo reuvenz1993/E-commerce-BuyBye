@@ -197,8 +197,8 @@ class Product(db.Model, UserMixin):
         self.name = name
         self.supplier_id = supplier_id
         self.price = price
-        self.product_type = product_type
-        self.product_sub_type = product_sub_type
+        self.product_type = product_type.lower()
+        self.product_sub_type = product_sub_type.lower()
         self.desc = desc
         self.brand = brand
         self.picture = "/static/img/products/" + picture
@@ -221,7 +221,7 @@ class Product(db.Model, UserMixin):
 
         return [ orders, {'num_of_orders':num_of_orders} ,{'sold':sold} ]
 
-    def get_review(self , avg_star_rating=False):
+    def get_review(self , avg_star_ranking=False):
         reviews = []
         stars = 0
         orders = Order.query.filter_by(product_id=self.id).all()
@@ -230,8 +230,13 @@ class Product(db.Model, UserMixin):
             stars += rev.stars
             reviews.append(rev)
         
-        if avg_star_rating:
-            h= 'h'
+        if avg_star_ranking :
+            if len(reviews)>0 :
+                avg_star_ranking= stars / len(reviews)
+            else :
+                avg_star_ranking = 'No reviews yet'
+            
+            return reviews , avg_star_ranking
         
         return reviews
 
@@ -250,14 +255,14 @@ class Order(db.Model, UserMixin):
     total_price = db.Column(db.Numeric , nullable=False )
     reviews = db.relationship('Reviews', backref='order', lazy='dynamic')
     
-    def __init__(self, product_id, buyer_id, supplier_id, unit_price, qty=1 , status='open'):
+    def __init__(self, product_id, buyer_id, qty=1 , status='open'):
         self.product_id = product_id
         self.buyer_id = buyer_id
-        self.supplier_id = supplier_id
+        self.supplier_id = Supplier.query.get((Product.query.get(product_id).supplier_id)).id
         self.order_time = datetime.utcnow()
         self.qty = qty
         self.status = status
-        self.unit_price = unit_price
+        self.unit_price = Product.query.get(product_id).price
         self.total_price = qty * unit_price
         
     def __repr__(self):
@@ -271,10 +276,10 @@ class Order(db.Model, UserMixin):
         return review
     
     def get_buyer(self):
-        return Buyer.query.filter_by(id=self.buyer_id).first()
+        return Buyer.query.get(self.buyer_id)
     
     def get_supplier(self):
-        return Supplier.query.filter_by(id=self.supplier_id).first()
+        return Supplier.query.get(Product.query.get(self.product_id).supplier_id)
     
     def get_product(self):
         return Product.query.filter_by(id=self.product_id).first()
