@@ -14,7 +14,7 @@ from datetime import datetime
 @login_manager.user_loader
 def load_user(user_id):
     return Buyer.query.get(user_id)
-
+'''
 class User(db.Model, UserMixin):
 
     # Create a table in the db
@@ -72,7 +72,7 @@ class Post(db.Model, UserMixin):
         self.title = title
         self.content = content
         self.time = datetime.utcnow()
-
+'''
 
 
 
@@ -96,7 +96,7 @@ class Buyer(db.Model, UserMixin):
         self.name = name.lower()
         self.address = address.lower()
         self.photo = photo
-        
+
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
     
@@ -156,7 +156,7 @@ class Supplier(db.Model, UserMixin):
         orders = orders.all()
         return orders
 
-    def get_reviews(self , pid=None ):
+    def get_reviews(self , pid=None , avg_star_ranking=False ):
         reviews = []
         orders = Order.query.filter_by(supplier_id = self.id )
         if pid:
@@ -203,18 +203,26 @@ class Product(db.Model, UserMixin):
     def as_list(self):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
 
-    # returns an array of 3 - [1]=array of order objects , [2]-num of orders , [3]=units sold
-    def get_orders_info(self):
+    # returns dict  [get_orders_info]=array of order objects , *[order_count]-num of orders , *[units_sold]=units_sold
+    def get_orders_info(self , order_count=False , units_sold=False):
+        responce = dict()
         orders = Order.query.filter_by(product_id=self.id).all()
-        num_of_orders = orders.count()
-        orders = orders.all()
-        sold = 0
-        for order in orders:
-            sold += order.qty
+        responce['get_orders_info'] = orders
 
-        return [ orders, {'num_of_orders':num_of_orders} ,{'sold':sold} ]
+        if units_sold:
+            sold = 0
+            for order in orders:
+                sold += order.qty
+
+            responce['units_sold'] = sold
+
+        if order_count:
+            responce['order_count'] = len(orders)
+
+        return responce
 
     def get_review(self , avg_star_ranking=False):
+        responce = dict()
         reviews = []
         stars = 0
         orders = Order.query.filter_by(product_id=self.id).all()
@@ -222,16 +230,18 @@ class Product(db.Model, UserMixin):
             rev = order.get_reviews()
             stars += rev.stars
             reviews.append(rev)
-        
+
         if avg_star_ranking :
             if len(reviews)>0 :
                 avg_star_ranking= stars / len(reviews)
             else :
                 avg_star_ranking = 'No reviews yet'
-            
-            return reviews , avg_star_ranking
-        
-        return reviews
+
+            responce['avg_star_ranking'] = avg_star_ranking
+
+        responce['get_review'] = reviews
+
+        return responce
 
 class Order(db.Model, UserMixin):
 
