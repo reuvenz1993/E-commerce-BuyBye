@@ -14,7 +14,7 @@ from datetime import datetime
 @login_manager.user_loader
 def load_user(user_id):
     return Buyer.query.get(user_id)
-'''
+
 class User(db.Model, UserMixin):
 
     # Create a table in the db
@@ -72,7 +72,21 @@ class Post(db.Model, UserMixin):
         self.title = title
         self.content = content
         self.time = datetime.utcnow()
-'''
+
+
+def convert_to_list(val):
+    temp = list()
+    temp.append(val)
+    return temp
+
+
+
+class Category(db.Model, UserMixin):
+    __tablename__ = 'category'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(256), default='N/A')
+    product = db.relationship('Product', backref='category', lazy='dynamic')
 
 
 
@@ -99,20 +113,22 @@ class Buyer(db.Model, UserMixin):
 
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
-    
+
 
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
 
     def get_orders(self):
-        return self.orders
-    
-    def get_reviews(self):
-        reviews = []
-        for order in self.orders:
-            rev = order.get_review()
-            reviews.append(rev)
-        return reviews
+        return self.orders.all()
+
+    def get_reviews(self , count=False):
+        response = dict()
+        response['get_reviews'] = db.session.query(Reviews).join(Order , Reviews.order_id == Order.id ).filter(Order.buyer_id == self.id ).all()
+
+        if count:
+            response['count'] = db.session.query(Reviews).join(Order , Reviews.order_id == Order.id ).filter(Order.buyer_id == self.id ).count()
+
+        return response
 
 class Supplier(db.Model, UserMixin):
 
@@ -137,38 +153,46 @@ class Supplier(db.Model, UserMixin):
         self.type_of = type_of.lower()
         self.address = address.lower()
         self.photo = photo
-    
+
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
-    
+
     # gets an Supplier object and return list of his products
     def get_products(self):
-        products = Product.query.filter_by(supplier_id = self.id).all()
-        return products
-    
-    def get_orders(self , status=None , pid=None):
+        return self.products.all()
+
+    #returns supplier orders , pramas = [1]status(list / string /int) , [2]pid(list / string /int), income=if True returns sum of revenue of supplier
+    def get_orders(self , status=None , pid=None, count=False , income=False):
+        response = dict()
+        print (status)
         orders = Order.query.filter_by(supplier_id = self.id)
         if status :
-            orders = orders.filter_by(status = status)
-        if status :
-            orders = orders.filter_by(product_id = pid)
+            if type(status) is not list:
+                status = convert_to_list(status)
+            orders = orders.filter(Order.status.in_(tuple(status)))
+        if pid :
+            if type(pid) is not list:
+                pid = convert_to_list(pid)
+            orders = orders.filter(Order.product_id.in_(tuple(pid)))
+        if count:
+            response['count']= orders.count()
+        if income:
+            response['income'] = db.session.query(db.func.sum(Order.total_price)).join(Supplier, Order.supplier_id == Supplier.id ).filter(Order.supplier_id == self.id).all()[0][0]
 
         orders = orders.all()
-        return orders
+        response['get_orders'] = orders
+        
+        
+        return response
 
-    def get_reviews(self , pid=None , avg_star_ranking=False ):
-        reviews = []
-        orders = Order.query.filter_by(supplier_id = self.id )
-        if pid:
-            orders = orders.filter_by(product_id = pid)
+    def get_supplier_reviews(self , avg=False):
+        response = dict()
+        response['get_supplier_reviews']= db.session.query(Reviews).join(Order , Reviews.order_id == Order.id ).filter(Order.supplier_id == self.id ).all()
 
-        orders = orders.all()
-        for order in orders:
-            rev = order.get_reviews()
-            reviews.append(rev)
+        if avg:
+            response['avg'] = db.session.query(db.func.avg(Reviews.stars)).join(Order, Order.id == Reviews.order_id ).filter(Order.supplier_id == self.id).all()[0][0]
 
-        return reviews
-
+        return response
 
 
 class Product(db.Model, UserMixin):
@@ -180,6 +204,7 @@ class Product(db.Model, UserMixin):
     name = db.Column(db.String(256), nullable=False)
     desc = db.Column(db.String(1024), default='N/A')
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id') , nullable=False)
+    category = db.Column(db.Integer, db.ForeignKey('category.id') )
     product_type = db.Column(db.String(256), default='N/A')
     product_sub_type = db.Column(db.String(256), default='N/A')
     brand = db.Column(db.String(256), default='N/A')
@@ -188,11 +213,12 @@ class Product(db.Model, UserMixin):
     Additional_information = db.Column(db.String(1024), default='N/A')
     orders = db.relationship('Order', backref='product', lazy='dynamic')
 
-    def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A' ):
+    def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A', category=1 ):
         self.name = name
         self.supplier_id = supplier_id
         self.price = price
         self.product_type = product_type.lower()
+        self.category = category
         self.product_sub_type = product_sub_type.lower()
         self.desc = desc
         self.brand = brand
@@ -204,44 +230,31 @@ class Product(db.Model, UserMixin):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
 
     # returns dict  [get_orders_info]=array of order objects , *[order_count]-num of orders , *[units_sold]=units_sold
-    def get_orders_info(self , order_count=False , units_sold=False):
-        responce = dict()
-        orders = Order.query.filter_by(product_id=self.id).all()
-        responce['get_orders_info'] = orders
+    def get_product_orders(self , sum_orders=False , sum_units=False):
+        response = dict()
+        response['get_product_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()
+        #if res == []:
+        # res = 'no reviews yet'
+        if sum_orders:
+            response['sum_orders'] = len(response['get_product_orders'])
 
-        if units_sold:
-            sold = 0
-            for order in orders:
-                sold += order.qty
+        if sum_units:
+            response['sum_units'] = db.session.query(db.func.sum(Order.qty)).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()[0][0]
 
-            responce['units_sold'] = sold
+        return response
 
-        if order_count:
-            responce['order_count'] = len(orders)
 
-        return responce
 
-    def get_review(self , avg_star_ranking=False):
-        responce = dict()
-        reviews = []
-        stars = 0
-        orders = Order.query.filter_by(product_id=self.id).all()
-        for order in orders:
-            rev = order.get_reviews()
-            stars += rev.stars
-            reviews.append(rev)
+    def get_review(self , avg=False):
+        response = dict()
+        response['get_review'] = db.session.query(Reviews).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()
 
-        if avg_star_ranking :
-            if len(reviews)>0 :
-                avg_star_ranking= stars / len(reviews)
-            else :
-                avg_star_ranking = 'No reviews yet'
+        if avg :
+            response['avg'] = db.session.query(db.func.avg(Reviews.stars)).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()[0][0]
 
-            responce['avg_star_ranking'] = avg_star_ranking
-
-        responce['get_review'] = reviews
-
-        return responce
+        return response
+    
+    
 
 class Order(db.Model, UserMixin):
 
@@ -257,7 +270,7 @@ class Order(db.Model, UserMixin):
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
     reviews = db.relationship('Reviews', backref='order', lazy='dynamic')
-    
+
     def __init__(self, product_id, buyer_id, qty=1 , status='open'):
         self.product_id = product_id
         self.buyer_id = buyer_id
@@ -266,31 +279,28 @@ class Order(db.Model, UserMixin):
         self.qty = qty
         self.status = status
         self.unit_price = Product.query.get(product_id).price
-        self.total_price = qty * unit_price
-        
-        
+        self.total_price = qty * self.unit_price
+
+
     def as_list(self):
         return [self.id ,self.product_id ,self.buyer_id,self.supplier_id,self.order_time,self.qty,self.status,self.unit_price,self.total_price,self.reviews]
-    
-    def get_reviews(self):
+
+    def get_order_review(self):
         review = Reviews.query.filter_by(order_id=self.id).first()
         return review
-    
-    def get_buyer(self):
-        return Buyer.query.get(self.buyer_id)
-    
-    def get_supplier(self):
-        return Supplier.query.get(Product.query.get(self.product_id).supplier_id)
-    
-    def get_product(self):
-        return Product.query.filter_by(id=self.product_id).first()
-    
-        
 
-    
-    
+    def get_order_buyer(self):
+        return Buyer.query.get(self.buyer_id)
+
+    def get_order_supplier(self):
+        return Supplier.query.get(Product.query.get(self.product_id).supplier_id)
+
+    def get_order_product(self):
+        return Product.query.filter_by(id=self.product_id).first()
+
+
 class Reviews(db.Model, UserMixin):
-    
+
     __tablename__ = 'reviews'
 
     id = db.Column(db.Integer, primary_key = True)
@@ -310,15 +320,19 @@ class Reviews(db.Model, UserMixin):
     def as_list(self):
         return [self.id ,self.order_id ,self.stars,self.review_content,self.review_time]
     
-    def get_order(self):
+    def get_review_order(self):
         return Order.query.filter_by(id=self.order_id).first()
 
-    def get_buyer(self):
-        order = self.get_order()
-        return order.get_buyer()
+    def get_review_buyer(self):
+        order = self.get_review_order()
+        return order.get_order_buyer()
 
-    def get_supplier(self):
-        order = self.get_order()
-        return order.get_supplier()
+    def get_review_supplier(self):
+        order = self.get_review_order()
+        return order.get_order_supplier()
+    
+    def get_review_product(self):
+        order = self.get_review_order()
+        return order.get_order_product()
 
 
