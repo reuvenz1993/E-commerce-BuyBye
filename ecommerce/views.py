@@ -11,6 +11,57 @@ from PIL import Image
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
+
+@app.route('/temp', methods = ['GET', 'POST'])
+def search( pid =[1,2,3,4,5,6,7,8] ,min_price=0 , max_price=100000 , min_avg=False ):
+    
+    
+    if min_avg:
+        products = db.session.query(Product , db.func.avg(Reviews.stars)).join(Order, Product.id == Order.product_id ).join(Reviews, Order.id == Reviews.order_id ).group_by(Product).having(db.func.avg(Reviews.stars) > min_avg)
+    else:
+        products = db.session.query(Product)
+    
+    products = products.filter(Product.category.in_(pid))
+
+    if min_price:
+        products = products.filter(Product.price > min_price )
+
+    if max_price:
+        products = products.filter(Product.price < max_price )
+
+    temp = products.all()
+    products = []
+    for product in temp :
+        row = product[0].__dict__
+        row['supplier'] = product[0].supplier.get_info()
+        row['avg_stars'] = product[1]
+        row['price'] =  float( row['price'] )
+        del row['_sa_instance_state']
+        products.append(row)
+
+    return jsonify(products)
+
+
+@app.route('/temp2/<pid>', methods = ['GET', 'POST'])
+def get_product_data(pid):
+    res = []
+    responce = dict()
+    
+    product = Product.query.get(pid)
+    responce = product.__dict__
+    responce['price'] =  float( responce['price'] )
+    responce['supplier'] = responce['supplier'].get_info()
+    del responce['_sa_instance_state']
+    #responce['product']['sum_orders'] = product.get_product_orders(sum_orders=True )['sum_orders']
+    #responce['product']['sum_orders'] = product.get_product_orders( sum_units=True)['sum_units']
+    print (responce)
+
+    res.append(responce)
+    return jsonify ( res )
+    
+
+
+
 def check_sup_login(sup_loginform):
     print ('check_sup_login run');
     supplier_logging = Supplier.query.filter_by(username = sup_loginform.username.data).first()
@@ -168,7 +219,7 @@ def product(pid):
     product_data = Product.query.filter_by(id = pid).first()
     if product_data is None :
         return redirect (url_for('index'))
-    product_data = product_data.as_list()
+    product_data = product_data.__dict__
     product_data.append(get_product_extra_info(product_data[0]))
     reviews = get_reviews(pid)
     return render_template('product2.html' , product_data = product_data , reviews = reviews , login_form = login_form )

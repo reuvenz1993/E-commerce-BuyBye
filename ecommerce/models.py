@@ -11,6 +11,29 @@ from datetime import datetime
 
 # The user_loader decorator allows flask-login to load the current user
 # and grab their id.
+
+
+####functions
+
+#def search(pid=)
+
+def product_info_to_ui(pid):
+    response = dict()
+    response = Product.query.get(pid).get_info()
+    response['supplier'] = Product.query.get(pid).supplier.get_info()
+    return response
+
+product_info_to_ui(3)
+
+
+
+
+####functions
+
+
+
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Buyer.query.get(user_id)
@@ -83,10 +106,25 @@ def convert_to_list(val):
 
 class Category(db.Model, UserMixin):
     __tablename__ = 'category'
-    
+
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(256), default='N/A')
-    product = db.relationship('Product', backref='category', lazy='dynamic')
+    photo = db.Column(db.String(64), default='default.jpg')
+    products = db.relationship('Product', backref='the_category', lazy='dynamic')
+    
+    def __init__(self, name , photo='default.jpg' ):
+        self.name = name
+        self.photo = photo
+
+
+
+class Cart(db.Model, UserMixin):
+    __tablename__ = 'cart'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , primary_key = True , nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , primary_key = True , nullable=False)
+    qty = db.Column(db.String(256), default=1)
 
 
 
@@ -156,6 +194,17 @@ class Supplier(db.Model, UserMixin):
 
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
+    
+    def get_info(self):
+        response = dict()
+        response['id'] = self.id
+        response['name'] = self.name
+        response['type_of'] = self.type_of
+        response['address'] = self.address
+        response['photo'] = self.address
+        response['supplier_avg_stars'] = self.get_supplier_reviews(avg=True)['avg']
+        
+        return response
 
     # gets an Supplier object and return list of his products
     def get_products(self):
@@ -181,7 +230,6 @@ class Supplier(db.Model, UserMixin):
 
         orders = orders.all()
         response['get_orders'] = orders
-        
         
         return response
 
@@ -229,14 +277,25 @@ class Product(db.Model, UserMixin):
     def as_list(self):
         return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
 
+
+    def get_info(self):
+        response = self.__dict__
+        if response['_sa_instance_state'] :
+            del response['_sa_instance_state']
+        response['price'] = float ( response['price'] )
+        response['orders'] = self.get_product_orders( get_product_orders=False , sum_orders=True , sum_units=True)
+
+        return response
+
+
     # returns dict  [get_orders_info]=array of order objects , *[order_count]-num of orders , *[units_sold]=units_sold
-    def get_product_orders(self , sum_orders=False , sum_units=False):
+    def get_product_orders(self , get_product_orders=True , sum_orders=False , sum_units=False):
         response = dict()
-        response['get_product_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()
-        #if res == []:
-        # res = 'no reviews yet'
+        if get_product_orders:
+            response['get_product_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()
+
         if sum_orders:
-            response['sum_orders'] = len(response['get_product_orders'])
+            response['sum_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).count()
 
         if sum_units:
             response['sum_units'] = db.session.query(db.func.sum(Order.qty)).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()[0][0]
@@ -265,11 +324,13 @@ class Order(db.Model, UserMixin):
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , nullable=False)
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id') , nullable=False)
     order_time = db.Column(db.DateTime, default=datetime.utcnow)
+    payment_time = db.Column(db.DateTime)
+    fulfillment_time = db.Column(db.DateTime)
     qty = db.Column(db.Integer, nullable=False , default=1 )
     status = db.Column(db.String(256), default='open')
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
-    reviews = db.relationship('Reviews', backref='order', lazy='dynamic')
+    reviews = db.relationship('Reviews', backref='order', lazy='dynamic' )
 
     def __init__(self, product_id, buyer_id, qty=1 , status='open'):
         self.product_id = product_id
