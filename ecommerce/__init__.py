@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from sqlalchemy.orm import relationship, join
 from flask_debug import Debug
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 login_manager = LoginManager()
 
