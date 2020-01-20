@@ -32,7 +32,7 @@ def search( pid =[1,2,3,4,5,6,7,8] ,min_price=0 , max_price=100000 , min_avg=Fal
     temp = products.all()
     products = []
     for product in temp :
-        row = product[0].__dict__
+                                
         row['supplier'] = product[0].supplier.get_info()
         row['avg_stars'] = product[1]
         row['price'] =  float( row['price'] )
