@@ -8,28 +8,28 @@ import os
 import json
 from sqlalchemy.sql import text
 from PIL import Image
+from sqlalchemy import or_
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
 
 @app.route('/temp', methods = ['GET', 'POST'])
-def search( pid =[1,2,3,4,5,6,7,8] ,min_price=0 , max_price=100000 , min_avg=False ):
-    
-    
-    if min_avg:
-        products = db.session.query(Product , db.func.avg(Reviews.stars)).join(Order, Product.id == Order.product_id ).join(Reviews, Order.id == Reviews.order_id ).group_by(Product).having(db.func.avg(Reviews.stars) > min_avg)
-    else:
-        products = db.session.query(Product)
-    
-    products = products.filter(Product.category.in_(pid))
+def search( pid =[1,2,3,4,5,6,7,8] ,min_price=0 , max_price=100000 , min_avg=0 ):
 
-    if min_price:
-        products = products.filter(Product.price > min_price )
+    query = db.session.query(Product.id).outerjoin(Order).outerjoin(Reviews).group_by(Product).having(or_(db.func.count(Reviews.id)==0 , db.func.avg(Reviews.stars) > min_avg )).subquery()
 
-    if max_price:
-        products = products.filter(Product.price < max_price )
 
-    temp = products.all()
+    #query = products.filter(Product.category.in_(pid))
+    
+    query = Product.query.join(query , query.c.id == Product.id).filter(Product.id.in_(pid) , Product.price > min_price , Product.price < max_price )
+
+    #if min_price:
+    #    products = products.filter(Product.price > min_price )
+
+    #if max_price:
+    #    products = products.filter(Product.price < max_price )
+
+    temp = query.all()
     products = []
     for product in temp :
                                 

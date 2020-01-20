@@ -23,7 +23,6 @@ def product_info_to_ui(pid):
     response['supplier'] = Product.query.get(pid).supplier.get_info()
     return response
 
-product_info_to_ui(3)
 
 
 
