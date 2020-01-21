@@ -21,18 +21,6 @@ categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothi
 
 
 
-@app.route('/get_categories', methods = ['GET', 'POST'])
-def get_categories():
-    
-    categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
-    categories_arr = [[0] * 2 for i in range(len(categories))]
-    for i in range(len(categories)):
-        categories_arr[i][0] = categories[i]
-        categories_arr[i][1] = Product.query.filter(Product.product_type == categories[i].lower()).count()
-    return jsonify(categories_arr)
-
-
-
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     forms = Forms()
@@ -69,6 +57,8 @@ def results():
     product_list = get_relvent_results(product_type)
     return render_template('results.html' , product_list = product_list , login_form = login_form)
 
+
+
 @app.route('/product2/<pid>', methods = ['GET', 'POST'])
 def product(pid):
     login_form = Buyer_Login()
@@ -79,6 +69,8 @@ def product(pid):
     product_data.append(get_product_extra_info(product_data[0]))
     reviews = get_reviews(pid)
     return render_template('product2.html' , product_data = product_data , reviews = reviews , login_form = login_form )
+
+
 
 @app.route('/product', methods = ['GET', 'POST'])
 def results_item():
@@ -103,7 +95,7 @@ def results_item():
         product_list.append( p.as_list() )
     print (category)
     return render_template('results.html' , product_list = product_list)
-        
+
 
 
 

@@ -288,27 +288,31 @@ class Product(db.Model, UserMixin):
 
 
     # returns dict  [get_orders_info]=array of order objects , *[order_count]-num of orders , *[units_sold]=units_sold
-    def get_product_orders(self , get_product_orders=True , sum_orders=False , sum_units=False):
+    def get_product_orders(self , get_product_orders=True , count_orders=False , count_units=False):
         response = dict()
         if get_product_orders:
             response['get_product_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()
 
-        if sum_orders:
-            response['sum_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).count()
+        if count_orders:
+            response['count_orders'] = db.session.query(Order).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).count()
 
-        if sum_units:
-            response['sum_units'] = db.session.query(db.func.sum(Order.qty)).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()[0][0]
+        if count_units:
+            response['count_units'] = db.session.query(db.func.sum(Order.qty)).join(Product, Product.id == Order.product_id).filter(Order.product_id == self.id).all()[0][0]
 
         return response
 
 
 
-    def get_review(self , avg=False):
+    def get_review(self , get_review=True , avg=False , count=False):
         response = dict()
-        response['get_review'] = db.session.query(Reviews).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()
+        if get_review:
+            response['get_review'] = db.session.query(Reviews).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()
 
         if avg :
             response['avg'] = db.session.query(db.func.avg(Reviews.stars)).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()[0][0]
+
+        if count :
+            response['count'] = db.session.query(db.func.count(Reviews.id)).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()[0][0]
 
         return response
     

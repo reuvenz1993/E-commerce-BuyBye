@@ -10,9 +10,9 @@ $.ajax({
 
         i = 0
         $( ".category" ).each(function() {
-        $( this ).attr( "data-product_type" , categories[i][0].toLowerCase() );
-        $( this ).find('.dark-grey-text').html( categories[i][0] );
-        $( this ).attr( "href" , '/results?category=' + i );
+        $( this ).attr( "data-product_type" , categories[i][0] );
+        $( this ).find('.dark-grey-text').html( categories[i][1] );
+        $( this ).attr( "href" , '/results?category=' + categories[i][0] );
         i = i+1;
         });
     }
@@ -25,10 +25,6 @@ $(document).ready(function () {
 
     get_categories()
 
-$("#buyer_login_toggle").click(function (e) { 
-    e.preventDefault();
-    $('#buyer_login_modal').modal('toggle')
-});
 
 $('.category').click(function (e) { 
     e.preventDefault();

@@ -1,3 +1,4 @@
+    /*
     var categories ;
 
     function get_categories(){
@@ -9,28 +10,67 @@
             put_categories();
 
             }})};
+    */
+   var category_list = Array();
+   var min_price = 0 ;
+   var max_price = 10000 ;
+   var min_avg = 1 ;
+   var word = ""
 
+
+
+
+   
+   function load_results()
+{
+    data = {'category_list' : category_list ,
+            'min_price' : min_price ,
+            'max_price' : max_price ,
+            'min_avg': min_avg}
+    
+    if ( $('#search').val() != "" )
+    {
+    data['word'] = $('#search').val()
+    };
+
+
+$.ajax({
+    type: "POST",
+    url: '/get_search_res',
+    contentType: 'application/json',
+    dataType : 'json',
+    data : JSON.stringify( data ),
+    success: function (response) {
+        product_list = response;
+        console.log(response);
+        show_products();
+        
+        }});
+};
 
 function show_products()
 {
     $('#products').empty()
     product_list.forEach(product => {
-        product_parent = $("<li></li>").addClass('row text-center item align-items-center').attr('id' ,'product num: ' + product[0]).attr('data-pid' ,product[0] ).appendTo($('#products'));
-        photo_col = $("<div></div>").attr("id" ,"product_pic" + product[0]).addClass('col').appendTo(product_parent);
-        photo = $('<img>').attr("src" , product[8] ).addClass('pic').appendTo(photo_col);
-        name_desc_col = $("<div></div>").addClass('col-6 pnt').attr('id' ,product[0]).appendTo(product_parent);
-        name_row =$("<div></div>").text(product[1]).addClass('row').appendTo(name_desc_col);
-        desc_row =$("<div></div>").text(product[2]).addClass('row').appendTo(name_desc_col);
-        supplier_name_row =$("<div></div>").text(product[10]["supplier_name"]).addClass('row text-black-50 text-monospace').appendTo(name_desc_col);
+        product_parent = $("<li></li>").addClass('row text-center item align-items-center').attr('id' ,'product num: ' + product.id).attr('data-pid' ,product[0] ).appendTo($('#products'));
+        photo_col = $("<div></div>").attr("id" ,"product_pic" + product.id).addClass('col').appendTo(product_parent);
+        photo = $('<img>').attr("src" , product.picture ).addClass('pic').appendTo(photo_col);
+        name_desc_col = $("<div></div>").addClass('col-6 pnt').attr('id' ,product.id).appendTo(product_parent);
+        name_row =$("<div></div>").text(product.name).addClass('row').appendTo(name_desc_col);
+        desc_row =$("<div></div>").text(product.desc).addClass('row').appendTo(name_desc_col);
+        supplier_name_row =$("<div></div>").text(product.supplier.name).addClass('row text-black-50 text-monospace').appendTo(name_desc_col);
         price_col = $("<div></div>").addClass('col font-weight-bold').appendTo(product_parent);
-        price_row = $("<div></div>").text(product[7] + "$").addClass('row').appendTo(price_col);
+        price_row = $("<div></div>").text(product.price + "$").addClass('row').appendTo(price_col);
         stars_row = $("<div></div>").addClass('row').appendTo(price_col);
-        order_count_row = $("<div></div>").text(product[10]["order_count"]+ " Sold").addClass('row').appendTo(price_col);
-        if ( product [10]['review_count'] > 0 )
+        if ( product.orders.count_units )
         {
-            $(stars_row).append(product[10]["avg_stars"] + " ");
+        order_count_row = $("<div></div>").text( product.orders.count_units +" Sold").addClass('row').appendTo(price_col);
+        }
+        if ( product.reviews.avg )
+        {
+            $(stars_row).append(product.reviews.avg + " ");
             $(stars_row).append("<div class='icon'><i class='far fa-star' aria-hidden='true'></i></div>");
-            $(stars_row).append("  , " + product[10]["review_count"] + " reviews" );
+            $(stars_row).append( product.reviews.count  +" reviews" );
         }
         $(product_parent).click(function (e) { 
             e.preventDefault();
@@ -44,43 +84,113 @@ function show_products()
 
 $(document).ready(function () {
 
+    $('#search').keyup(function (e) { 
+        e.preventDefault();
+        load_results();
+            
+        });
 
+
+    $.ajax({
+        type: "POST",
+        url: '/get_categories',
+        success: function (response) {
+            categories = response
+            //put_categories();
+            put_categories2()
+
+            }});
+/*
     if ( product_list )
     {
         show_products();
-        
+
     }
+*/
 
 
-
-
-    setTimeout(do_stuff , 1500);
-
-    function do_stuff()
-    {
-        put_categories();
-    }
 
     function put_categories(){
         console.log('put cat runing');
         if (categories)
         {
         categories.forEach(category => {
-            category_li = $("<li></li>").addClass('filter_category').css('cursor' , 'pointer').attr('data-category' , category[0]).text(category[0]).appendTo($('#sidebar_categories'));
-            category_items= $("<span></span>").addClass('close text-black-50').text(category[1]).appendTo(category_li);
+            category_li = $("<li></li>").addClass('filter_category').css('cursor' , 'pointer').attr('data-category' , category[1]).text(category[1]).appendTo($('#sidebar_categories'));
+            category_items= $("<span></span>").addClass('close text-black-50').text(category[2]).appendTo(category_li);
+            
         })
-        make_categories_clickable();
+        select_category();
         }};
 
+        function put_categories2(){
+            console.log('put cat runing');
+            if (categories)
+            {
+                categories.forEach(category => {
+                    category_li = $("<li></li>").addClass('checkbox filter_category').css('cursor' , 'pointer').appendTo($('#sidebar_categories'));
+                    checkbox_labal = $("<label></label>").text(category[1]).appendTo(category_li);
+                    checkbox =$("<input type='checkbox' checked>").attr('value' , category[0]).attr('data-category' , category[0]).addClass('category_checkbox category_item').prependTo(checkbox_labal);
+                    category_items= $("<span></span>").addClass('close text-black-50').text(category[2]).appendTo(category_li);
+            });
+                get_list();
+                load_results()
+            }};
 
-    function make_categories_clickable(){
-    $('.filter_category').click(function (e) { 
+
+
+    function get_list(){
+
+        categories.forEach(category =>
+        {
+            category_list.push(category[0]);
+            });
+        $('.category_item').change(function (e)
+        {
+            e.preventDefault();
+
+            if ( $('#search').val() != "" )
+            {
+                word = $('#search').val()
+            }
+
+            category_list = selected_category_list()
+            min_price = parseInt(  $('#min').val() );
+            max_price = parseInt(  $('#max').val() );
+            min_avg = parseInt ( $("input[type='radio']:checked").val() );
+            load_results()
+        });
+    };
+
+
+
+
+
+
+function selected_category_list()
+{
+    res = []
+    $('.category_checkbox').each(function()
+    {
+        if ($(this).is(':checked'))
+        {
+            val = this.value
+            res.push(parseInt(val))
+        };
+    });
+
+    return res;
+}
+
+
+
+    function select_category(){
+    $('.filter_category').click(function (e) {
         e.preventDefault();
         filter_product_type = e.currentTarget.dataset.category;
         console.log(filter_product_type);
         $('#current_cat').html(filter_product_type);
         $('#current_cat_view , #sidebar_categories').toggle();
-        update_view();
+        //update_view();
 
         });
     };
@@ -89,7 +199,7 @@ $(document).ready(function () {
         e.preventDefault();
         $('#current_cat').html('all');
         $('#current_cat_view , #sidebar_categories').toggle();
-        update_view();
+        //update_view();
     });
 /*
     $('#min , #max').click(function (e) { 
@@ -105,7 +215,7 @@ $(document).ready(function () {
     $("input[type='radio'] , #min , #max").change(function (e) { 
         e.preventDefault();
         console.log('change');
-        update_view();
+        //update_view();
 
     });
 
@@ -153,4 +263,8 @@ $(document).ready(function () {
     });
 };
 */
+});
+
+$(selector).keyup(function (e) { 
+    
 });

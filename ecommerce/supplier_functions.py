@@ -6,6 +6,7 @@ from ecommerce.models import *
 import os
 import json
 from PIL import Image
+from ecommerce.functions import *
 
 
 

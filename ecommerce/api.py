@@ -2,8 +2,15 @@
 from ecommerce import app, db
 from flask import render_template, redirect, request, url_for, flash, abort , jsonify, session
 from ecommerce.functions import *
+from ecommerce.buyer_functions import *
 import json
 
+# return a list of lists, for every category list return is [Category.id , Category.name , Number of products in category]
+@app.route('/get_categories', methods = ['GET', 'POST'])
+def get_categories():
+
+    categories_list = db.session.query(Category.id , Category.name , db.func.count(Product.id)).outerjoin(Product).group_by(Category).all()
+    return jsonify(categories_list)
 
 
 @app.route('/get_search_res', methods = ['GET', 'POST'])
@@ -28,6 +35,11 @@ def get_search_res():
 
         if request.args.get('word'):
             keyword_args['word'] = request.args.get('word')
+            
+        if request.args.get('category_list'):
+            keyword_args['category_list'] = request.args.get('category_list')
+            
+        category_list
 
         res = search(**keyword_args)
         return jsonify(res)
