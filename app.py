@@ -4,6 +4,7 @@ from flask_login import login_user,login_required,logout_user
 from ecommerce.models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 import ecommerce.views
+import ecommerce.api
 
 
 if __name__ == '__main__':

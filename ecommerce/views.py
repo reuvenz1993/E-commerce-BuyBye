@@ -11,134 +11,14 @@ from PIL import Image
 from sqlalchemy import or_
 from ecommerce.models import *
 from ecommerce.functions import *
+from ecommerce.buyer_functions import *
+from ecommerce.api import *
+from ecommerce.supplier_functions import *
+import ecommerce.supllier_views
+
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
-
-@app.route('/temp', methods = ['GET', 'POST'])
-def get_search_res( pid =[1,2,3,4,5,6,7,8] ,min_price=0 , max_price=100000 , min_avg=0 , word=False ):
-
-    res = search()
-
-
-    return jsonify(res)
-
-
-@app.route('/temp2/<pid>', methods = ['GET', 'POST'])
-def get_product_data(pid):
-    res = []
-    responce = dict()
-    
-    product = Product.query.get(pid)
-    responce = product.__dict__
-    responce['price'] =  float( responce['price'] )
-    responce['supplier'] = responce['supplier'].get_info()
-    del responce['_sa_instance_state']
-    #responce['product']['sum_orders'] = product.get_product_orders(sum_orders=True )['sum_orders']
-    #responce['product']['sum_orders'] = product.get_product_orders( sum_units=True)['sum_units']
-    print (responce)
-
-    res.append(responce)
-    return jsonify ( res )
-    
-
-
-
-def check_sup_login(sup_loginform):
-    print ('check_sup_login run');
-    supplier_logging = Supplier.query.filter_by(username = sup_loginform.username.data).first()
-    if ( supplier_logging is not None and supplier_logging.check_password(sup_loginform.password.data) ) :
-        session['supplier_username'] = sup_loginform.username.data
-        session['supplier_id'] = Supplier.query.filter_by(username = sup_loginform.username.data).first().id
-        return True
-    elif supplier_logging is not None :
-        return 'password is not correct'
-    else :
-        return 'username does not exists'
-    
-def sup_signup(sup_signupform):
-    print ('sup_signup run');
-    try:
-        new_supplier = Supplier(sup_signupform.email.data , sup_signupform.username.data , sup_signupform.password.data , sup_signupform.name.data , sup_signupform.type_of.data , sup_signupform.address.data)
-        db.session.add(new_supplier)
-        db.session.commit()
-        return True;
-    except:
-        return 'signup failed';
-
-@app.route('/suppliers/', methods = ['GET', 'POST'])
-def suppliers_index():
-    messages = dict()
-    if session.get('supplier_username', None) is not None:
-        return redirect(url_for('suppliers_main'))
-    sup_loginform = SupplierLoginForm()
-    sup_signupform = SupplierSignupForm()
-    if sup_loginform.supplier_login.data and sup_loginform.validate_on_submit():
-        validate = check_sup_login(sup_loginform)
-        if validate == True :
-            return redirect(url_for('suppliers_main'))
-        else:
-            messages['connection_error'] = validate
-    if sup_signupform.supplier_signup.data and sup_signupform.validate_on_submit():
-        signup = sup_signup(sup_signupform)
-        if signup != True :
-            messages['signup_error'] = signup
-    return render_template('/suppliers/index.html' , sup_loginform = sup_loginform , sup_signupform = sup_signupform , messages = messages)
-
-
-@app.route('/suppliers/main', methods = ['GET', 'POST'])
-def suppliers_main():
-    if session.get('supplier_username', None) is None:
-        return redirect(url_for('suppliers_index'))
-    sup_username = session.get('supplier_username')
-    return render_template('/suppliers/main.html' , sup_username = sup_username)
-
-
-@app.route('/suppliers/sup_products', methods = ['GET', 'POST'])
-def sup_products():
-    messages =[]
-    if session.get('supplier_username', None) is None:
-        return redirect(url_for('suppliers_index'))
-    sup_username = session.get('supplier_username')
-    supplier_add_product = SupplierAddProduct()
-    if supplier_add_product.add_product.data and supplier_add_product.validate_on_submit():
-        add_product(supplier_add_product)
-        messages.append('New Produce added !')
-    return render_template('/suppliers/sup_products.html' , sup_username = sup_username , supplier_add_product=supplier_add_product ,messages=messages)
-
-
-def add_product(supplier_add_product):
-    
-    if supplier_add_product.picture.data :
-        picture_fn = save_product_picture(supplier_add_product.picture.data)
-    else:
-        picture_fn= 'default.png'
-
-    supplier_id = session['supplier_id']
-    new_product = Product (name=supplier_add_product.name.data , supplier_id=supplier_id , price=supplier_add_product.price.data , product_type=supplier_add_product.product_type.data, product_sub_type=supplier_add_product.product_sub_type.data ,desc=supplier_add_product.desc.data , brand=supplier_add_product.brand.data, picture=picture_fn, Additional_information=supplier_add_product.Additional_information.data )
-    db.session.add(new_product)
-    db.session.commit()
-
-
-
-
-def save_product_picture(picture):
-    random_hex = secrets.token_hex(8)
-    _ , f_ext = os.path.splitext(picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/img/products' , picture_fn )
-    output_size = (800 , 800)
-    image = Image.open(picture)
-    image.thumbnail(output_size)
-    image.save(picture_path)
-    return picture_fn
-
-
-
-@app.route('/suppliers/logout', methods = ['GET', 'POST'])
-def suppliers_logout():
-    session.pop('supplier_username')
-    return redirect(url_for('suppliers_index'))
 
 
 @app.route('/get_categories', methods = ['GET', 'POST'])
@@ -155,24 +35,18 @@ def get_categories():
 
 @app.route('/', methods = ['GET', 'POST'])
 def index():
-    login_form = Buyer_Login()
-    if login_form.login.data and login_form.validate_on_submit():
-        check_login(login_form)
+    forms = Forms()
+    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
+        check_login(forms['login_form'])
 
-    return render_template('index.html' , login_form = login_form , )
+    return render_template('index.html' , login_form = forms['login_form'] )
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
     logout_user()
     return redirect (url_for('index'))
 
-def check_login(login_form):
-    buyer_logging = Buyer.query.filter_by(username = login_form.username.data).first()
-    if ( buyer_logging is not None and buyer_logging.check_password(login_form.password.data) ) :
-        to_remember = login_form.remember.data
-        login_user(buyer_logging , remember = to_remember)
-        print ('login scss')
-        
+
 
 @app.route('/results', methods = ['GET', 'POST'])
 def results():
@@ -232,91 +106,6 @@ def results_item():
         
 
 
-@app.route('/get_results', methods = ['GET', 'POST'])
-def get_results():
-    product_type = request.form['product_type'].lower()
-    min_price = request.form['min_price']
-    max_price = request.form['max_price']
-    min_stars = request.form['min_stars']
-    products = get_relvent_results(product_type , min_price , max_price , min_stars)
-    return jsonify( products )
-
-
-def get_reviews(pid):
-    orders = Order.query.filter_by(product_id = pid).all()
-    order_list = []
-    reviews = []
-    for order in orders:
-        order_list.append( order.as_list() )
-        reviews.append(order.as_list()[9][0].as_list())
-    for review in reviews:
-        review_order = Order.query.filter_by(id = review[1]).one()
-        buyer = Buyer.query.filter_by(id = review_order.buyer_id).one()
-        review.append(buyer.name)
-    return reviews
-
-
-def get_products(filters):
-    products = Product.query
-    
-    for key , value in filters.items():
-        if value is not None :
-            temp = str(key+" == '"+value+"'")
-            temp2 = str(key+" == "+value)
-            temp3 = str(key+" == '"+value+"'")
-            products = products.filter(temp)
-
-    print('gfhfgh')
-    products = products.all()
-    return products
-    
-
-def get_relvent_results(product_type , min_price = 0 , max_price = 100000 , min_stars = 1):
-    if product_type != 'all':
-        temp = str(product_type)
-        products = Product.query.filter(Product.product_type == temp)
-    else:
-        products = Product.query
-
-    products = products.filter(Product.price > min_price , Product.price < max_price )
-    products = products.all()
-    product_list = []
-    for p in products:
-        product_list.append( p.as_list() )
-    for prod in product_list:
-        prod.append(get_product_extra_info(prod[0]))
-    return product_list
-
-
-
-def get_product_extra_info(pid):
-    product = Product.query.filter_by(id = pid).first()
-    if product == None:
-        print('product number : ' + str(pid) + ' not exists')
-        return False 
-    
-    order_count = product.orders.count()
-    order_list = product.orders.all()
-    stars = 0
-    reviews = []
-    for order in order_list:
-        for review in order.reviews:
-            reviews.append(review)
-            stars += review.stars
-    
-    review_count = len(reviews) 
-    if review_count > 0 :
-        avg = stars / len(reviews)
-    else :
-        avg = 5
-
-    supplier_name = product_supplier_name(pid)
-    return { 'order_count' : order_count , 'review_count':review_count , 'avg_stars': avg , 'supplier_name':supplier_name }
-
-def product_supplier_name(pid):
-    product = Product.query.filter_by(id = pid).first()
-    supplier = Supplier.query.filter_by(id = product.supplier_id).first()
-    return supplier.name
 
 
 '''

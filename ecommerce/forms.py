@@ -8,6 +8,18 @@ from ecommerce.models import User
 from ecommerce import db
 
 
+def Forms():
+    forms = dict()
+    forms['login_form'] = LoginForm()
+    forms['signup_form'] = Buyer_Signup()
+    forms['updateform'] = UpdateForm()
+    forms['sup_loginform'] = SupplierLoginForm()
+    forms['sup_signupform'] = SupplierSignupForm()
+
+    return forms
+
+
+
 class SupplierAddProduct(FlaskForm):
     name = StringField('*name : ' , validators=[DataRequired() ])
     desc = TextAreaField('*desc : ' , validators=[DataRequired()] )
@@ -60,14 +72,6 @@ class LoginForm(FlaskForm):
         self.username.data = ""
         self.password.data = ""
 
-class AddPost(FlaskForm):
-    title = StringField('Enter Title' , validators=[DataRequired()])
-    content = TextAreaField('Enter Username : ' , validators=[DataRequired()] )
-    addpost = SubmitField("Add Post")
-    
-    def reset(self):
-        self.title.data = ""
-        self.content.data = ""
 
 class UpdateForm(FlaskForm):
     email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
