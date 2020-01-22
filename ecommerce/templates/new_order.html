@@ -1,13 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<link href="{{url_for('static',filename='css/product2.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/new_order.css')}}" rel="stylesheet">
 
 <script>
 {% if product %}
 product = JSON.parse('{{ product | tojson | safe}}');
 {% endif %}
 </script>
+
 
 <div id='cont_product' class="container dark-grey-text">
     <div class="row justify-content-center">
@@ -75,13 +76,7 @@ product = JSON.parse('{{ product | tojson | safe}}');
 
 </div>
 
-{% include 'index/buy_now_modal.html' %}
-
 {% include 'index/buyer_login_modal.html' %}
 
-
-
-<script type="text/javascript" src="{{url_for('static',filename='js/product/product.js')}}" ></script>
-<script type="text/javascript" src="{{url_for('static',filename='js/product/buy_now_modal.js')}}" ></script>
 
 {% endblock %}

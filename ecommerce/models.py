@@ -155,6 +155,10 @@ class Buyer(db.Model, UserMixin):
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
 
+    def get_info(self):
+        response = dict()
+        response['id']
+
     def get_orders(self):
         return self.orders.all()
 
@@ -315,8 +319,7 @@ class Product(db.Model, UserMixin):
             response['count'] = db.session.query(db.func.count(Reviews.id)).join(Order, Order.id == Reviews.order_id ).filter(Order.product_id == self.id).all()[0][0]
 
         return response
-    
-    
+
 
 class Order(db.Model, UserMixin):
 

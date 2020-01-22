@@ -3,6 +3,10 @@
     max-height: 400px;
 }
 
+.order_tab{
+    max-width: 300px;
+}
+
 .big_product_imgs {
     max-width: 80%;
     max-height: 80%;

@@ -1,9 +1,19 @@
 
 from ecommerce import app, db
 from flask import render_template, redirect, request, url_for, flash, abort , jsonify, session
+from flask_login import login_user, login_required, logout_user, current_user
 from ecommerce.functions import *
 from ecommerce.buyer_functions import *
 import json
+
+
+@app.route('/get_user_data', methods = ['GET', 'POST'])
+@login_required
+def get_buyer_data():
+
+    buyer = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address }
+    return jsonify(buyer)
+
 
 # return a list of lists, for every category list return is [Category.id , Category.name , Number of products in category]
 @app.route('/get_categories', methods = ['GET', 'POST'])

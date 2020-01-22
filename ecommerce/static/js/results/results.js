@@ -16,6 +16,7 @@
    var max_price = 10000 ;
    var min_avg = 1 ;
    var word = ""
+   var k ;
 
 
 
@@ -52,7 +53,7 @@ function show_products()
 {
     $('#products').empty()
     product_list.forEach(product => {
-        product_parent = $("<li></li>").addClass('row text-center item align-items-center').attr('id' ,'product num: ' + product.id).attr('data-pid' ,product[0] ).appendTo($('#products'));
+        product_parent = $("<li></li>").addClass('row text-center item align-items-center').attr('id' ,'product num: ' + product.id).attr('data-pid' ,product.id ).appendTo($('#products'));
         photo_col = $("<div></div>").attr("id" ,"product_pic" + product.id).addClass('col').appendTo(product_parent);
         photo = $('<img>').attr("src" , product.picture ).addClass('pic').appendTo(photo_col);
         name_desc_col = $("<div></div>").addClass('col-6 pnt').attr('id' ,product.id).appendTo(product_parent);
@@ -74,7 +75,6 @@ function show_products()
         }
         $(product_parent).click(function (e) { 
             e.preventDefault();
-            console.log(e.currentTarget.dataset.pid);
             pid = e.currentTarget.dataset.pid
             location.href =  '/product2/' + pid;
             
@@ -263,8 +263,4 @@ function selected_category_list()
     });
 };
 */
-});
-
-$(selector).keyup(function (e) { 
-    
 });

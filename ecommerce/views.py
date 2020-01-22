@@ -24,10 +24,14 @@ categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothi
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     forms = Forms()
+    data = {}
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
         check_login(forms['login_form'])
+    if current_user.is_authenticated:
+        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address  , 'name' : current_user.name }
+    
 
-    return render_template('index.html' , login_form = forms['login_form'] )
+    return render_template('index.html' , login_form = forms['login_form'] , data=data )
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
@@ -39,12 +43,19 @@ def logout():
 @app.route('/results', methods = ['GET', 'POST'])
 def results():
     login_form = Buyer_Login()
+    forms = Forms()
+    data = {}
+    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
+        check_login(forms['login_form'])
     product_type = 'all'
     filters = {}
     filters['product_type'] = request.args.get('product_type')
     filters['product_sub_type'] = request.args.get('product_sub_type')
     filters['brand'] = request.args.get('brand')
     filters['supplier_id'] = request.args.get('supplier_id')
+    if current_user.is_authenticated:
+        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name }
+
 
     for key , value in filters.items():
         if value is not None :
@@ -55,20 +66,57 @@ def results():
     #for p in products:
     #    product_list.append( p.as_list() )
     product_list = get_relvent_results(product_type)
-    return render_template('results.html' , product_list = product_list , login_form = login_form)
+    return render_template('results.html' , product_list = product_list , login_form = login_form , data=data)
+
+
+
+@app.route('/new_order', methods = ['GET', 'POST'])
+def new_order():
+    forms = Forms()
+    login_form = Buyer_Login()
+    keyword_args = dict()
+
+    if request.method == 'GET':
+
+        pid = int ( request.args.get('pid') )
+        if not Product.query.get(pid):
+            return 'product does not exists'
+
+        product = get_product_extra_info(pid)
+        if product is False :
+            return redirect (url_for('index'))
+
+        if request.args.get('qty'):
+            product['request_qty'] = int ( request.args.get('qty') )
+
+
+    '''
+    product = get_product_extra_info()
+    if product is False :
+        return redirect (url_for('index'))
+    '''
+
+    return render_template('new_order.html' , product = product , login_form = forms['login_form'] )
+
 
 
 
 @app.route('/product2/<pid>', methods = ['GET', 'POST'])
 def product(pid):
+    forms = Forms()
     login_form = Buyer_Login()
-    product_data = Product.query.filter_by(id = pid).first()
-    if product_data is None :
+    data = {}
+    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
+        check_login(forms['login_form'])
+    product = get_product_extra_info(pid)
+    if product is False :
         return redirect (url_for('index'))
-    product_data = product_data.__dict__
-    product_data.append(get_product_extra_info(product_data[0]))
-    reviews = get_reviews(pid)
-    return render_template('product2.html' , product_data = product_data , reviews = reviews , login_form = login_form )
+    
+    if current_user.is_authenticated:
+        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name  }
+
+
+    return render_template('product2.html' , product = product , login_form = forms['login_form'] , data=data)
 
 
 

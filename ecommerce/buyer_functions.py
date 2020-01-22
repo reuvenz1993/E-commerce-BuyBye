@@ -76,27 +76,28 @@ def get_relvent_results(product_type , min_price = 0 , max_price = 100000 , min_
 
 def get_product_extra_info(pid):
     product = Product.query.filter_by(id = pid).first()
-    if product == None:
+    if not product :
         print('product number : ' + str(pid) + ' not exists')
-        return False 
-    
-    order_count = product.orders.count()
-    order_list = product.orders.all()
-    stars = 0
-    reviews = []
-    for order in order_list:
-        for review in order.reviews:
-            reviews.append(review)
-            stars += review.stars
-    
-    review_count = len(reviews) 
-    if review_count > 0 :
-        avg = stars / len(reviews)
-    else :
-        avg = 5
+        return False
 
-    supplier_name = product_supplier_name(pid)
-    return { 'order_count' : order_count , 'review_count':review_count , 'avg_stars': avg , 'supplier_name':supplier_name }
+    product_data = product.__dict__
+    product_data['supplier'] = product.supplier.get_info()
+    product_data['reviews'] = product.get_review(get_review=True ,avg=True , count=True)
+    reviews = []
+    for rev in product_data['reviews']['get_review']:
+        temp = rev
+        rev = temp.__dict__
+        rev['reviewer'] = temp.get_review_buyer().name
+        if rev['_sa_instance_state']:
+            del rev['_sa_instance_state']
+        reviews.append(rev)
+    product_data['reviews']['get_review'] = reviews
+    product_data['orders'] = product.get_product_orders( get_product_orders=False, count_orders=True , count_units=True)
+    product_data['price'] = round( float( product_data['price'] ) , 1 )
+    if product_data['_sa_instance_state']:
+        del product_data['_sa_instance_state']
+
+    return product_data
 
 
 def product_supplier_name(pid):
