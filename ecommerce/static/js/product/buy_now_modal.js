@@ -1,5 +1,6 @@
 $(document).ready(function () {
 
+    console.log('rff');
 
     if (typeof current_user === 'undefined' || current_user === null)
     {
@@ -56,12 +57,41 @@ $(document).ready(function () {
         seller_name = $("<div></div>").text("Rank  : " + product.reviews.avg ).addClass('col').appendTo($('#stats'));
 
 
-        $('#chackout').click(function (e) { 
-            e.preventDefault();
-            data = { pid : product.id , qty : qty }
+        setTimeout(order_or_cart,500);
 
-            
+function order_or_cart()
+{   
+    console.log('order_or_cart run');
+    $('#chackout, #add_to_cart').click( (e) => {
+
+        console.log(e)
+        data = { 'type' : 'buy' , 'product_id' : product.id , 'qty' : qty };
+        
+        $.ajax({
+            type: "POST",
+            url: '/buy_now_or_cart',
+            contentType: 'application/json',
+            dataType : 'json',
+            data : JSON.stringify( data ),
+            success: function (response) {
+                product_list = response;
+                console.log(response);
+                $('#buy_now_modal').hide();
+                $('#buy_now').hide();
+                $('#add_to_cart').hide();
+                $('#qty').prop( 'disabled' , 'true' );
+                alert = $('<div></div>').text('Pro Confirmed').addClass('alert alert-success text-center').prependTo('#cont_product');
+                $('#cart_success').modal('show');
+                
+                }});
+        
         });
+
+
+
+};
+
+
 
     });
 

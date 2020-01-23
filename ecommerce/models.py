@@ -110,7 +110,7 @@ class Category(db.Model, UserMixin):
     name = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
     products = db.relationship('Product', backref='the_category', lazy='dynamic')
-    
+
     def __init__(self, name , photo='default.jpg' ):
         self.name = name
         self.photo = photo
@@ -119,11 +119,51 @@ class Category(db.Model, UserMixin):
 
 class Cart(db.Model, UserMixin):
     __tablename__ = 'cart'
-    
+
     id = db.Column(db.Integer, primary_key = True)
-    buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , primary_key = True , nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , primary_key = True , nullable=False)
-    qty = db.Column(db.String(256), default=1)
+    buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)
+    qty = db.Column(db.String(256), default=1 , nullable=False)
+    status = db.Column(db.String(256), default='active')
+    add_time = db.Column(db.DateTime)
+    order_time = db.Column(db.DateTime)
+    cancal_time = db.Column(db.DateTime)
+    buyer_message= db.Column(db.String(256))
+    purchase_way = db.Column(db.String(256), default='via cart')
+    order_id = db.relationship('Order', backref='cart_item' , uselist=False)
+
+    def __init__(self , buyer_id , product_id ,qty , buy_now=False , buyer_message=False ):
+        self.buyer_id = buyer_id
+        self.product_id = product_id
+        self.qty = qty
+        self.status = 'active'
+        self.add_time = datetime.utcnow()
+        if buy_now :
+            self.purchase_way = 'buy now'
+            if buyer_message:
+                self.buyer_message = buyer_message
+        else :
+            self.status = 'active'
+            self.purchase_way = 'via cart'
+
+
+
+    def stamp_ordered(self):
+        print('stamp_ordered')
+        print(self.id)
+        print(self.__dict__)
+        self.status = 'ordered'
+        self.order_time = datetime.utcnow()
+
+    def cancal(self):
+        try :
+            self.status = 'canceled'
+            self.cancal_time = datetime.utcnow()
+            db.session.commit()
+            return True
+        except:
+            return False
+
 
 
 
@@ -139,6 +179,9 @@ class Buyer(db.Model, UserMixin):
     address = db.Column(db.String(256), default='N/A')
     photo = db.Column(db.String(64), default='default.jpg')
     orders = db.relationship('Order', backref='the_buyer', lazy='dynamic')
+    cart = db.relationship('Cart', backref='cart_buyer', lazy='dynamic')
+    join_time = db.Column(db.DateTime)
+    last_change_time = db.Column(db.DateTime)
     
     def __init__(self, email, username , password , name='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email.lower()
@@ -147,6 +190,7 @@ class Buyer(db.Model, UserMixin):
         self.name = name.lower()
         self.address = address.lower()
         self.photo = photo
+        self.join_time  = datetime.utcnow()
 
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
@@ -154,6 +198,33 @@ class Buyer(db.Model, UserMixin):
 
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
+
+    # returns all cart item with statis active.
+    def get_cart(self):
+        return self.cart.filter(Cart.status == 'active').all()
+    
+    def add_to_cart(self , pid , qty):
+        if not Product.query.get(pid) :
+            print ('not such product')
+            return False
+        try :
+            cart_item = Cart(buyer_id = self.id , product_id = pid , qty=qty)
+            db.session.add(cart_item)
+            db.session.commit(cart_item)
+            return True
+        except Exception as e:
+            db_session.rollback()
+            db_session.flush()
+            print('add_to_cart function error')
+            print (e)
+            return False
+
+    def cancel_cary_item(self , cart_id ):
+        if not Cart.query.get(cart_id) or not Cart.query.get(cart_id).buyer_id == self.id :
+            print ('no such cart item or item cart do not belong to buyer')
+            return False
+        res = Cart.query.get(cart_id).cancal()
+        return res
 
     def get_info(self):
         response = dict()
@@ -185,6 +256,8 @@ class Supplier(db.Model, UserMixin):
     photo = db.Column(db.String(64), default='default.jpg')
     products = db.relationship('Product', backref='supplier', lazy='dynamic')
     orders = db.relationship('Order', backref='supplier', lazy='dynamic')
+    join_time = db.Column(db.DateTime)
+    last_change_time = db.Column(db.DateTime)
     
     def __init__(self, email, username , password , name='N/A' , type_of='N/A', address='N/A' , photo='default.jpg' ):
         self.email = email.lower()
@@ -194,6 +267,7 @@ class Supplier(db.Model, UserMixin):
         self.type_of = type_of.lower()
         self.address = address.lower()
         self.photo = photo
+        self.join_time  = datetime.utcnow()
 
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
@@ -263,6 +337,9 @@ class Product(db.Model, UserMixin):
     picture = db.Column(db.String(64), default='default.jpg')
     Additional_information = db.Column(db.String(1024), default='N/A')
     orders = db.relationship('Order', backref='product', lazy='dynamic')
+    cart = db.relationship('Cart', backref='cart_product', lazy='dynamic')
+    add_time = db.Column(db.DateTime)
+    last_change_time = db.Column(db.DateTime)
 
     def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A', category=1 ):
         self.name = name
@@ -274,6 +351,7 @@ class Product(db.Model, UserMixin):
         self.desc = desc
         self.brand = brand
         self.picture = "/static/img/products/" + picture
+        self.add_time  = datetime.utcnow()
 
 
 
@@ -332,21 +410,40 @@ class Order(db.Model, UserMixin):
     order_time = db.Column(db.DateTime, default=datetime.utcnow)
     payment_time = db.Column(db.DateTime)
     fulfillment_time = db.Column(db.DateTime)
+    last_change_time = db.Column(db.DateTime)
     qty = db.Column(db.Integer, nullable=False , default=1 )
     status = db.Column(db.String(256), default='open')
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
     reviews = db.relationship('Reviews', backref='order', lazy='dynamic' )
+    buyer_message = db.Column(db.String(512))
+    cart_item_id = db.Column(db.Integer, db.ForeignKey('cart.id'), unique=True )
 
-    def __init__(self, product_id, buyer_id, qty=1 , status='open'):
-        self.product_id = product_id
-        self.buyer_id = buyer_id
-        self.supplier_id = Supplier.query.get((Product.query.get(product_id).supplier_id)).id
+    def __init__(self, product_id=None, buyer_id=None, qty=None , status='open'  , cart_item=False):
+
+        if not cart_item and not (product_id or buyer_id or qty):
+            print('missing info')
+            return False
+
+        if cart_item:
+            self.product_id = cart_item.product_id
+            self.buyer_id = cart_item.buyer_id
+            self.qty = cart_item.qty
+            self.cart_item_id = cart_item.id
+            if cart_item.buyer_message :
+                self.buyer_message = cart_item.buyer_message
+
+        else :
+            self.product_id = product_id
+            self.buyer_id = buyer_id
+            self.qty = qty
+
+        self.supplier_id = Supplier.query.get((Product.query.get(self.product_id).supplier_id)).id
         self.order_time = datetime.utcnow()
-        self.qty = qty
+        self.last_change_time = datetime.utcnow()
         self.status = status
-        self.unit_price = Product.query.get(product_id).price
-        self.total_price = qty * self.unit_price
+        self.unit_price = Product.query.get(self.product_id).price
+        self.total_price = float(self.qty)  *  float (self.unit_price)
 
 
     def as_list(self):

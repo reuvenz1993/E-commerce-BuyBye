@@ -20,7 +20,6 @@
 
 
 
-
    
    function load_results()
 {
@@ -263,4 +262,10 @@ function selected_category_list()
     });
 };
 */
+
+
+
+
+
+
 });

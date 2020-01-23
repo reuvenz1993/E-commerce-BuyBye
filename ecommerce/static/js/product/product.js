@@ -1,5 +1,6 @@
 qty = $('#qty').val();
-$(document).ready(function () {
+$(document).ready(function ()
+{
     if ( product )
     {
         $("#name").html(product.name);
@@ -37,10 +38,11 @@ $(document).ready(function () {
         });
     }
 
-    setTimeout(handlers,800);
+    setTimeout(handlers,1000);
 
     function handlers()
     {
+        console.log('test')
         $('#total').val(product.price);
         total_price = qty * product.price;
         $('#qty').change(function (e) {
@@ -49,28 +51,46 @@ $(document).ready(function () {
             total_price = qty * product.price;
             $('#total').val(total_price);
 
-
-
-        
-        
-        
-
-
         });
 
-        /*
-        $('#buy_now').click(function (e)
-        {
-            e.preventDefault();
-            qty = $('#qty').val();
-            location.href =  '/new_order?pid=' + product.id + '&&qty=' + qty;
 
-        });
-        */
+        $('#add_to_cart').click( () => {
+            data = { 'type' : 'cart' , 'product_id' : product.id , 'qty' : qty };
 
-        
+            $.ajax({
+                type: "POST",
+                url: '/buy_now_or_cart',
+                contentType: 'application/json',
+                dataType : 'json',
+                data : JSON.stringify( data ),
+                success: function (response) {
+                    product_list = response;
+                    console.log(response);
+                    $('#buy_now_modal').hide();
+                    $('#buy_now').hide();
+                    $('#add_to_cart').hide();
+                    $('#qty').prop( 'disabled' , 'true' );
+                    alart = $('<div></div>').text('order confirm').addClass('alert alert-success text-center').prependTo('#cont_product');
+                    $('#items_count').text(response['cart_size'])
+                    $('#cart_success').modal('show');
 
-    }
+                    $('#continue_shopping').click( () => {
+                        $('#cart_success').modal('hide');
+                    });
+
+                    $('#View_Shopping_Cart').click( () => {
+                        window.location.href = '/'
+                    });                    
+                    
+                    }});
+            
+            });
+
+
+    };
+
+
 
 });
+
 

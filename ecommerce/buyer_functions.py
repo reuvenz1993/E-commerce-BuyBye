@@ -18,6 +18,20 @@ def check_login(login_form):
 
 
 
+def pull_cart(buyer_id):
+    cart = []
+    for item in Buyer.query.get(buyer_id).get_cart():
+        cart_item = item.__dict__
+        if cart_item['_sa_instance_state']:
+            del cart_item['_sa_instance_state']
+        cart_item['unit_price'] = float( Product.query.get(item.product_id).price )
+        cart_item['total'] = cart_item['unit_price'] * int(item.qty)
+        cart_item['product']=get_product_extra_info(cart_item['product_id'])
+        cart.append(cart_item)
+    
+    return { 'cart' : cart , 'cart_size': len(cart) }
+
+
 @app.route('/get_results', methods = ['GET', 'POST'])
 def get_results():
     product_type = request.form['product_type'].lower()
@@ -27,6 +41,43 @@ def get_results():
     products = get_relvent_results(product_type , min_price , max_price , min_stars)
     return jsonify( products )
 
+
+def buy_now_or_add_to_cart(buyer_id , product_id , qty , buyer_message=False , buy_now=False ):
+    if not Buyer.query.get(buyer_id) or not Product.query.get(product_id):
+        print ('buyer or product not exist')
+        return False
+
+    if buy_now :
+        kwargs = { 'buyer_id' : buyer_id , 'product_id' : product_id, 'qty' : qty , 'buy_now' : buy_now }
+        if buyer_message :
+            kwargs['buyer_message'] = buyer_message
+        try :
+            cart_item = Cart( **kwargs )
+            db.session.add(cart_item)
+            db.session.commit()
+            order = Order(cart_item=cart_item)
+            db.session.add(order)
+            db.session.commit()
+            print('inner :' + str( cart_item.id ))
+            cart_item.stamp_ordered()
+            db.session.commit()
+            return { 'cart_item':cart_item.id , 'order':order.id}
+        except Exception as e:
+            print ('buy_now_or_add_to_cart function fail - on buy now action')
+            print(e)
+            return False
+    
+    else :
+        kwargs = { 'buyer_id' : buyer_id , 'product_id' : product_id, 'qty' : qty }
+        try :
+            cart_item = Cart( **kwargs )
+            db.session.add(cart_item)
+            db.session.commit()
+            return { 'cart_item':cart_item.id , 'cart_size': len(Buyer.query.get(buyer_id).get_cart()) }
+        except Exception as e:
+            print ('buy_now_or_add_to_cart function fail - onvia cart action')
+            print(e)
+            return False
 
 
 def get_reviews(pid):

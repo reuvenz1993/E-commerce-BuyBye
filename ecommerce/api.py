@@ -7,6 +7,32 @@ from ecommerce.buyer_functions import *
 import json
 
 
+@app.route('/buy_now_or_cart', methods = ['GET', 'POST'])
+@login_required
+def buy_now_or_cart():
+    keyword_args = {}
+    keyword_args['buyer_id'] = current_user.id
+    keyword_args['product_id'] = int( request.json['product_id'] )
+    keyword_args['qty'] = int ( request.json['qty'] )
+
+    #preform a buy now
+    if request.json['type'] == 'buy':
+        keyword_args['buy_now'] = True
+        if 'buyer_message' in request.json :
+            keyword_args['buyer_message'] = request.json['buyer_message']
+        res = buy_now_or_add_to_cart(**keyword_args)
+
+    #just add to cart
+    if request.json['type'] == 'cart':
+        res = buy_now_or_add_to_cart(**keyword_args)
+
+    
+    
+    return jsonify (res)
+
+
+
+
 @app.route('/get_user_data', methods = ['GET', 'POST'])
 @login_required
 def get_buyer_data():

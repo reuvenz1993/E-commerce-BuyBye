@@ -39,6 +39,15 @@ def logout():
     return redirect (url_for('index'))
 
 
+@app.route('/my_cart', methods = ['GET', 'POST'])
+@login_required
+def my_cart():
+    data = dict()
+    cart = pull_cart(current_user.id)
+    if current_user.is_authenticated:
+        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name  }
+    return render_template('my_cart.html' , cart=cart , data=data)
+
 
 @app.route('/results', methods = ['GET', 'POST'])
 def results():

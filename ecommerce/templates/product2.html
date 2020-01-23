@@ -71,13 +71,40 @@ product = JSON.parse('{{ product | tojson | safe}}');
 
 
 
+    <div class="modal fade" id="cart_success" tabindex="-1" role="dialog" aria-labelledby="cart_success" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Item Added to your Shopping Cart
+
+            </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                A new item has been added to your Shopping Cart. You now have <span id='items_count'></span> items in your Shopping Cart.
+
+            </div>
+            <div class="modal-footer justify-content-around">
+                <a href="/my_cart"> <button id='continue_shopping' type="button" class="btn btn-danger" data-dismiss="modal">View Shopping Cart</button> </a>
+               <button id='View_Shopping_Cart' type="button" class="btn btn-outline-primary">Continue Shopping</button> 
+            </div>
+          </div>
+        </div>
+      </div>
 
 
 </div>
 
+
+
+
 {% include 'index/buy_now_modal.html' %}
 
 {% include 'index/buyer_login_modal.html' %}
+
+
 
 
 
