@@ -79,7 +79,7 @@ $(document).ready(function ()
                     });
 
                     $('#View_Shopping_Cart').click( () => {
-                        window.location.href = '/'
+                        window.location.href = '/results'
                     });                    
                     
                     }});

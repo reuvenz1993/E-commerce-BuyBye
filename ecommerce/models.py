@@ -148,7 +148,15 @@ class Cart(db.Model, UserMixin):
 
 
 
-    def stamp_ordered(self):
+    def add_buyer_message(self , buyer_message=False):
+        if buyer_message :
+            self.buyer_message = buyer_message
+        else:
+            print ('you called add_buyer_message function without a message ')
+        
+
+
+    def stamp_ordered(self , buyer_message=False):
         print('stamp_ordered')
         print(self.id)
         print(self.__dict__)
@@ -189,7 +197,7 @@ class Buyer(db.Model, UserMixin):
         self.password_hash = generate_password_hash(password)
         self.name = name.lower()
         self.address = address.lower()
-        self.photo = photo
+        self.photo = "/static/img/buyers/" + photo
         self.join_time  = datetime.utcnow()
 
     def check_password(self,password):

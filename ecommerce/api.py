@@ -26,11 +26,66 @@ def buy_now_or_cart():
     if request.json['type'] == 'cart':
         res = buy_now_or_add_to_cart(**keyword_args)
 
-    
-    
+
     return jsonify (res)
 
 
+@app.route('/cart_actions', methods = ['GET', 'POST'])
+@login_required
+def cart_actions():
+    if request.args.get('type' , None ) == 'remove' and request.args.get('item_id' , None ) :
+        item_id = request.args.get('item_id' , None )
+        responce = remove_from_cart(cart_item_id=item_id)
+        if responce:
+            return redirect (url_for('my_cart'))
+        else:
+            print ('404')
+            return abort(404)
+    
+    if request.args.get('type' , None ) == 'buy_one' and request.args.get('item_id' , None ) :
+        item_id = request.args.get('item_id' , None )
+        responce = buy_one(item_id)
+        if responce:
+            return redirect (url_for('my_cart'))
+        else :
+            return False
+    
+    if request.args.get('type' , None ) == 'buy_all':
+        responce = buy_all(buyer_id = current_user.id)
+        if responce :
+            return redirect (url_for('my_cart'))
+        return jsonify (str(responce))
+
+        '''
+        responce = { 'status':False , 'type' : request.json['type'] }
+        item_id = request.json['cart_item']
+        if not Cart.query.get(item_id) or not Cart.query.get(item_id).buyer_id == current_user.id:
+            responce['message'] = 'no permission or item is not on cart'
+            return jsonify (responce)
+        Cart.query.get(item_id).cancal()
+        if not Cart.query.get(item_id).status == 'canceled' :
+            responce['message'] = 'cant confirm item was removed'
+            return jsonify (responce)
+        responce['status'] = True
+        responce['message'] = 'item ' + item_id + 'removed'
+        '''
+
+    
+    if request.json['type'] == 'buy_one':
+        responce = { 'status':False , 'type' : request.json['type'] }
+        kwargs = { item_id : request.json['type'] }
+        item_id = request.json['cart_item']
+        if 'buyer_message' in request.json :
+            kwargs['buyer_message'] = request.json['buyer_message']
+        order_id = buy_one(**kwargs)
+        if order_id:
+            responce['order_id'] = order_id
+            responce['status'] = True
+
+    if request.json['type'] == 'buy_all':
+        pass
+
+    return jsonify ( responce )
 
 
 @app.route('/get_user_data', methods = ['GET', 'POST'])

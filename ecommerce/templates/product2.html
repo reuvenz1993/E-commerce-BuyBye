@@ -31,8 +31,8 @@ product = JSON.parse('{{ product | tojson | safe}}');
                 </div>
                 
                 </div>
-            <button id='buy_now' type="button" class="btn btn-success" role="button">Buy Now</button>
-            <button id='add_to_cart' type="button" class="btn btn-primary" role="button">Add to cart</button>
+            <button id='buy_now' type="button" class="btn btn-success btn_radius" role="button">Buy Now</button>
+            <button id='add_to_cart' type="button" class="btn btn-primary btn_radius" role="button">Add to cart</button>
         </div>
     </div>
     <hr>
@@ -87,8 +87,8 @@ product = JSON.parse('{{ product | tojson | safe}}');
 
             </div>
             <div class="modal-footer justify-content-around">
-                <a href="/my_cart"> <button id='continue_shopping' type="button" class="btn btn-danger" data-dismiss="modal">View Shopping Cart</button> </a>
-               <button id='View_Shopping_Cart' type="button" class="btn btn-outline-primary">Continue Shopping</button> 
+                <a href="/my_cart"> <button id='continue_shopping' type="button" class="btn btn-danger btn_radius" data-dismiss="modal">View Shopping Cart</button> </a>
+               <button id='View_Shopping_Cart' type="button" class="btn btn-outline-primary btn_radius">Continue Shopping</button> 
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ product = JSON.parse('{{ product | tojson | safe}}');
 
 {% include 'index/buy_now_modal.html' %}
 
-{% include 'index/buyer_login_modal.html' %}
+
 
 
 

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<link href="{{url_for('static',filename='css/account.css')}}" rel="stylesheet">
+
+
+<div class="container">
+    <div class="row">
+
+        <div class="col">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">
+                  Cras justo odio
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+                <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+                <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item list-group-item-action disabled">Vestibulum at eros</a>
+              </div>
+
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div class="row">
+
+        <div class="col">
+            
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript" src="{{url_for('static',filename='js/product/account.js')}}" ></script>
+
+{% endblock %}

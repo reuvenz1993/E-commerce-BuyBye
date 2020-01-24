@@ -11,7 +11,7 @@ from ecommerce import db
 def Forms():
     forms = dict()
     forms['login_form'] = LoginForm()
-    forms['signup_form'] = Buyer_Signup()
+    forms['signup_form'] = SignupForm()
     forms['updateform'] = UpdateForm()
     forms['sup_loginform'] = SupplierLoginForm()
     forms['sup_signupform'] = SupplierSignupForm()
@@ -51,9 +51,12 @@ class SupplierLoginForm(FlaskForm):
     supplier_login = SubmitField("Log in")
 
 class SignupForm(FlaskForm):
-    email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
-    username = StringField('Enter Username : ' , validators=[DataRequired()] )
-    password = PasswordField('Enter Password: ',validators=[DataRequired()] )
+    email = StringField('Email : ' , validators=[DataRequired() ,Email() ])
+    username = StringField('Username : ' , validators=[DataRequired()] )
+    password = PasswordField('Password: ',validators=[DataRequired()] )
+    name = StringField('Full name: ')
+    address = StringField('Shipping Address : ' , validators=[DataRequired()] )
+    photo = FileField()
     signup = SubmitField("Sign up")
 
 
@@ -82,7 +85,7 @@ class UpdatePhoto(FlaskForm):
     photo = FileField()
     Upload = SubmitField("update")
     
-    
+
 class Buyer_Login(FlaskForm):
     username = StringField('Enter Username : ' , validators=[DataRequired()] )
     password = PasswordField('Enter Password: ', validators=[DataRequired()] )
@@ -93,13 +96,15 @@ class Buyer_Login(FlaskForm):
         self.username.data = ""
         self.password.data = ""
         
-
+    '''
 
 class Buyer_Signup(FlaskForm):
     email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
-    username = StringField('Enter Username : ' , validators=[DataRequired()] )
+    username StringField('Enter Username : ' , validators=[DataRequired()] )
     password = PasswordField('Enter Password: ',validators=[DataRequired()] )
+    nama = StringField('Enter Full : ')
     signup = SubmitField("Sign up")
+    '''
 
 
     def reset(self):

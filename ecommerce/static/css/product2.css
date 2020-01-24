@@ -28,3 +28,9 @@
 #add_product_card{
     padding: 5% 20% 5% 20%;
 }
+
+
+.btn_radius
+{
+    border-radius: 15px;
+}

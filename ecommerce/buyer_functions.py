@@ -17,19 +17,100 @@ def check_login(login_form):
         print ('login scss')
 
 
+def signup_buyer(signup_form):
+    if Buyer.query.filter_by(username = signup_form.username.data).first():
+        return 'Username already exists, Please Choose an other username'
+    if  Buyer.query.filter_by(email = signup_form.email.data).first() :
+        return 'Email address is already in use'
+    
+    kwargs = { 'email':signup_form.email.data ,
+                'username' :signup_form.username.data ,
+                'password':signup_form.password.data ,
+                'name':signup_form.name.data ,
+                'address':signup_form.address.data}
+    if signup_form.photo.data:
+        print ('photo attached')
+        kwargs['photo'] = save_photo( photo=signup_form.photo.data , dir='buyer_photo' )
+
+    try :
+        print (kwargs)
+        new_buyer = Buyer(**kwargs )
+        db.session.add(new_buyer)
+        db.session.commit()
+        return True
+    except Exception as e:
+        print ('buy_now_or_add_to_cart function fail - on buy now action')
+        print(e)
+        return 'error'
+    
+    
+    buyer_logging = Buyer.query.filter_by(username = login_form.username.data).first()
+    if ( buyer_logging is not None and buyer_logging.check_password(login_form.password.data) ) :
+        to_remember = login_form.remember.data
+        login_user(buyer_logging , remember = to_remember)
+        print ('login scss')
+
+
+
+def remove_from_cart(cart_item_id):
+    if not Cart.query.get(cart_item_id) or not Cart.query.get(cart_item_id).buyer_id == current_user.id:
+        return False
+    Cart.query.get(cart_item_id).cancal()
+    
+    if not Cart.query.get(cart_item_id).status =='canceled':
+        return False
+
+    return True
+    
+def order_item(cart_item_id):
+    if not Cart.query.get(cart_item_id) or not Cart.query.get(cart_item_id).buyer_id == current_user.id:
+        return False
+    Cart.query.get(cart_item_id).cancal()
+    
+    if not Cart.query.get(cart_item_id).status =='canceled':
+        return False
+
+    return True
+
+def buy_all(buyer_id):
+    cart = Buyer.query.get(buyer_id).get_cart()
+    for item in cart:
+        buy_one(item_id=item.id)
+    if len(Buyer.query.get(buyer_id).get_cart()) == 0 :
+        return True
+    else:
+        return False
+    
+def buy_one(item_id , buyer_message=False):
+    if not Cart.query.get(item_id):
+        return False
+    if buyer_message :
+        Cart.query.get(item_id).add_buyer_message(buyer_message=buyer_message)
+        db.session.commit()
+
+    cart_item = Cart.query.get(item_id)
+    order = Order(cart_item=cart_item)
+    db.session.add(order)
+    db.session.commit()
+    cart_item.stamp_ordered()
+    db.session.commit()
+    return order.id
+
 
 def pull_cart(buyer_id):
     cart = []
+    total = 0
     for item in Buyer.query.get(buyer_id).get_cart():
         cart_item = item.__dict__
         if cart_item['_sa_instance_state']:
             del cart_item['_sa_instance_state']
         cart_item['unit_price'] = float( Product.query.get(item.product_id).price )
         cart_item['total'] = cart_item['unit_price'] * int(item.qty)
+        total += cart_item['total']
         cart_item['product']=get_product_extra_info(cart_item['product_id'])
         cart.append(cart_item)
     
-    return { 'cart' : cart , 'cart_size': len(cart) }
+    return { 'cart' : cart , 'cart_size': len(cart) , 'total_cart_price' : total }
 
 
 @app.route('/get_results', methods = ['GET', 'POST'])

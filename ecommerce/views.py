@@ -19,19 +19,41 @@ import ecommerce.supllier_views
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
-
-
-@app.route('/', methods = ['GET', 'POST'])
-def index():
+@app.route('/account', methods = ['GET', 'POST'])
+def account():
     forms = Forms()
     data = {}
+    print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
+    if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
+        print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
+        print('gg')
+        signup_status = signup_buyer(forms['signup_form'])
+        print (signup_status)
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
         check_login(forms['login_form'])
     if current_user.is_authenticated:
         data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address  , 'name' : current_user.name }
     
 
-    return render_template('index.html' , login_form = forms['login_form'] , data=data )
+    return render_template('account.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data )
+
+@app.route('/', methods = ['GET', 'POST'])
+def index():
+    forms = Forms()
+    data = {}
+    print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
+    if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
+        print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
+        print('gg')
+        signup_status = signup_buyer(forms['signup_form'])
+        print (signup_status)
+    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
+        check_login(forms['login_form'])
+    if current_user.is_authenticated:
+        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address  , 'name' : current_user.name }
+    
+
+    return render_template('index.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data )
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
@@ -42,16 +64,16 @@ def logout():
 @app.route('/my_cart', methods = ['GET', 'POST'])
 @login_required
 def my_cart():
+    forms = Forms()
     data = dict()
     cart = pull_cart(current_user.id)
     if current_user.is_authenticated:
         data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name  }
-    return render_template('my_cart.html' , cart=cart , data=data)
+    return render_template('my_cart.html' , cart=cart , data=data  , login_form = forms['login_form'] , signup_form=forms['signup_form'])
 
 
 @app.route('/results', methods = ['GET', 'POST'])
 def results():
-    login_form = Buyer_Login()
     forms = Forms()
     data = {}
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
@@ -75,14 +97,13 @@ def results():
     #for p in products:
     #    product_list.append( p.as_list() )
     product_list = get_relvent_results(product_type)
-    return render_template('results.html' , product_list = product_list , login_form = login_form , data=data)
+    return render_template('results.html' , product_list = product_list , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data)
 
 
 
 @app.route('/new_order', methods = ['GET', 'POST'])
 def new_order():
     forms = Forms()
-    login_form = Buyer_Login()
     keyword_args = dict()
 
     if request.method == 'GET':
@@ -113,7 +134,6 @@ def new_order():
 @app.route('/product2/<pid>', methods = ['GET', 'POST'])
 def product(pid):
     forms = Forms()
-    login_form = Buyer_Login()
     data = {}
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
         check_login(forms['login_form'])
@@ -125,7 +145,7 @@ def product(pid):
         data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name  }
 
 
-    return render_template('product2.html' , product = product , login_form = forms['login_form'] , data=data)
+    return render_template('product2.html' , product = product , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data)
 
 
 
@@ -143,7 +163,6 @@ def results_item():
 
         return render_template('product.html', product_data = product_data , reviews = reviews)
 
-    login_form = Buyer_Login()
     print('fdgdfg')
     category = request.args.get('category')
     products = Product.query.all()
