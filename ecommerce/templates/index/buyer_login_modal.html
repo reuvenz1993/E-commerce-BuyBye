@@ -16,11 +16,11 @@
               <label for="inputEmail">Username</label>
               <div class="form-label-group">
                 {{ login_form.hidden_tag() }}
-                {{login_form.username(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                {{login_form.username(class="form-control" , placeholder="Username" , required="",  autofocus="", id='login_username')}}
               </div>
               <label for="inputPassword">Password</label>
               <div class="form-label-group">
-                {{login_form.password( class="form-control" , placeholder="Password", required="")}}
+                {{login_form.password( class="form-control" , placeholder="Password", required="" ,id='login_password')}}
               </div>
 
               <div class="custom-control custom-checkbox mb-3">

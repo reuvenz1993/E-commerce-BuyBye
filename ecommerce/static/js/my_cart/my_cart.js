@@ -36,5 +36,7 @@ setTimeout( show_items ,1000);
     };
 
     $("#total_price").html(cart.total_cart_price);
+    $("#cart_count").html(cart.cart_size)
+    
 
 });

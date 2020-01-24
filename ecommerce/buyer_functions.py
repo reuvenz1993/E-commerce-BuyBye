@@ -17,6 +17,26 @@ def check_login(login_form):
         print ('login scss')
 
 
+
+def pull_buyer_orders(buyer_id):
+    order_list = []
+    for order in Buyer.query.get(buyer_id).orders:
+        temp = order.__dict__
+        temp['supplier_name'] = order.get_order_supplier().name
+        temp['unit_price'] = int(temp['unit_price'])
+        temp['total_price'] = float(temp['unit_price'])
+        temp['order_time'] = str(temp['order_time'])[0:16]
+        temp['product'] = get_product_extra_info(temp['product_id'])
+        if '_sa_instance_state' in temp:
+            del temp['_sa_instance_state']
+
+        order_list.append(temp)
+
+    return order_list
+
+
+
+
 def signup_buyer(signup_form):
     if Buyer.query.filter_by(username = signup_form.username.data).first():
         return 'Username already exists, Please Choose an other username'
@@ -81,20 +101,14 @@ def buy_all(buyer_id):
     else:
         return False
     
+# buy one product from those in the cart, pram : *[1]-cart.id , [2]-buyer_message
 def buy_one(item_id , buyer_message=False):
     if not Cart.query.get(item_id):
         return False
-    if buyer_message :
-        Cart.query.get(item_id).add_buyer_message(buyer_message=buyer_message)
-        db.session.commit()
 
     cart_item = Cart.query.get(item_id)
-    order = Order(cart_item=cart_item)
-    db.session.add(order)
-    db.session.commit()
-    cart_item.stamp_ordered()
-    db.session.commit()
-    return order.id
+    order_id = cart_item.stamp_ordered(buyer_message=buyer_message)
+    return order_id
 
 
 def pull_cart(buyer_id):
@@ -125,39 +139,30 @@ def get_results():
 
 def buy_now_or_add_to_cart(buyer_id , product_id , qty , buyer_message=False , buy_now=False ):
     if not Buyer.query.get(buyer_id) or not Product.query.get(product_id):
-        print ('buyer or product not exist')
         return False
 
+    kwargs = { 'buyer_id' : buyer_id ,
+               'product_id' : product_id,
+               'qty' : qty ,
+               'buy_now' : buy_now ,
+               'buyer_message': buyer_message}
+    # if buyer choose buy now on product screen, prama 
     if buy_now :
-        kwargs = { 'buyer_id' : buyer_id , 'product_id' : product_id, 'qty' : qty , 'buy_now' : buy_now }
         if buyer_message :
             kwargs['buyer_message'] = buyer_message
-        try :
-            cart_item = Cart( **kwargs )
-            db.session.add(cart_item)
-            db.session.commit()
-            order = Order(cart_item=cart_item)
-            db.session.add(order)
-            db.session.commit()
-            print('inner :' + str( cart_item.id ))
-            cart_item.stamp_ordered()
-            db.session.commit()
-            return { 'cart_item':cart_item.id , 'order':order.id}
-        except Exception as e:
-            print ('buy_now_or_add_to_cart function fail - on buy now action')
-            print(e)
+        cart_item = Cart(**kwargs)
+        if cart_item.order_id:
+            return cart_item.order_id.id
+        else :
             return False
-    
+    # if buyer choose "add to cart, on kwargs buyer_message=False so item will only be added to cart "
     else :
-        kwargs = { 'buyer_id' : buyer_id , 'product_id' : product_id, 'qty' : qty }
-        try :
-            cart_item = Cart( **kwargs )
-            db.session.add(cart_item)
-            db.session.commit()
+        cart_item = Cart( **kwargs )
+        db.session.add(cart_item)
+        db.session.commit()
+        if Cart.query.get(cart_item.id):
             return { 'cart_item':cart_item.id , 'cart_size': len(Buyer.query.get(buyer_id).get_cart()) }
-        except Exception as e:
-            print ('buy_now_or_add_to_cart function fail - onvia cart action')
-            print(e)
+        else :
             return False
 
 

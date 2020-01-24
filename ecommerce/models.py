@@ -138,13 +138,16 @@ class Cart(db.Model, UserMixin):
         self.qty = qty
         self.status = 'active'
         self.add_time = datetime.utcnow()
+        if not buy_now :
+            self.status = 'active'
+            self.purchase_way = 'via cart'
         if buy_now :
             self.purchase_way = 'buy now'
             if buyer_message:
                 self.buyer_message = buyer_message
-        else :
-            self.status = 'active'
-            self.purchase_way = 'via cart'
+            db.session.add(self)
+            db.session.commit()
+            self.stamp_ordered()
 
 
 
@@ -157,11 +160,19 @@ class Cart(db.Model, UserMixin):
 
 
     def stamp_ordered(self , buyer_message=False):
+        if buyer_message :
+            self.buyer_message = buyer_message
+            db.session.commit()
+        order = Order (cart_item=self)
+        db.session.add(order)
+        db.session.commit()
         print('stamp_ordered')
         print(self.id)
         print(self.__dict__)
         self.status = 'ordered'
         self.order_time = datetime.utcnow()
+        db.session.commit()
+        return order.id
 
     def cancal(self):
         try :
@@ -206,6 +217,12 @@ class Buyer(db.Model, UserMixin):
 
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
+    
+    def update_personal(self , name=False , address=False):
+        if name:
+            self.name = name
+        if address :
+            self.address = address
 
     # returns all cart item with statis active.
     def get_cart(self):
@@ -469,6 +486,12 @@ class Order(db.Model, UserMixin):
 
     def get_order_product(self):
         return Product.query.filter_by(id=self.product_id).first()
+    
+    def confirm_supplied(self):
+        self.status = 'closed'
+        self.fulfillment_time = datetime.utcnow()
+        self.last_change_time = datetime.utcnow()
+        
 
 
 class Reviews(db.Model, UserMixin):

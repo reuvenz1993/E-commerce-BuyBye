@@ -7,6 +7,31 @@ from ecommerce.buyer_functions import *
 import json
 
 
+@app.route('/account_actions', methods = ['GET', 'POST'])
+@login_required
+def account_actions():
+    if request.args.get('type' , None ) == 'confirm' and request.args.get('id' , None ):
+        order_id = request.args.get('id')
+        if Order.query.get(order_id).buyer_id == current_user.id :
+            Order.query.get(order_id).confirm_supplied()
+            db.session.commit()
+            if Order.query.get(order_id).status == 'closed':
+                return jsonify( True )
+        return jsonify ( False )
+
+    if 'type' in request.json :
+        kwargs = {}
+        if request.json['type'] == 'personal':
+            if 'name' in request.json :
+                kwargs['name'] = request.json['name']
+            if 'address' in request.json :
+                kwargs['address'] = request.json['address']
+            Buyer.query.get(current_user.id).update_personal(**kwargs)
+            db.session.commit()
+            return jsonify( 'personal info changed' )
+        return jsonify ( False )
+
+
 @app.route('/buy_now_or_cart', methods = ['GET', 'POST'])
 @login_required
 def buy_now_or_cart():
@@ -25,7 +50,6 @@ def buy_now_or_cart():
     #just add to cart
     if request.json['type'] == 'cart':
         res = buy_now_or_add_to_cart(**keyword_args)
-
 
     return jsonify (res)
 

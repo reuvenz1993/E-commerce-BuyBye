@@ -20,9 +20,11 @@ import ecommerce.supllier_views
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
 @app.route('/account', methods = ['GET', 'POST'])
+@login_required
 def account():
     forms = Forms()
     data = {}
+    data['orders'] = pull_buyer_orders(current_user.id)
     print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
     if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
         print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())

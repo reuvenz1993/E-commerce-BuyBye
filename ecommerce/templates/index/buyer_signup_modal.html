@@ -75,25 +75,25 @@
                     <form method="POST" action="" class="form-signin" enctype="multipart/form-data">
                           <label for="inputEmail">*Email :</label>
                           <div class="form-label-group">
-                            {{signup_form.email(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                            {{signup_form.email(id="signup_email", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
                           </div>
                           <label for="inputEmail">*Username :</label>
                           <div class="form-label-group">
-                            {{signup_form.username(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                            {{signup_form.username(id="signup_username", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
                           </div>
                           <label for="inputEmail">*Password :</label>
                           <div class="form-label-group">
-                            {{signup_form.password(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                            {{signup_form.password(id="signup_password", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
                           </div>
                           <label for="inputEmail">*Full Name :</label>
                           <div class="form-label-group">
                               {{ signup_form.hidden_tag() }}
-                              {{signup_form.name(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                              {{signup_form.name(id="signup_name" ,class="form-control" , placeholder="Username" , required="",  autofocus="")}}
                             </div>
                             <label for="inputEmail">*Shipping Address :</label>
                             <div class="form-label-group">
                                 {{ signup_form.hidden_tag() }}
-                                {{signup_form.address(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                                {{signup_form.address(id="signup_address", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
                               </div>
                           <label for="inputEmail">Profile Picture :</label>
                           <div class="custom-file">
