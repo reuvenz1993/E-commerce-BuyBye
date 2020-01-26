@@ -1,7 +1,8 @@
-from ecommerce import db,login_manager
+from ecommerce import db,login_manager, ma
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
+from flask_marshmallow import Marshmallow
 # By inheriting the UserMixin we get access to a lot of built-in attributes
 # which we will be able to call in our views!
 # is_authenticated()
@@ -267,6 +268,12 @@ class Buyer(db.Model, UserMixin):
 
         return response
 
+
+
+
+
+
+
 class Supplier(db.Model, UserMixin):
 
     __tablename__ = 'suppliers'
@@ -531,3 +538,30 @@ class Reviews(db.Model, UserMixin):
         return order.get_order_product()
 
 
+class Categorychema(ma.ModelSchema):
+    class Meta:
+        model = Category
+
+class Cartchema(ma.ModelSchema):
+    class Meta:
+        model = Cart
+
+class Buyerchema(ma.ModelSchema):
+    class Meta:
+        model = Buyer
+        
+class SupplierSchema(ma.ModelSchema):
+    class Meta:
+        model = Supplier
+        
+class ProductSchema(ma.ModelSchema):
+    class Meta:
+        model = Product
+        
+class OrderSchema(ma.ModelSchema):
+    class Meta:
+        model = Order
+        
+class ReviewsSchema(ma.ModelSchema):
+    class Meta:
+        model = Reviews

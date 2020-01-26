@@ -39,18 +39,25 @@ def account():
 
     return render_template('account.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data )
 
-@app.route('/', methods = ['GET', 'POST'])
-def index():
-    forms = Forms()
-    data = {}
+
+
+def handle_forms(forms):
+    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
+        check_login(forms['login_form'])
     print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
     if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
         print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
         print('gg')
         signup_status = signup_buyer(forms['signup_form'])
         print (signup_status)
-    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
-        check_login(forms['login_form'])
+
+
+@app.route('/', methods = ['GET', 'POST'])
+def index():
+    forms = Forms()
+    data = {}
+    handle_forms(forms)
+    
     if current_user.is_authenticated:
         data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address  , 'name' : current_user.name }
     
@@ -78,8 +85,7 @@ def my_cart():
 def results():
     forms = Forms()
     data = {}
-    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
-        check_login(forms['login_form'])
+    handle_forms(forms)
     product_type = 'all'
     filters = {}
     filters['product_type'] = request.args.get('product_type')
@@ -137,8 +143,7 @@ def new_order():
 def product(pid):
     forms = Forms()
     data = {}
-    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
-        check_login(forms['login_form'])
+    handle_forms(forms)
     product = get_product_extra_info(pid)
     if product is False :
         return redirect (url_for('index'))
@@ -150,7 +155,7 @@ def product(pid):
     return render_template('product2.html' , product = product , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data)
 
 
-
+'''
 @app.route('/product', methods = ['GET', 'POST'])
 def results_item():
     if request.args.get('category', False):
@@ -174,7 +179,7 @@ def results_item():
     print (category)
     return render_template('results.html' , product_list = product_list)
 
-
+'''
 
 
 

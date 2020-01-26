@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from sqlalchemy.orm import relationship, join
 from flask_debug import Debug
 from sqlalchemy import func, or_
+from flask_marshmallow import Marshmallow
 
 login_manager = LoginManager()
 
@@ -21,6 +22,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 Migrate(app,db)
 Debug(app)
+ma = Marshmallow(app)
 
 # We can now pass in our app to the login manager
 login_manager.init_app(app)
