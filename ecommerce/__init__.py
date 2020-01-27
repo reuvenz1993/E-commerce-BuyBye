@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship, join
 from flask_debug import Debug
 from sqlalchemy import func, or_
 from flask_marshmallow import Marshmallow
+from decimal import *
 
 login_manager = LoginManager()
 

@@ -22,56 +22,56 @@ you are logged in !
     <form id='add_product_form' class='collapse' method="post" action="" enctype="multipart/form-data">
 
         <div id='add_product_card' class="card card-body text-center" style="padding: 5% 10% 5% 10%;">
-            {{ supplier_add_product.hidden_tag() }}
+            {{ forms['supplier_add_product'].hidden_tag() }}
 
             <div class="form-group row">
                 <label for="inputEmail" class='col-sm-4 col-form-label'>*Name :</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.name(class="form-control") }}
+                {{ forms['supplier_add_product'].name(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputEmail" class='col-sm-4 col-form-label'>*Description :</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.desc(class="form-control") }}
+                {{ forms['supplier_add_product'].desc(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputPassword" class='col-sm-4 col-form-label'>*Category</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.product_type(class="form-control") }}
+                {{ forms['supplier_add_product'].category(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputEmail" class='col-sm-4 col-form-label'>Subcategory :</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.product_sub_type(class="form-control") }}
+                {{ forms['supplier_add_product'].product_sub_type(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputEmail" class='col-sm-4 col-form-label'>Brand :</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.brand(class="form-control") }}
+                {{ forms['supplier_add_product'].brand(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row" >
                 <label for="inputEmail" class='col-sm-4 col-form-label'>*Price :</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.price(class="form-control") }}
+                {{ forms['supplier_add_product'].price(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
                 <label for="inputEmail" class='col-sm-4 col-form-label'>Additional information :</label>
                 <div class="col-sm-8">
-                {{ supplier_add_product.Additional_information(class="form-control") }}
+                {{ forms['supplier_add_product'].Additional_information(class="form-control") }}
                 </div>
             </div>
             <div class="custom-file">
-                {{ supplier_add_product.picture(class="custom-file-input" ,id="customFileLang") }}
+                {{ forms['supplier_add_product'].picture(class="custom-file-input" ,id="customFileLang") }}
                 <label class="custom-file-label" for="customFileLang">Product picture</label>
             </div>
             <hr class="my-4">
-            {{ supplier_add_product.add_product() }}
+            {{ forms['supplier_add_product'].add_product() }}
 
         </div>
     </form>
@@ -83,7 +83,7 @@ you are logged in !
 
 <hr>
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="row justify-content-center row">
         <h4>My products :</h4>
@@ -91,8 +91,42 @@ you are logged in !
 
     <div class="row justify-content-center row">
         <div class="col-lg-9">
-            <ul id='my_products'>>
-            </ul>
+            <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price $</th>
+                    <th scope="col">Total Orders</th>
+                    <th scope="col">Total Revenue $</th>
+                    <th scope="col">Total Units sold</th>
+                    <th scope="col">Open orders</th>
+                    <th scope="col">Open Units sold</th>
+                    <th scope="col">Open Revenue $</th>
+                    <th scope="col">Average rank</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% if products %}
+                    {% for product in products %}
+                        <tr>
+                        <th scope="row">{{product.id}}</th>
+                        <td>{{product.name}}</td>
+                        <td>{{product.category}}</td>
+                        <td>{{product.price}}</td>
+                        <td>{{product.order_count}}</td>
+                        <td>{{product.total_revenue}}</td>
+                        <td>{{product.units_count}}</td>
+                        <td>{{product.open_order_count}}</td>
+                        <td>{{product.open_order_units}}</td>
+                        <td>{{product.open_revenue}}</td>
+                        <td>{{product.avg_rank}}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+              </table>
 
         </div>
     </div>

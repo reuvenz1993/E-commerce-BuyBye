@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 from flask_marshmallow import Marshmallow
+
 # By inheriting the UserMixin we get access to a lot of built-in attributes
 # which we will be able to call in our views!
 # is_authenticated()
@@ -37,6 +38,18 @@ def product_info_to_ui(pid):
 @login_manager.user_loader
 def load_user(user_id):
     return Buyer.query.get(user_id)
+
+
+
+
+'''
+class Test(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key = True)
+    score = db.Column(db.Numeric(10,2))
+    
+    def __init__(self, score, username, password):
+
+'''
 
 class User(db.Model, UserMixin):
 
@@ -270,10 +283,6 @@ class Buyer(db.Model, UserMixin):
 
 
 
-
-
-
-
 class Supplier(db.Model, UserMixin):
 
     __tablename__ = 'suppliers'
@@ -377,7 +386,7 @@ class Product(db.Model, UserMixin):
         self.name = name
         self.supplier_id = supplier_id
         self.price = price
-        self.product_type = product_type.lower()
+        self.product_type = product_type
         self.category = category
         self.product_sub_type = product_sub_type.lower()
         self.desc = desc
@@ -513,10 +522,14 @@ class Reviews(db.Model, UserMixin):
 
     
     def __init__(self, order_id, stars=5 , review_content="N/A"):
-        self.order_id = order_id
-        self.stars = stars
-        self.review_content = review_content
-        self.review_time = datetime.utcnow()
+        
+        if Order.query.get(order_id) and (Reviews.query.filter(Reviews.order_id == order_id).count() == 0)  :
+            self.order_id = order_id
+            self.stars = stars
+            self.review_content = review_content
+            self.review_time = datetime.utcnow()
+        else :
+            return False
         
 
     def as_list(self):
@@ -538,15 +551,15 @@ class Reviews(db.Model, UserMixin):
         return order.get_order_product()
 
 
-class Categorychema(ma.ModelSchema):
+class Categoryschema(ma.ModelSchema):
     class Meta:
         model = Category
 
-class Cartchema(ma.ModelSchema):
+class Cartschema(ma.ModelSchema):
     class Meta:
         model = Cart
 
-class Buyerchema(ma.ModelSchema):
+class Buyerschema(ma.ModelSchema):
     class Meta:
         model = Buyer
         
@@ -565,3 +578,11 @@ class OrderSchema(ma.ModelSchema):
 class ReviewsSchema(ma.ModelSchema):
     class Meta:
         model = Reviews
+
+category_schema = Categoryschema(many=True)
+buyer_schema = Buyerschema(many=True)
+supllier_schema = SupplierSchema(many=True)
+order_schema = OrderSchema(many=True)
+cart_schema = Cartschema(many=True)
+product_schema = ProductSchema(many=True)
+reviews_schema = ReviewsSchema(many=True)

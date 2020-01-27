@@ -19,10 +19,90 @@
   <link href="{{url_for('static',filename='vandor/css/mdb.min.css')}}" rel="stylesheet">
   <!-- Your custom styles (optional) -->
   <link href="{{url_for('static',filename='vandor/css/style.min.css')}}" rel="stylesheet">
-
+  <link href="{{url_for('static',filename='suppliers/css/sup_layout.css')}}" rel="stylesheet">
 </head>
 
 <body>
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+    <div class="container">
+
+      <!-- Brand -->
+      <a class="navbar-brand waves-effect" href="{{url_for('index')}}" target="_self">
+        <strong class="blue-text">BuyBye</strong>
+      </a>
+
+      <!-- Collapse -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Links -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <!-- Left -->
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link waves-effect" href="{{url_for('index')}}">Home
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <!-- keeping for "my account" 
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">About MDB</a>
+          </li>
+          -->
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="#"
+              target="_self">Search</a>
+          </li>
+          <!-- <li class="nav-item">
+            <a class="nav-link waves-effect" href="https://mdbootstrap.com/education/bootstrap/" target="_blank">Free
+              tutorials</a>
+          </li> -->
+        </ul>
+
+        <!-- Right -->
+        <ul class="navbar-nav nav-flex-icons">
+          <li class="nav-item">
+            <a class="nav-link rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-user mr-2"></i>{{sup_username}}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-user mr-2"></i>My Account
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" target='_self	' class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id='buyer_login_toggle' class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-sign-in-alt mr-2"></i>login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id='buyer_signup_toggle' href="#" class="nav-link border border-light rounded waves-effect"
+              target="_blank">
+              <i class="fas fa-user-plus mr-2"></i>Join
+            </a>
+          </li>
+        </ul>
+
+      </div>
+
+    </div>
+  </nav>
+
+
+
 
 {%block content%}
 {%endblock%}

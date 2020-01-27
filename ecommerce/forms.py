@@ -1,10 +1,10 @@
 from flask_dance.utils import first
 from flask_wtf import FlaskForm
 from wtforms import (IntegerField, PasswordField, StringField, SubmitField, BooleanField ,TextAreaField,
-                     ValidationError , DecimalField )
+                     ValidationError , DecimalField, SelectField )
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 from flask_wtf.file import FileField
-from ecommerce.models import User
+from ecommerce.models import *
 from ecommerce import db
 
 
@@ -18,12 +18,21 @@ def Forms():
 
     return forms
 
+def sup_forms():
+    forms = dict()
+    forms['sup_loginform'] = SupplierLoginForm()
+    forms['sup_signupform'] = SupplierSignupForm()
+    forms['supplier_add_product'] = SupplierAddProduct()
+    
+    return forms
+    
+
 
 
 class SupplierAddProduct(FlaskForm):
     name = StringField('*name : ' , validators=[DataRequired() ])
     desc = TextAreaField('*desc : ' , validators=[DataRequired()] )
-    product_type = StringField('*catgory: ',validators=[DataRequired()] )
+    category = SelectField('*catgory: ', coerce=int  , choices=db.session.query(Category.id , Category.name).all() )
     product_sub_type = StringField('sub_catgory : ' )
     brand = StringField('brand : ' )
     price = DecimalField('*price : ' , validators=[NumberRange(min=0 , max=100000000)] )

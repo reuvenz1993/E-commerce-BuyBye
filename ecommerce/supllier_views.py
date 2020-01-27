@@ -8,45 +8,63 @@ from ecommerce.functions import *
 
 
 
+
+
+
 @app.route('/suppliers/', methods = ['GET', 'POST'])
 def suppliers_index():
-    messages = dict()
-    if session.get('supplier_username', None) is not None:
+    data = {'forms': sup_forms()}
+    if check_sup_user_event(data['forms']) == True :
         return redirect(url_for('suppliers_main'))
-    sup_loginform = SupplierLoginForm()
-    sup_signupform = SupplierSignupForm()
-    if sup_loginform.supplier_login.data and sup_loginform.validate_on_submit():
-        validate = check_sup_login(sup_loginform)
-        if validate == True :
-            return redirect(url_for('suppliers_main'))
-        else:
-            messages['connection_error'] = validate
-    if sup_signupform.supplier_signup.data and sup_signupform.validate_on_submit():
-        signup = sup_signup(sup_signupform)
-        if signup != True :
-            messages['signup_error'] = signup
-    return render_template('/suppliers/index.html' , sup_loginform = sup_loginform , sup_signupform = sup_signupform , messages = messages)
+    else:
+        data['login_signup_message']  = check_sup_user_event(forms)
+
+    return render_template('/suppliers/index.html' , **data )
 
 
 @app.route('/suppliers/main', methods = ['GET', 'POST'])
 def suppliers_main():
     if session.get('supplier_username', None) is None:
         return redirect(url_for('suppliers_index'))
-    sup_username = session.get('supplier_username')
-    return render_template('/suppliers/main.html' , sup_username = sup_username)
+    data = { 'sup_username' : session.get('supplier_username'),
+            'forms': sup_forms()}
+
+    return render_template('/suppliers/main.html' , **data)
+
+
+@app.route('/suppliers/sup_product_data/<pid>', methods = ['GET', 'POST'])
+def sup_product_data(pid):
+    if session.get('supplier_username', None) is None:
+        return redirect(url_for('suppliers_index'))
+    data = {'sup_username' : session.get('supplier_username') ,
+            'sup_id' : session.get('supplier_id'),
+            'forms': sup_forms() }
+    data['products'] = supplier_products(data['sup_id'])
+    
+    if not product_belong_supplier(pid , data['sup_id'] ):
+        return redirect(url_for('sup_products'))
+    
+    data['product_data'] = supplier_product_data(pid)
+    
+    return render_template('/suppliers/sup_product_data.html' , **data)
+
 
 
 @app.route('/suppliers/sup_products', methods = ['GET', 'POST'])
 def sup_products():
-    messages =[]
     if session.get('supplier_username', None) is None:
         return redirect(url_for('suppliers_index'))
-    sup_username = session.get('supplier_username')
-    supplier_add_product = SupplierAddProduct()
-    if supplier_add_product.add_product.data and supplier_add_product.validate_on_submit():
-        add_product(supplier_add_product)
-        messages.append('New Produce added !')
-    return render_template('/suppliers/sup_products.html' , sup_username = sup_username , supplier_add_product=supplier_add_product ,messages=messages)
+
+    data = { 'sup_username' : session.get('supplier_username') ,
+            'sup_id' : session.get('supplier_id'),
+            'forms': sup_forms()}
+    data['products'] = supplier_products(data['sup_id'])
+
+    if data['forms']['supplier_add_product'].add_product.data and data['forms']['supplier_add_product'].validate_on_submit():
+        add_product(data['forms']['supplier_add_product'])
+        data['new_product'] = True
+
+    return render_template('/suppliers/sup_products.html' , **data)
 
 
 
