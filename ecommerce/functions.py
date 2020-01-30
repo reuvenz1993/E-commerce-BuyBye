@@ -13,6 +13,8 @@ import decimal
 file_locations = { 'product':'static/img/products',
                   'buyer_photo':'static/img/buyers' }
 
+
+
 def save_photo(photo , dir):
     random_hex = secrets.token_hex(8)
     _ , f_ext = os.path.splitext(photo.filename)
@@ -48,7 +50,10 @@ def dec_2_float(x):
 def get_dict(object_or_list):
     import ecommerce
     if type(object_or_list) is list :
-        schema = get_schema(object_or_list[0] , many=True )
+        if len(object_or_list) > 0 :
+            schema = get_schema(object_or_list[0] , many=True )
+        else :
+            return None
     else :
         schema = get_schema(object_or_list , many=False )
     

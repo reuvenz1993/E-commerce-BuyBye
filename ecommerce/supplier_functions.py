@@ -9,15 +9,48 @@ from PIL import Image
 from ecommerce.functions import *
 
 
+
+def pull_supplier_orders(sid , pid=False , status=False , _dict=True , buyer_info=True):
+    query = db.session.query(Order).filter(Order.supplier_id == sid)
+    if pid :
+        if type(pid) == int or  type(pid) == str:
+            pid =  [int(pid)]
+        query = query.filter(Order.product_id.in_(pid))
+    if status :
+        if type(status) == str:
+            status =  [status]
+        query = query.filter(Order.status.in_(status))
+
+    if _dict :
+        if not buyer_info :
+            return get_dict(query.all())
+        else :
+            orders = get_dict(query.all())
+            if orders :
+                for order in orders :
+                    order['buyer_name'] = Buyer.query.get(order['the_buyer']).name
+                    order['buyer_address'] = Buyer.query.get(order['the_buyer']).address
+            return orders
+    
+    return query.all()
+
+
+
 def supplier_product_data(pid):
     #products = db.session.query(Product , db.func.count(Order.id) , db.func.sum(Order.qty) , db.func.sum(Order.total_price), db.func.count(Reviews.id) , db.func.avg(Reviews.stars) ).filter(Product.supplier_id == supplier_id).outerjoin(Order).outerjoin(Reviews).group_by(Product).all()
     product = get_dict(db.session.query(Product).filter(Product.id == pid).first())
     product['order_count'], product['units_count'], product['review_count'], product['avg_rank'] = db.session.query(db.func.count(Order.id),db.func.sum(Order.qty),db.func.count(Reviews.id), db.func.avg(Reviews.stars)  ).outerjoin(Product).outerjoin(Reviews).filter(Order.product_id == pid).first()
+    product['avg_rank'] = round ( product['avg_rank'] , 2)
+    product['supplier_name'] = Supplier.query.get(product['supplier']).name
     _, product['total_revenue'] = db.session.query(db.func.count(Order.id), db.func.sum(Order.total_price) ).filter(Order.product_id == pid).first()
     product['category'] = Category.query.get(product['the_category']).name
     product['open_order_count'] , product['open_order_units'], product['open_revenue'] = db.session.query(db.func.count(Order.id) , db.func.sum(Order.qty), db.func.sum(Order.total_price)).filter(Order.product_id == pid).filter(Order.status =="open").first()
     product['orders'] = get_dict(db.session.query(Order).filter(Order.product_id == pid).all())
     product['reviews'] = get_dict(db.session.query(Reviews).join(Order).filter(Order.product_id == pid).all())
+    product['reviews_count'] = len(product['reviews'])
+    if product['reviews'] :
+        for review in product['reviews']:
+            review['by'] = db.session.query(Buyer.name).join(Order).join().first()[0]
 
     dec_2_float(product)
     return product

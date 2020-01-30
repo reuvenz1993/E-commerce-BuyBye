@@ -1,0 +1,97 @@
+{% extends "suppliers/sup_layout.html" %}
+{% block content %}
+
+<link href="{{url_for('static',filename='suppliers/css/orders.css')}}" rel="stylesheet">
+
+
+<div class="container-fluid">
+    
+    <div class="row">
+        
+    <div class="col-lg-3">
+        <div class="card">
+            <article class="filter-group">
+                <div class="card-header"> <a href="#" data-toggle="collapse" data-target="#collapse_aside1" data-abc="true" aria-expanded="false" class="collapsed"> <i class="icon-control fa fa-chevron-down"></i>
+                        <h6 class="title">Products : </h6>
+                    </a> </div>
+                <div class="filter-content collapse show" id="collapse_aside1">
+                    <div class="card-body">
+                        <ul id='sidebar_categories' class="list-menu">
+                            {% if product_list %}
+                            {% for row in product_list %}
+                            <li class='checkbox filter_category' style='cursor:pointer;'>
+                                <label>
+                                    <input type="checkbox" checked value="{{row['id']}}" data-product_id="{{row['id']}}" class="category_checkbox category_item">
+                                    {{row['id']}} - {{row['name']}}
+                                </label>
+                            </li>
+                            {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="card">
+            <article class="filter-group">
+                <div class="card-header"> <a href="#" data-toggle="collapse" data-target="#collapse_aside2" data-abc="true" aria-expanded="false" class="collapsed"> <i class="icon-control fa fa-chevron-down"></i>
+                        <h6 class="title">Stutus : </h6>
+                    </a> </div>
+                <div class="filter-content collapse show" id="collapse_aside2">
+                    <div class="card-body">
+                        <ul id='sidebar_status' class="list-menu">
+                            <li class='checkbox filter_category' style='cursor:pointer;'>
+                                <label>
+                                    <input type="checkbox" checked value="open" data-product_id="open" class=" category_item status_item">
+                                    open
+                                </label>
+                            </li>
+                            <li class='checkbox filter_category' style='cursor:pointer;'>
+                                <label>
+                                    <input type="checkbox" checked value="closed" data-product_id="closed" class=" category_item status_item">
+                                    closed
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <div class="col-lg-9">
+
+  <div id='res_cont'  class='container'>
+    <ul  class="list-group">
+
+      </ul>
+</div>
+
+</div>
+
+
+
+</div>
+</div>
+
+
+
+{% if pid %}
+<script>
+    $('.category_checkbox').prop('checked' , false);
+    $(".category_checkbox[value={{pid}}]").prop('checked' , true);
+</script>
+{% endif %}
+
+{% if status %}
+<script>
+    $('.status_item').prop('checked' , false);
+    $(".status_item[value={{status}}]").prop('checked' , true);
+</script>
+{% endif %}
+
+
+<script type="text/javascript" src="{{url_for('static',filename='suppliers/js/sup_orders.js')}}" ></script>
+
+{% endblock %}

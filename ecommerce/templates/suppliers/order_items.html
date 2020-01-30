@@ -1,0 +1,52 @@
+<ul  class="list-group">
+    {% if orders %}
+    {% for order in orders %}
+
+    <li class="list-group-item" data-pid="{{order['product']}}" data-status="{{order['status']}}"  class="sss" >
+        <div class="row">
+            <div class="col">
+                <h3> order id : {{order.id}} </h3>
+            </div>
+        </div>
+        <div class="row" data-pid= >
+            <div class="col">
+                <div class="row">
+                    product name : {{order['product']['name']}}
+                </div>
+                <div class="row">
+                    order time  : {{order['order_time'][0:10]}}
+                </div>
+                <div class="row">
+                    Status : <span id="s{{order.id}}"> {{order['status']}}  </span>
+                  </div>
+            </div>
+
+            <div class="col">
+                <div class="row">
+                    Buyer name  : {{order['buyer_name']}}
+                </div>
+                <div class="row">
+                    shipping address  : {{order['buyer_address']}}
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-end">
+            <form class="form-inline">
+                {% if order['status'] == 'closed' %}
+                <div class="form-group mx-sm-3 mb-2">
+                  <input disabled type="text" class="form-control" placeholder="Shipping id">
+                </div>
+                {% else %}
+                <button type="submit" class="btn btn-primary mb-2 shipping" data-edit='{{order.id}}edit' >Confirm identity</button>
+                <div id='{{order.id}}edit' style="display:none;">
+                <input id='{{order.id}}input' type="text" class="form-control" placeholder="Shipping id" >
+                <i class="fa-check-circle far font-weight-bold confirm_ship" data-input_id="{{order.id}}input" data-order_id="{{order.id}}" style="font-size: 20px;"></i>
+                </div>
+                {% endif %}
+              </form>
+        </div>
+    </li>
+        {% endfor %}
+        {% endif %}
+
+  </ul>

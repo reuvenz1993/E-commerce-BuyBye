@@ -7,7 +7,24 @@ from ecommerce.buyer_functions import *
 from ecommerce.functions import *
 
 
+@app.route('/suppliers/sup_orders', methods = ['GET', 'POST'])
+def sup_orders():
+    data = {'orders':pull_supplier_orders(sid=session.get('supplier_id')),
+            'product_list': supplier_products(session.get('supplier_id'))}
+    
+    if request.method == 'GET':
+        kwargs = {}
+        kwargs['sid'] = session.get('supplier_id')
+        data['pid'] = request.args.get('pid',False)
+        data['status'] = request.args.get('status',False)
 
+    if request.method == 'POST':
+        kwargs = request.json
+        kwargs['sid'] = session.get('supplier_id')
+        data = {'orders': pull_supplier_orders(**kwargs) }
+        return render_template('/suppliers/order_items.html' , **data )
+
+    return render_template('/suppliers/sup_orders.html' , **data )
 
 
 
@@ -38,7 +55,8 @@ def sup_product_data(pid):
         return redirect(url_for('suppliers_index'))
     data = {'sup_username' : session.get('supplier_username') ,
             'sup_id' : session.get('supplier_id'),
-            'forms': sup_forms() }
+            'forms': sup_forms(),
+            'categorys': category_list(short=True) }
     data['products'] = supplier_products(data['sup_id'])
     
     if not product_belong_supplier(pid , data['sup_id'] ):

@@ -1,18 +1,115 @@
 {% extends "suppliers/sup_layout.html" %}
 {% block content %}
 
-you are logged in !
-{{sup_username}}
+<script>
+    product_data =  JSON.parse('{{ product_data | tojson | safe}}');
+</script>
+
+<link href="{{url_for('static',filename='suppliers/css/sup_product_data.css')}}" rel="stylesheet">
+<link rel="stylesheet" href="css/baseTheme/style.css" type="text/css" media="all" />
+
+<h1 class="text-center"> How people see this Product :</h1>
+<hr>
+<div id='cont_product' class="container dark-grey-text">
+    
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="demo" > </div>
+            <img id='product_img' class='product_img product_pic' src="{{product_data['picture']}}">
+                <form method="post" action="" enctype="multipart/form-data" id="myform">
+                    <div id='preview' class='preview'>
+                        <h2 class="text-center">Preview :</h2>
+                        <img src="" id="img" class='product_img product_pic'>
+                    </div>
+                    <div id='photo_upload' class="custom-file" >
+                        <input class="custom-file-input" id="file" name="file" type="file">
+                        <label class="custom-file-label" for="file">Product picture</label>
+                        <div class="justify-content-center m-2 row" >
+                            <input type="button" class="button" value="Upload" id="but_upload">
+                        </div>
+                    </div>
+                </form>
+        </div>
+        <div class="col">
+            <p>Product name :  <input class="form-control" type="text" id='name' disabled  value="{{product_data['name']}}">  <span> <i id='name_edit' data-sibling='name_confirm' data-change='name'  class="fas fa-edit change"></i> <i id='name_confirm' data-sibling='name_edit' data-change='name' class="fas fa-check-circle change confirm" style="display: none;"></i>
+            </span> </p>
+            <p>Product desc :<input class="form-control" type="text" id='desc' disabled  value="{{product_data['desc']}}">  <span> <i id='desc_edit' data-sibling='desc_confirm' data-change='desc'  class="fas fa-edit change"></i><i id='desc_confirm' data-sibling='desc_edit' data-change='desc' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
+            <p>Category : <select class="form-control" disabled id='category' name="category" value="{{product_data['the_category']}}">
+                {% for item in categorys %}
+                <option value="{{item['id']}}">{{item['name']}}</option>
+                {% endfor %}
+
+            </select>  <span> <i id='category_edit' data-sibling='category_confirm' data-change='category' class="fas fa-edit change"></i><i id='category_confirm' data-sibling='category_edit' data-change='category' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
+            <p>Brand : <input class="form-control" type="text" disabled id='brand'  value="{{product_data['brand']}}"> <span> <i id='brand_edit' data-sibling='brand_confirm' data-change='brand' class="fas fa-edit change"></i><i id='brand_confirm' data-sibling='brand_edit' data-change='brand' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
+            <p>Seller : <span id='seller'> {{product_data['supplier_name']}} </span>  </p>
+            <p>Price $ : <input class="form-control" type="text" disabled  id='price' value="{{product_data['price']}}">  <span> <i id='price_edit' data-sibling='price_confirm' data-change='price' class="fas fa-edit change"></i><i id='price_confirm' data-sibling='price_edit' data-change='price' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
+
+        </div>
+    </div>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <h4 class="text-center">Additional information</h4>
+            <p id='more_info'><input class="form-control" type="textarea" disabled  id='Additional_information' value="{{product_data['Additional_information']}}">  <span> <i id='Additional_information_edit' data-sibling='Additional_information_confirm' data-change='Additional_information' class="fas fa-edit change"></i><i id='Additional_information_confirm' data-sibling='Additional_information_edit' data-change='Additional_information' class="fas fa-check-circle change confirm" style="display: none;"></i> </span></p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id='stars'> {% if product_data['avg_rank'] %} {{product_data['avg_rank']}} <i class="far fa-star" aria-hidden="true"></i> , {{product_data['reviews_count']}} Reviews {% else %} No Reviews Yet   {% endif %}</span>
+                </div>
+                <div class="col text-center">
+                    <p><span id='sold'> {% if product_data['units_count'] %} {{product_data['units_count']}} {% endif %}  </span> Sold  </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="col-9 text-center">
+            <h4 class="text-center">Pictures</h4>
+            <img class='product_img product_pic big_product_imgs' src="{{product_data['picture']}}">
+        </div>
+    </div>
+    <hr>
+    <h4 class="text-center">Reviews <span id='reviews_count'></span></h4>
+    <div class="row justify-content-center">
+        <ul id='reviews' class="col-9">
+            {% if product_data['reviews'] %}
+            {% for review in product_data['reviews'] %}
+
+            <li class="row text-center review" id="product num: 1">
+                <div class="col">{{review['stars']}}</div>
+                <div class="col-6 pnt">
+                    <div class="row">{{review['review_content']}}</div>
+                    <div class="row">{{review['by']}}</div>
+                </div>
+                <div class="col">{{review['review_time'][0:10]}}</div>
+            </li>
+            {% endfor %}
+            {% endif %}
+
+        </ul>
+    </div>
 
 
 
-{{product_data}}
+
+</div>
 
 
 
 
+<script>
+    category.value = product_data['the_category'];
+</script>
 
 
+
+<script type="text/javascript" src="{{url_for('static',filename='suppliers/js/sup_product_data.js')}}" ></script>
+<script src="jslibs/jquery.js" type="text/javascript"></script>
+<script src="jslibs/ajaxupload-min.js" type="text/javascript"></script>
 
 
 

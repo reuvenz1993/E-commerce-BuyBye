@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 from flask_marshmallow import Marshmallow
+import pdb
 
 # By inheriting the UserMixin we get access to a lot of built-in attributes
 # which we will be able to call in our views!
@@ -439,6 +440,9 @@ class Product(db.Model, UserMixin):
 
         return response
 
+    def update_picture(self,picture):
+        self.picture = "/static/img/products/" + picture
+        db.session.commit()
 
 class Order(db.Model, UserMixin):
 
@@ -536,10 +540,19 @@ class Reviews(db.Model, UserMixin):
         return [self.id ,self.order_id ,self.stars,self.review_content,self.review_time]
     
     def get_review_order(self):
-        return Order.query.filter_by(id=self.order_id).first()
+        print (self._sa_instance_state)
+        print('review id : ' + str( self.id ) )
+        print(self.order_id)
+        try :
+            return Order.query.get(self.order_id)
+        except:
+            return self.order_id
 
     def get_review_buyer(self):
         order = self.get_review_order()
+        if type(order) == int :
+            buyer_id = db.session.query(Order.buyer_id).filter(Order.id == order).first()
+            return Buyer.query.get(buyer_id)
         return order.get_order_buyer()
 
     def get_review_supplier(self):

@@ -7,6 +7,74 @@ from ecommerce.buyer_functions import *
 import json
 
 
+@app.route('/edit_product_pic', methods = ['GET', 'POST'])
+def edit_product_pic():
+    if request.files['file'] and request.form['pid'] and Product.query.get(request.form['pid']):
+        try :
+            picture_fn = save_photo(photo=request.files['file'],dir='product')
+            product = Product.query.get(request.form['pid'])
+            product.update_picture(picture=picture_fn)
+            return jsonify ([True ,product.picture ])
+        except :
+            return jsonify(False)
+
+
+@app.route('/supplier_update_product', methods = ['GET', 'POST'])
+def supplier_update_product():
+    if 'product_id' not in request.json or 'input' not in request.json or 'value' not in request.json :
+        return jsonify(False)
+    if ( not Product.query.get(request.json['product_id'])
+         or not Product.query.get(request.json['product_id']).supplier_id == session.get('supplier_id') 
+         or request.json['value'] in [None , ""]):
+        return jsonify(False)
+
+    if request.json['input'] not in ['name', 'desc' , 'category' , 'brand' , 'price' , 'Additional_information', 'picture'] :
+        return jsonify(False)
+
+    product = Product.query.get(request.json['product_id'])
+
+    if request.json['input'] == 'name':
+        product.name = request.json['value']
+        db.session.commit()
+        return jsonify([True , 'name was changed'])
+    
+    if request.json['input'] == 'desc':
+        product.desc = request.json['value']
+        db.session.commit()
+        return jsonify([True , 'desc was changed'])
+    
+    if request.json['input'] == 'brand':
+        product.brand = request.json['value']
+        db.session.commit()
+        return jsonify([True , 'brand was changed'])
+    
+    if request.json['input'] == 'Additional_information':
+        product.Additional_information = request.json['value']
+        db.session.commit()
+        return jsonify([True , 'brand was changed'])
+    
+    if request.json['input'] == 'price':
+        try :
+            product.price = int (request.json['value'])
+            db.session.commit()
+            return jsonify([True , 'brand was changed'])
+        except :
+            return jsonify (False)
+    
+    if request.json['input'] == 'category':
+        try :
+            product.category = int (request.json['value'])
+            db.session.commit()
+            return jsonify([True , 'brand was changed'])
+        except :
+            return jsonify (False)
+        
+    
+    return jsonify (False)
+
+
+
+
 @app.route('/account_actions', methods = ['GET', 'POST'])
 @login_required
 def account_actions():

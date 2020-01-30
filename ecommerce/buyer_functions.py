@@ -5,7 +5,9 @@ from sqlalchemy import func, or_
 from flask_login import login_user, login_required, logout_user, current_user
 from ecommerce.functions import *
 
-def category_list():
+def category_list(short=False):
+    if short:
+        return get_dict(Category.query.all())
     data = db.session.query(Category.id , Category.name , db.func.count(Product.id)).outerjoin(Product).group_by(Category).all()
     return data
 
