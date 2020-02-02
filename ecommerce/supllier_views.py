@@ -7,6 +7,15 @@ from ecommerce.buyer_functions import *
 from ecommerce.functions import *
 
 
+@app.route('/suppliers/supplier_account', methods = ['GET', 'POST'])
+def supplier_account():
+        if session.get('supplier_username', None) is None:
+            return redirect(url_for('suppliers_index'))
+        data = { 'supplier' : Supplier.query.get(session.get('supplier_id'))}
+        
+        return render_template('/suppliers/supplier_account.html' , **data)
+
+
 @app.route('/suppliers/sup_orders', methods = ['GET', 'POST'])
 def sup_orders():
     data = {'orders':pull_supplier_orders(sid=session.get('supplier_id')),

@@ -19,6 +19,27 @@ def edit_product_pic():
             return jsonify(False)
 
 
+@app.route('/supplier_update_info', methods = ['GET', 'POST'])
+def supplier_update_info():
+    if request.method == 'POST' and 'input' in request.json and 'value' in request.json and request.json['value'] !='':
+        if request.json['input'] == 'name' :
+            supplier = Supplier.query.get(session.get('supplier_id'))
+            supplier.name = request.json['value']
+            db.session.commit()
+            return jsonify([True , 'name was changed'])
+        
+        if request.json['input'] == 'email' :
+            supplier = Supplier.query.get(session.get('supplier_id'))
+            supplier.email = request.json['value']
+            db.session.commit()
+            return jsonify([True , 'email was changed'])
+        
+        if request.json['input'] == 'address' :
+            supplier = Supplier.query.get(session.get('supplier_id'))
+            supplier.address = request.json['value']
+            db.session.commit()
+            return jsonify([True , 'address was changed'])
+
 @app.route('/supplier_update_product', methods = ['GET', 'POST'])
 def supplier_update_product():
     if 'product_id' not in request.json or 'input' not in request.json or 'value' not in request.json :
