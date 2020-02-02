@@ -33,13 +33,11 @@ class SupplierAddProduct(FlaskForm):
     name = StringField('*name : ' , validators=[DataRequired() ])
     desc = TextAreaField('*desc : ' , validators=[DataRequired()] )
     category = SelectField('*catgory: ', coerce=int  , choices=db.session.query(Category.id , Category.name).all() )
-    product_sub_type = StringField('sub_catgory : ' )
     brand = StringField('brand : ' )
     price = DecimalField('*price : ' , validators=[NumberRange(min=0 , max=100000000)] )
     Additional_information = TextAreaField('Additional information : ' )
     picture = FileField()
     add_product = SubmitField("Add Product")
-    
 
 
 class SupplierSignupForm(FlaskForm):

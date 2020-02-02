@@ -11,7 +11,8 @@ from decimal import Decimal
 import decimal
 
 file_locations = { 'product':'static/img/products',
-                  'buyer_photo':'static/img/buyers' }
+                  'buyer_photo':'static/img/buyers',
+                  'suppliers':'static/img/suppliers' }
 
 
 

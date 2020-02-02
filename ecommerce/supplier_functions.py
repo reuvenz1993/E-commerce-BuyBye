@@ -10,7 +10,7 @@ from ecommerce.functions import *
 
 
 
-def pull_supplier_orders(sid , pid=False , status=False , _dict=True , buyer_info=True):
+def pull_supplier_orders(sid , pid=False , status=False , _dict=False , buyer_info=True):
     query = db.session.query(Order).filter(Order.supplier_id == sid)
     if pid :
         if type(pid) == int or  type(pid) == str:
@@ -82,12 +82,15 @@ def supplier_products(supplier_id):
 
 def add_product(supplier_add_product):
     if supplier_add_product.picture.data :
-        picture_fn = save_product_picture(supplier_add_product.picture.data)
+        picture_fn = save_photo(photo=supplier_add_product.picture.data, dir='product')
     else:
         picture_fn= 'default.png'
 
     supplier_id = session['supplier_id']
-    new_product = Product (name=supplier_add_product.name.data , supplier_id=supplier_id , price=supplier_add_product.price.data , product_type=supplier_add_product.category.data, category=supplier_add_product.category.data ,  product_sub_type=supplier_add_product.product_sub_type.data ,desc=supplier_add_product.desc.data , brand=supplier_add_product.brand.data, picture=picture_fn, Additional_information=supplier_add_product.Additional_information.data )
+    new_product = Product (name=supplier_add_product.name.data, supplier_id=supplier_id,
+                            price=supplier_add_product.price.data, category=supplier_add_product.category.data,
+                            desc=supplier_add_product.desc.data , brand=supplier_add_product.brand.data,
+                            picture=picture_fn, Additional_information=supplier_add_product.Additional_information.data )
     db.session.add(new_product)
     db.session.commit()
 

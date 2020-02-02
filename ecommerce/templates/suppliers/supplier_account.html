@@ -1,16 +1,8 @@
 {% extends "suppliers/sup_layout.html" %}
 {% block content %}
 
-<style>
-    body{margin-top:80px}
+<link href="{{url_for('static',filename='suppliers/css/supplier_account.css')}}" rel="stylesheet">
 
-    img{max-width:300px}
-
-    .change
-{
-    cursor: pointer;
-}
-</style>
 
 <div class="card">
     <div class="card-body">
@@ -19,10 +11,10 @@
         <div class="container">
             <div class="row">
                 <div class="col">
-                    <img src="{{supplier.photo}}">
+                    <img id="supplier_img" src="{{supplier.photo}}">
                     <form method="post" action="" enctype="multipart/form-data" id="myform">
                         <div id='preview' class='preview'>
-                            <h2 class="text-center">Preview :</h2>
+                            <h2>Preview :</h2>
                             <img src="" id="img" class='product_img product_pic'>
                         </div>
                         <div id='photo_upload' class="custom-file">
@@ -46,111 +38,9 @@
     </div>
 </div>
 
+<script type="text/javascript" src="{{url_for('static',filename='suppliers/js/supplier_account.js')}}" ></script>
 
 
-<script>
-$('.change').click(function(e)
-{
-a = e
-$(e.target ).toggle();
-$('#'+a.target.dataset.sibling).toggle()
-$('#'+ e.target.dataset.change).prop('disabled', function (_, val) { return ! val; });
-
-
-});
-
-$('.confirm').click(function(e)
-{
-a = e
-
-val = $('#'+a.target.dataset.change).val();
-console.log(val);
-change = update_supplier_info ( e.target.dataset.change , val );
-change.then( () =>
-{
-    console.log('yay');
-    //alert = $("<div></div>").attr('role','alert').addClass('alert alert-success').text('This is a success')
-    //$('#cont_product').prepend(alert);
-    console.log(e);
-    $('#'+ e.target.dataset.sibling).toggleClass('fa-check fa-edit');
-    $('#'+ e.target.dataset.change).css('background-color' , 'lightgreen');
-    setTimeout(function()
-    {
-        $('#'+ e.target.dataset.sibling).toggleClass('fa-check fa-edit');
-        $('.form-control').css('background-color' , '');
-    }, 1200);
-});
-});
-
-
-function update_supplier_info(input , value)
-{
-    return new Promise((resolve, reject) =>
-    {
-        data = {'input':input,
-                'value':value};
-        
-            $.ajax({
-                type: "POST",
-                url: '/supplier_update_info',
-                contentType: 'application/json',
-                data:JSON.stringify (data),
-                dataType : "json" ,
-                success: function (response)
-                    {
-                    console.log(response);
-                    if (response[0] == true) {resolve(response);}
-                    else {reject(response);};
-                    }
-    });
-})};
-
-
-
-$("#file").change(function() {
-    readURL(this);
-    });
-
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function(e)
-        {
-        $('#img').attr('src', e.target.result);
-        $('#preview').css('display' , 'block');
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-    };
-
-
-$("#but_upload").click(function(){
-
-    var fd = new FormData();
-    var files = $('#file')[0].files[0];
-    fd.append('file',files);
-    fd.append('pid',product_data.id  )
-
-    $.ajax({
-        url: '/edit_product_pic',
-        type: 'post',
-        data: fd,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
-        success: function(response)
-        {
-            console.log(response);
-            res = response;
-            console.log(res);
-            $('#product_img').attr('src', response[1] )
-            $('#preview').css('display' , 'none');
-        }});
-    });
-
-
-</script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js" integrity="sha256-8zyeSXm+yTvzUN1VgAOinFgaVFEFTyYzWShOy9w7WoQ=" crossorigin="anonymous"></script>
 
 {% endblock %}

@@ -1,0 +1,25 @@
+body
+{
+    margin-top:80px
+}
+
+img
+{
+    max-width:300px
+}
+
+.change
+{
+cursor: pointer;
+}
+
+#supplier_img
+{
+    max-width: 300px;
+    margin-bottom:30px
+}
+
+#photo_upload
+{
+    max-width: 300px;
+}

@@ -21,21 +21,26 @@ def edit_product_pic():
 
 @app.route('/supplier_update_info', methods = ['GET', 'POST'])
 def supplier_update_info():
+    supplier = Supplier.query.get(session.get('supplier_id'))
+    if 'file' in request.files and request.files['file'] :
+        picture_fn = save_photo(photo=request.files['file'],dir='suppliers')
+        supplier.update_photo(picture_fn)
+        db.session.commit()
+        return jsonify ([True , 'supplier photo updated' , supplier.photo])
+
+
     if request.method == 'POST' and 'input' in request.json and 'value' in request.json and request.json['value'] !='':
         if request.json['input'] == 'name' :
-            supplier = Supplier.query.get(session.get('supplier_id'))
             supplier.name = request.json['value']
             db.session.commit()
             return jsonify([True , 'name was changed'])
         
         if request.json['input'] == 'email' :
-            supplier = Supplier.query.get(session.get('supplier_id'))
             supplier.email = request.json['value']
             db.session.commit()
             return jsonify([True , 'email was changed'])
         
         if request.json['input'] == 'address' :
-            supplier = Supplier.query.get(session.get('supplier_id'))
             supplier.address = request.json['value']
             db.session.commit()
             return jsonify([True , 'address was changed'])

@@ -5,21 +5,6 @@ from datetime import datetime
 from flask_marshmallow import Marshmallow
 import pdb
 
-# By inheriting the UserMixin we get access to a lot of built-in attributes
-# which we will be able to call in our views!
-# is_authenticated()
-# is_active()
-# is_anonymous()
-# get_id()
-
-# The user_loader decorator allows flask-login to load the current user
-# and grab their id.
-
-
-####functions
-
-#def search(pid=)
-
 def product_info_to_ui(pid):
     response = dict()
     response = Product.query.get(pid).get_info()
@@ -27,88 +12,9 @@ def product_info_to_ui(pid):
     return response
 
 
-
-
-
-####functions
-
-
-
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return Buyer.query.get(user_id)
-
-
-
-
-'''
-class Test(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key = True)
-    score = db.Column(db.Numeric(10,2))
-    
-    def __init__(self, score, username, password):
-
-'''
-
-class User(db.Model, UserMixin):
-
-    # Create a table in the db
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key = True)
-    email = db.Column(db.String(64), unique=True , nullable=False)
-    username = db.Column(db.String(64), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    photo = db.Column(db.String(64), default='default.jpg')
-    posts = db.relationship('Post', backref='author', lazy=True)
-
-    def __init__(self, email, username, password):
-        self.username = username
-        self.email = email
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self,password):
-        # https://stackoverflow.com/questions/23432478/flask-generate-password-hash-not-constant-output
-        return check_password_hash(self.password_hash,password)
-
-    def check_if_username_free(self):
-        if User.query.filter_by(username=self.username).first() is not None:
-            return False
-        else:
-            return True
-
-    def check_if_email_free(self):
-        if User.query.filter_by(email=self.email).first() is not None:
-            return False
-        else:
-            return True
-
-
-    def update_photo(self,photo):
-        self.photo = photo
-
-        def update(self, email, username):
-            self.email = email
-            self.username = username
-
-
-class Post(db.Model, UserMixin):
-    # Create a table in the db
-    __tablename__ = 'posts'
-
-    id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.String(2048), nullable=False)
-    time = db.Column(db.DateTime, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id') , nullable=False)
-
-    def __init__(self, user_id, title , content):
-        self.user_id = user_id
-        self.title = title
-        self.content = content
-        self.time = datetime.utcnow()
 
 
 def convert_to_list(val):
@@ -116,7 +22,35 @@ def convert_to_list(val):
     temp.append(val)
     return temp
 
+class Coupon(db.Model, UserMixin):
+    __tablename__ = 'coupon'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(256), default='N/A')
+    product = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)
+    discount_amount = db.Column(db.Numeric , nullable=False )
+    qty = db.Column(db.Integer)
+    start_date = db.Column(db.DateTime)
+    end_date = db.Column(db.DateTime)
+    db.relationship('Order', backref='the_coupon', lazy='dynamic' )
 
+class Cart_status(db.Model, UserMixin):
+    __tablename__ = 'cart_status'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(256), default='N/A')
+    timeout = db.Column(db.Integer)
+    is_open = db.Column(db.Boolean)
+    carts = db.relationship('Cart', backref='the_status', lazy='dynamic' )
+
+class Order_status(db.Model, UserMixin):
+    __tablename__ = 'order_status'
+    
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(256), default='N/A')
+    timeout = db.Column(db.Integer)
+    is_open = db.Column(db.Boolean)
+    orders = db.relationship('Order', backref='the_status', lazy='dynamic' )
 
 class Category(db.Model, UserMixin):
     __tablename__ = 'category'
@@ -131,7 +65,6 @@ class Category(db.Model, UserMixin):
         self.photo = photo
 
 
-
 class Cart(db.Model, UserMixin):
     __tablename__ = 'cart'
 
@@ -139,7 +72,7 @@ class Cart(db.Model, UserMixin):
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , nullable=False)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)
     qty = db.Column(db.String(256), default=1 , nullable=False)
-    status = db.Column(db.String(256), default='active')
+    status = db.Column(db.Integer, db.ForeignKey('cart_status.id') , nullable=False)
     add_time = db.Column(db.DateTime)
     order_time = db.Column(db.DateTime)
     cancal_time = db.Column(db.DateTime)
@@ -147,14 +80,13 @@ class Cart(db.Model, UserMixin):
     purchase_way = db.Column(db.String(256), default='via cart')
     order_id = db.relationship('Order', backref='cart_item' , uselist=False)
 
-    def __init__(self , buyer_id , product_id ,qty , buy_now=False , buyer_message=False ):
+    def __init__(self , buyer_id , product_id ,qty , status=1 , buy_now=False , buyer_message=False ):
         self.buyer_id = buyer_id
         self.product_id = product_id
         self.qty = qty
-        self.status = 'active'
+        self.status = status
         self.add_time = datetime.utcnow()
         if not buy_now :
-            self.status = 'active'
             self.purchase_way = 'via cart'
         if buy_now :
             self.purchase_way = 'buy now'
@@ -165,14 +97,11 @@ class Cart(db.Model, UserMixin):
             self.stamp_ordered()
 
 
-
     def add_buyer_message(self , buyer_message=False):
         if buyer_message :
             self.buyer_message = buyer_message
         else:
             print ('you called add_buyer_message function without a message ')
-        
-
 
     def stamp_ordered(self , buyer_message=False):
         if buyer_message :
@@ -184,21 +113,19 @@ class Cart(db.Model, UserMixin):
         print('stamp_ordered')
         print(self.id)
         print(self.__dict__)
-        self.status = 'ordered'
+        self.status = 2
         self.order_time = datetime.utcnow()
         db.session.commit()
         return order.id
 
     def cancal(self):
         try :
-            self.status = 'canceled'
+            self.status = 3
             self.cancal_time = datetime.utcnow()
             db.session.commit()
             return True
         except:
             return False
-
-
 
 
 class Buyer(db.Model, UserMixin):
@@ -283,7 +210,6 @@ class Buyer(db.Model, UserMixin):
         return response
 
 
-
 class Supplier(db.Model, UserMixin):
 
     __tablename__ = 'suppliers'
@@ -308,7 +234,7 @@ class Supplier(db.Model, UserMixin):
         self.name = name
         self.type_of = type_of.lower()
         self.address = address.lower()
-        self.photo = photo
+        self.photo = "/static/img/suppliers/" +  photo
         self.join_time  = datetime.utcnow()
 
     def check_password(self,password):
@@ -324,6 +250,10 @@ class Supplier(db.Model, UserMixin):
         response['supplier_avg_stars'] = self.get_supplier_reviews(avg=True)['avg']
         
         return response
+
+
+    def update_photo(self,photo_filename):
+        self.photo = "/static/img/suppliers/" + photo_filename
 
     # gets an Supplier object and return list of his products
     def get_products(self):
@@ -372,8 +302,6 @@ class Product(db.Model, UserMixin):
     desc = db.Column(db.String(1024), default='N/A')
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id') , nullable=False)
     category = db.Column(db.Integer, db.ForeignKey('category.id') )
-    product_type = db.Column(db.String(256), default='N/A')
-    product_sub_type = db.Column(db.String(256), default='N/A')
     brand = db.Column(db.String(256), default='N/A')
     price = db.Column(db.Numeric , nullable=False )
     picture = db.Column(db.String(64), default='default.jpg')
@@ -382,18 +310,19 @@ class Product(db.Model, UserMixin):
     cart = db.relationship('Cart', backref='cart_product', lazy='dynamic')
     add_time = db.Column(db.DateTime)
     last_change_time = db.Column(db.DateTime)
+    coupons = db.relationship('Coupon', backref='coupons', lazy='dynamic')
 
-    def __init__(self, name, supplier_id, price , product_type='N/A', product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A', category=1 ):
+    def __init__(self, name, supplier_id, price , product_sub_type='N/A' , desc='N/A' , brand='N/A' , picture='default.jpg' , Additional_information='N/A', category=1 ):
         self.name = name
         self.supplier_id = supplier_id
         self.price = price
-        self.product_type = product_type
         self.category = category
         self.product_sub_type = product_sub_type.lower()
         self.desc = desc
         self.brand = brand
         self.picture = "/static/img/products/" + picture
         self.add_time  = datetime.utcnow()
+        self.last_change_time = datetime.utcnow()
 
 
 
@@ -443,6 +372,72 @@ class Product(db.Model, UserMixin):
     def update_picture(self,picture):
         self.picture = "/static/img/products/" + picture
         db.session.commit()
+        
+    @property
+    def order_count(self):
+        return db.session.query(Order).filter(Order.product_id == self.id).count()
+    
+    @property
+    def open_order_count(self):
+        return db.session.query(Order).join(Order_status).filter(Order.product_id == self.id).filter(Order_status.is_open == True).count()
+    
+    @property
+    def units_sold(self):
+        res = db.session.query(db.func.sum(Order.qty)).join(Order_status).filter(Order.product_id == self.id).first()[0]
+        if res :
+            return res
+        else :
+            return 0
+    
+    @property
+    def open_units_sold(self):
+        res = db.session.query(db.func.sum(Order.qty)).join(Order_status).filter(Order.product_id == self.id).filter(Order_status.is_open == True).first()[0]
+        if res :
+            return res
+        else :
+            return 0
+    
+    @property
+    def review_avg(self):
+        res = db.session.query(db.func.avg(Reviews.stars)).join(Order, Order.id == Reviews.order_id).filter(Order.product_id == self.id).all()[0][0]
+        if res :
+            return round (res,2)
+        else :
+            return False
+    
+    @property
+    def review_count(self):
+        res = db.session.query(Reviews).join(Order, Order.id == Reviews.order_id).filter(Order.product_id == self.id).count()
+        if res :
+            return res
+        else :
+            return False
+
+    @property
+    def reviews(self):
+        res = db.session.query(Reviews).join(Order).filter(Order.product_id == self.id).all()
+        if res :
+            return res
+        else:
+            return False
+
+    @property
+    def revenue(self):
+        res = db.session.query(db.func.sum(Order.total_price)).filter(Order.product_id == self.id).first()[0]
+        if res :
+            return round(res, 0) 
+        else :
+            return 0
+
+    @property
+    def open_revenue(self):
+        res = db.session.query(db.func.sum(Order.total_price)).join(Order_status).filter(Order.product_id == self.id).filter(Order_status.is_open == True).first()[0]
+        if res :
+            return round(res, 0) 
+        else :
+            return 0
+
+
 
 class Order(db.Model, UserMixin):
 
@@ -453,18 +448,20 @@ class Order(db.Model, UserMixin):
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id') , nullable=False)
     supplier_id = db.Column(db.Integer, db.ForeignKey('suppliers.id') , nullable=False)
     order_time = db.Column(db.DateTime, default=datetime.utcnow)
-    payment_time = db.Column(db.DateTime)
+    shipment_time = db.Column(db.DateTime)
     fulfillment_time = db.Column(db.DateTime)
     last_change_time = db.Column(db.DateTime)
     qty = db.Column(db.Integer, nullable=False , default=1 )
-    status = db.Column(db.String(256), default='open')
+    status = db.Column(db.Integer, db.ForeignKey('order_status.id') , nullable=False)
+    tracking_number = db.Column(db.Integer)
     unit_price = db.Column(db.Numeric , nullable=False )
     total_price = db.Column(db.Numeric , nullable=False )
     reviews = db.relationship('Reviews', backref='order', lazy='dynamic' )
     buyer_message = db.Column(db.String(512))
     cart_item_id = db.Column(db.Integer, db.ForeignKey('cart.id'), unique=True )
+    coupon = db.Column(db.Integer, db.ForeignKey('coupon.id') )
 
-    def __init__(self, product_id=None, buyer_id=None, qty=None , status='open'  , cart_item=False):
+    def __init__(self, product_id=None, buyer_id=None, qty=None , status=1  , cart_item=False):
 
         if not cart_item and not (product_id or buyer_id or qty):
             print('missing info')
@@ -475,6 +472,7 @@ class Order(db.Model, UserMixin):
             self.buyer_id = cart_item.buyer_id
             self.qty = cart_item.qty
             self.cart_item_id = cart_item.id
+            self.status = 1
             if cart_item.buyer_message :
                 self.buyer_message = cart_item.buyer_message
 
@@ -489,6 +487,16 @@ class Order(db.Model, UserMixin):
         self.status = status
         self.unit_price = Product.query.get(self.product_id).price
         self.total_price = float(self.qty)  *  float (self.unit_price)
+
+
+    def make_shipment(self, tracking_number):
+        self.status = 2
+        self.tracking_number = tracking_number
+        db.session.commit()
+
+    def finish_order(self):
+        self.status = 3
+        db.session.commit()
 
 
     def as_list(self):
@@ -511,7 +519,6 @@ class Order(db.Model, UserMixin):
         self.status = 'closed'
         self.fulfillment_time = datetime.utcnow()
         self.last_change_time = datetime.utcnow()
-        
 
 
 class Reviews(db.Model, UserMixin):
@@ -524,9 +531,8 @@ class Reviews(db.Model, UserMixin):
     review_content = db.Column(db.String(512), default="N/A")
     review_time = db.Column(db.DateTime, default=datetime.utcnow)
 
-    
     def __init__(self, order_id, stars=5 , review_content="N/A"):
-        
+
         if Order.query.get(order_id) and (Reviews.query.filter(Reviews.order_id == order_id).count() == 0)  :
             self.order_id = order_id
             self.stars = stars

@@ -11,35 +11,35 @@
         <div class="row" data-pid= >
             <div class="col">
                 <div class="row">
-                    product name : {{order['product']['name']}}
+                    product name : {{order.product.name}}
                 </div>
                 <div class="row">
-                    order time  : {{order['order_time'][0:10]}}
+                    order time  : {{order.order_time.strftime("%d/%m/%y")}}
                 </div>
                 <div class="row">
-                    Status : <span id="s{{order.id}}"> {{order['status']}}  </span>
+                    Status : <span id="s{{order.id}}"> {{order.the_status.name}}  </span>
                   </div>
             </div>
 
             <div class="col">
                 <div class="row">
-                    Buyer name  : {{order['buyer_name']}}
+                    Buyer name  : {{order.the_buyer.name}}
                 </div>
                 <div class="row">
-                    shipping address  : {{order['buyer_address']}}
+                    shipping address  : {{order.the_buyer.address}}
                 </div>
             </div>
         </div>
         <div class="row justify-content-end">
             <form class="form-inline">
-                {% if order['status'] == 'closed' %}
+                {% if order.the_status.id == 2 or order.the_status.id == 3  %}
                 <div class="form-group mx-sm-3 mb-2">
-                  <input disabled type="text" class="form-control" placeholder="Shipping id">
+                  <input disabled type="text" class="form-control" placeholder="{{order.tracking_number}}">
                 </div>
                 {% else %}
-                <button type="submit" class="btn btn-primary mb-2 shipping" data-edit='{{order.id}}edit' >Confirm identity</button>
+                <button type="submit" class="btn btn-primary mb-2 shipping" data-edit='{{order.id}}edit' >Confirm Shipment</button>
                 <div id='{{order.id}}edit' style="display:none;">
-                <input id='{{order.id}}input' type="text" class="form-control" placeholder="Shipping id" >
+                <input id='{{order.id}}input' type="text" class="form-control" placeholder="Tracking Number">
                 <i class="fa-check-circle far font-weight-bold confirm_ship" data-input_id="{{order.id}}input" data-order_id="{{order.id}}" style="font-size: 20px;"></i>
                 </div>
                 {% endif %}

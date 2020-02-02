@@ -46,7 +46,7 @@ a = e
 
 val = $('#'+a.target.dataset.change).val();
 console.log(val);
-change = update_product_info ( product_data.id , e.target.dataset.change , val );
+change = update_product_info ( product.id , e.target.dataset.change , val );
 change.then( () =>
 {
     console.log('yay');
@@ -70,7 +70,7 @@ $("#but_upload").click(function(){
     var fd = new FormData();
     var files = $('#file')[0].files[0];
     fd.append('file',files);
-    fd.append('pid',product_data.id  )
+    fd.append('pid',product.id  )
 
     $.ajax({
         url: '/edit_product_pic',

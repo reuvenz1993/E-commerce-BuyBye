@@ -11,10 +11,22 @@ function shipping_listener()
     $('.confirm_ship').click(function (e) { 
         e.preventDefault();
         q = e;
-        val = $('#'+e.target.dataset.input_id).val();
+        tracking_number = $('#'+e.target.dataset.input_id).val();
+        order_id = parseInt(q.target.dataset.order_id)
         $(this).hide();
         $('#'+e.target.dataset.input_id).val();
         $('#'+e.target.dataset.input_id).prop('disabled',true)
+        shipment_data = {'order_id':order_id ,
+                        'tracking_number' : tracking_number,
+                        'make_shipment' : true};
+        $.ajax({
+            type: "POST",
+            url: '/suppliers/sup_orders',
+            contentType: 'application/json',
+            data : JSON.stringify( shipment_data ),
+            success: function (response) {
+                successful = response;
+                }});
     });
 };
 
