@@ -2,7 +2,7 @@
     {% if orders %}
     {% for order in orders %}
 
-    <li class="list-group-item" data-pid="{{order['product']}}" data-status="{{order['status']}}"  class="sss" >
+    <li class="list-group-item {% if order.status == 1 %} testtt  {% endif %}  " data-pid="{{order.product.id}}" data-status="{{order.status}}"  class="sss" >
         <div class="row">
             <div class="col">
                 <h3> order id : {{order.id}} </h3>

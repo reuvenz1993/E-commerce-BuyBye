@@ -19,7 +19,6 @@ def supplier_account():
 @app.route('/suppliers/sup_orders', methods = ['GET', 'POST'])
 def sup_orders():
     data = {'orders':pull_supplier_orders(sid=session.get('supplier_id')),
-            'product_list': supplier_products(session.get('supplier_id')),
             'categorys': Category.query.all(),
             'products' : Supplier.query.get(session.get('supplier_id')).products,
             'supplier' : Supplier.query.get(session.get('supplier_id')),
