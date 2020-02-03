@@ -4,7 +4,6 @@ import secrets
 from ecommerce.forms import *
 from ecommerce.models import *
 import os
-import json
 from PIL import Image
 from ecommerce.functions import *
 
@@ -35,49 +34,11 @@ def pull_supplier_orders(sid , pid=False , status=False , _dict=False , buyer_in
     return query.all()
 
 
-
-def supplier_product_data(pid):
-    #products = db.session.query(Product , db.func.count(Order.id) , db.func.sum(Order.qty) , db.func.sum(Order.total_price), db.func.count(Reviews.id) , db.func.avg(Reviews.stars) ).filter(Product.supplier_id == supplier_id).outerjoin(Order).outerjoin(Reviews).group_by(Product).all()
-    product = get_dict(db.session.query(Product).filter(Product.id == pid).first())
-    product['order_count'], product['units_count'], product['review_count'], product['avg_rank'] = db.session.query(db.func.count(Order.id),db.func.sum(Order.qty),db.func.count(Reviews.id), db.func.avg(Reviews.stars)  ).outerjoin(Product).outerjoin(Reviews).filter(Order.product_id == pid).first()
-    product['avg_rank'] = round ( product['avg_rank'] , 2)
-    product['supplier_name'] = Supplier.query.get(product['supplier']).name
-    _, product['total_revenue'] = db.session.query(db.func.count(Order.id), db.func.sum(Order.total_price) ).filter(Order.product_id == pid).first()
-    product['category'] = Category.query.get(product['the_category']).name
-    product['open_order_count'] , product['open_order_units'], product['open_revenue'] = db.session.query(db.func.count(Order.id) , db.func.sum(Order.qty), db.func.sum(Order.total_price)).filter(Order.product_id == pid).filter(Order.status =="open").first()
-    product['orders'] = get_dict(db.session.query(Order).filter(Order.product_id == pid).all())
-    product['reviews'] = get_dict(db.session.query(Reviews).join(Order).filter(Order.product_id == pid).all())
-    product['reviews_count'] = len(product['reviews'])
-    if product['reviews'] :
-        for review in product['reviews']:
-            review['by'] = db.session.query(Buyer.name).join(Order).join().first()[0]
-
-    dec_2_float(product)
-    return product
-
-
-
 def product_belong_supplier(pid , supplier_id):
     if not Product.query.get(pid) or not Product.query.get(pid).supplier_id == supplier_id :
         return False
     else :
         return True
-
-
-def supplier_products(supplier_id):
-    #products = db.session.query(Product , db.func.count(Order.id) , db.func.sum(Order.qty) , db.func.sum(Order.total_price), db.func.count(Reviews.id) , db.func.avg(Reviews.stars) ).filter(Product.supplier_id == supplier_id).outerjoin(Order).outerjoin(Reviews).group_by(Product).all()
-    products = get_dict(db.session.query(Product).filter(Product.supplier_id == supplier_id).all())
-    for product in products:
-        product['order_count'], product['units_count'], product['review_count'], product['avg_rank'] = db.session.query(db.func.count(Order.id),db.func.sum(Order.qty),db.func.count(Reviews.id), db.func.avg(Reviews.stars)  ).outerjoin(Product).outerjoin(Reviews).filter(Order.product_id == product['id']).first()
-        _, product['total_revenue'] = db.session.query(db.func.count(Order.id), db.func.sum(Order.total_price) ).filter(Order.product_id == product['id']).first()
-        product['category'] = Category.query.get(product['the_category']).name
-        product['open_order_count'] , product['open_order_units'], product['open_revenue'] = db.session.query(db.func.count(Order.id) , db.func.sum(Order.qty), db.func.sum(Order.total_price)).filter(Order.product_id == product['id']).filter(Order.status =="open").first()
-        try :
-            product['avg_rank'] = round( product['avg_rank'] , 2 )
-        except:
-            pass
-    dec_2_float(products)
-    return products
 
 
 def add_product(supplier_add_product):
@@ -93,23 +54,6 @@ def add_product(supplier_add_product):
                             picture=picture_fn, Additional_information=supplier_add_product.Additional_information.data )
     db.session.add(new_product)
     db.session.commit()
-
-
-
-def save_product_picture(picture):
-    random_hex = secrets.token_hex(8)
-    _ , f_ext = os.path.splitext(picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/img/products' , picture_fn )
-    output_size = (800 , 800)
-    image = Image.open(picture)
-    image.thumbnail(output_size)
-    image.save(picture_path)
-    return picture_fn
-
-
-
-
 
 def check_sup_login(sup_loginform):
     print ('check_sup_login run');

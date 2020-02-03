@@ -2,7 +2,7 @@ body{
     margin-top:80px
 }
 
-.filter_category 
+.filter_category
 {
     font-size: 16px;
 }
@@ -15,4 +15,20 @@ body{
 
 .list-menu a {
     color: #343a40
+}
+
+.order_received
+{
+    background-color:lightgray
+}
+
+.shipped
+{
+    background-color:lightcyan
+}
+
+
+.finished
+{
+    background-color:lightgreen
 }

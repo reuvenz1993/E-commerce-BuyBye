@@ -18,18 +18,11 @@ def supplier_account():
 
 @app.route('/suppliers/sup_orders', methods = ['GET', 'POST'])
 def sup_orders():
-    data = {'orders':pull_supplier_orders(sid=session.get('supplier_id')),
-            'categorys': Category.query.all(),
-            'products' : Supplier.query.get(session.get('supplier_id')).products,
-            'supplier' : Supplier.query.get(session.get('supplier_id')),
-            'statuss' : Order_status.query.all()}
-
-    if request.method == 'GET':
-        kwargs = {}
-        kwargs['sid'] = session.get('supplier_id')
-        data['pid'] = request.args.get('pid',False)
-        data['status'] = request.args.get('status',False)
-
+    '''
+    without request - returns "sup_orders" template and this template issue a post request (without filters) for "order_items" sub template
+    GET request - returns sup_orders template with and apply relvent filter to effect the Post request
+    POST request - return "order_items" sub template with relvent orders, this get injected into sup_orders
+    '''
     if request.method == 'POST' and 'make_shipment' not in request.json:
         kwargs = {'pid' : request.json.get('pid',False),
                   'status' : request.json.get('status',False),
@@ -38,6 +31,7 @@ def sup_orders():
         data = {'orders': pull_supplier_orders(**kwargs) }
         return render_template('/suppliers/order_items.html' , **data )
 
+    # handle a "make shipment" from supplier with shipment tracking_number.
     if request.method == 'POST' and 'make_shipment' in request.json and request.json['make_shipment'] == True :
         if 'order_id' in request.json and 'tracking_number' in request.json :
             order = Order.query.get(request.json['order_id'])
@@ -45,6 +39,16 @@ def sup_orders():
             return jsonify(True)
         else :
             return jsonify(False)
+
+
+    data = {'categorys': Category.query.all(),
+            'products' : Supplier.query.get(session.get('supplier_id')).products,
+            'supplier' : Supplier.query.get(session.get('supplier_id')),
+            'statuss' : Order_status.query.all()}
+
+    if request.method == 'GET':
+        data['pid'] = request.args.get('pid',False)
+        data['status'] = request.args.get('status',False)
 
     return render_template('/suppliers/sup_orders.html' , **data )
 
@@ -83,7 +87,7 @@ def suppliers_main():
         return redirect(url_for('suppliers_index'))
 
     
-    data = { 'sup_username' : session.get('supplier_username') ,
+    data = {'sup_username' : session.get('supplier_username') ,
             'sup_id' : session.get('supplier_id'),
             'forms': sup_forms(),
             'supplier' : Supplier.query.get(session.get('supplier_id'))}
