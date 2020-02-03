@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <title>Buybye</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+  <!-- Bootstrap core CSS -->
+  <link href="{{url_for('static',filename='vandor/css/bootstrap.min.css')}}" rel="stylesheet">
+  <!-- Material Design Bootstrap -->
+  <link href="{{url_for('static',filename='vandor/css/mdb.min.css')}}" rel="stylesheet">
+  <!-- Your custom styles (optional) -->
+  <link href="{{url_for('static',filename='vandor/css/style.min.css')}}" rel="stylesheet">
+
+</head>
+<link href="{{url_for('static',filename='suppliers/css/index.css')}}" rel="stylesheet">
+
+<div id="sup_login_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Byebuy Suppliers login</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body">
+            <form id='login_form'  method="POST"  class="form-signin">
+              <label for="inputEmail">Username</label>
+              <div class="form-label-group">
+                {{ forms['sup_loginform'].hidden_tag() }}
+                {{forms['sup_loginform'].username(class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+              </div>
+              <label for="inputPassword">Password</label>
+              <div class="form-label-group"></div>
+                {{forms['sup_loginform'].password(class="form-control" , placeholder="password" , required="",  autofocus="")}}
+              </div>
+
+              <div class="custom-control custom-checkbox mb-3">
+                {{forms['sup_loginform'].remember(class="custom-control-input" , id="customCheck1")}}
+                <label class="custom-control-label" for="customCheck1">Remember password</label>
+              </div>
+              <hr class="my-4">
+              {{forms['sup_loginform'].supplier_login(class="btn btn-lg btn-success btn-block text-uppercase", id='login_submit')}}
+              
+            </form>
+            <hr>
+            <button id='toggle1' class="tgl btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Add your store </button>
+            {% if login_signup_message['login_error'] %}
+            {{login_signup_message['login_error']}}
+            {% endif %}
+        </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <div id="sup_signup_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Byebuy Suppliers signup</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card-body">
+            <form id='signup_form' method="POST"  class="form-signin">
+                {{ forms['sup_signupform'].hidden_tag() }}
+              <label for="inputEmail">Email :</label>
+              <div class="form-label-group">
+                {{ forms['sup_signupform'].email() }}
+              </div>
+              <label for="inputEmail">Username :</label>
+              <div class="form-label-group">
+                {{ forms['sup_signupform'].username() }}
+              </div>
+              <label for="inputPassword">Password</label>
+              <div class="form-label-group">
+                {{ forms['sup_signupform'].password() }}
+              </div>
+              <label for="inputEmail">name :</label>
+              <div class="form-label-group">
+                {{ forms['sup_signupform'].name() }}
+              </div>
+              <label for="inputEmail">type_of :</label>
+              <div class="form-label-group">
+                {{ forms['sup_signupform'].type_of() }}
+              </div>
+              <label for="inputEmail">address :</label>
+              <div class="form-label-group">
+                {{ forms['sup_signupform'].address() }}
+              </div>
+              <hr class="my-4">
+              {{ forms['sup_signupform'].supplier_signup() }}
+            </form>
+            <hr>
+            <button id='toggle2' class="tgl btn btn-lg btn-secondary btn-block text-uppercase" type="submit"> Have an account? Log in</button>
+            {% if login_signup_message['signup_error'] %}
+            {{login_signup_message['signup_error']}}
+            {% endif %}
+            {% if login_signup_message['signup_complete'] %}
+            {{login_signup_message['signup_complete']}}
+            {% endif %}
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+<script type="text/javascript" src="{{url_for('static',filename='suppliers/js/index.js')}}" ></script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<script>
+    product_list = JSON.parse('{{ product_list | tojson | safe}}');
+
+    {% if product_data %}
+    product_data = JSON.parse('{{ product_data | tojson | safe}}');
+    {% endif %}
+
+</script>
+
+<link href="{{url_for('static',filename='css/results.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/index.css')}}" rel="stylesheet">
+
+<main style="margin-top: 60px; height: 100%;">
+    <div class="container" style="padding-top: 2vh;">
+
+{% include 'search.html' %}
+
+<div class="row">
+
+    <div class="col-lg-3">
+        
+        {% include 'sidebar.html' %}
+    </div>
+
+
+    <div class="col-lg-9">
+
+
+        <ul id='products'>
+
+        </ul>
+
+    </div>
+</div>
+
+
+
+<script type="text/javascript" src="{{url_for('static',filename='js/results/results.js')}}" ></script>
+
+{% endblock %}
+

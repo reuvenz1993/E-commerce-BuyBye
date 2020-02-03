@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<link href="{{url_for('static',filename='css/my_cart.css')}}" rel="stylesheet">
+
+
+<script>
+    {% if cart %}
+    cart = JSON.parse('{{ cart | tojson | safe}}');
+    {% endif %}
+    </script>
+
+<div class="container">
+
+    <div class="justify-content-center row">
+        <div class="col">
+                <div class="card part">
+                    <div class="card-header text-center">
+                        <h1> Shopping Cart (<span id='cart_count'>5</span>) </h1>
+                    </div>
+                  </div>
+            <div class="row">
+                <div class="col">
+                        <div class="card part">
+                            <div class="card-body">
+                              <h2 class="card-title text-center">Shipping Information</h2>
+                              <div class="container">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text" id="basic-addon1">To</span>
+                                    </div>
+                                    <input id='to' type="text" disabled class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                                  </div>
+                                  <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">Address :</span>
+                                    </div>
+                                    <textarea id='address' disabled class="form-control" aria-label="With textarea"></textarea>
+                                  </div>
+                                    <div class="justify-content-center row">
+                                    <button id='change_shipping_info' type="button" class="btn btn-outline-secondary btn-md btn_radius">Change</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="card part">
+                        <div class="card-header text-center">
+                            <h2>Items :</h2>
+                        </div>
+                        <div class="card-body">
+                            <ul id='products'>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                        <div class="card part">
+                            <div class="card-body">
+                                <div class="row justify-content-center row">
+                                    <div class="paymentCont">
+                                                    <div class="headingWrap">
+                                                            <h3 class="headingTop text-center">Select Your Payment Method</h3>	
+                                                    </div>
+                                                    <div class="paymentWrap">
+                                                        <div class="btn-group paymentBtnGroup btn-group-justified" data-toggle="buttons">
+                                                            <label class="btn paymentMethod active">
+                                                                <div class="method visa"></div>
+                                                                <input type="radio" name="options" checked> 
+                                                            </label>
+                                                            <label class="btn paymentMethod">
+                                                                <div class="method master-card"></div>
+                                                                <input type="radio" name="options"> 
+                                                            </label>
+                                                            <label class="btn paymentMethod">
+                                                                <div class="method amex"></div>
+                                                                <input type="radio" name="options">
+                                                            </label>
+                                                             <label class="btn paymentMethod">
+                                                                 <div class="method vishwa"></div>
+                                                                <input type="radio" name="options"> 
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clearfix footerNavWrap text-center">
+                                                    </div>
+                                                </div>
+                                </div>
+                            </div>
+                          </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                        <div class="card part">
+                            <div class="card-body">
+                                <div class="row justify-content-center row">
+                                    <div class="paymentCont">
+                                        <div class='text-center'> Total : <span id='total_price'></span> $ </div>
+                                        <div>
+                                           <a href="/cart_actions?type=buy_all"> <button id='chackout' type="button" class="btn btn-default btn_radius" data-dismiss="modal">Chackout</button></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                    
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+        <!--
+        <div class="col col-md-5 col-lg-4 col-lg-3">
+
+
+                <div class="card part">
+                    <div class="card-header">
+                        Featured
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Special title treatment</h5>
+                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                        <a href="#" class="btn btn-primary">Go somewhere</a>
+                    </div>
+                </div>
+
+        </div>
+        -->
+
+
+    
+
+<script type="text/javascript" src="{{url_for('static',filename='js/my_cart/my_cart.js')}}" ></script>
+
+
+{% endblock %}
