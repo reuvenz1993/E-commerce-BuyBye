@@ -1,7 +1,7 @@
-from ecommerce import app,db
-from flask import request , jsonify, session
-import secrets
-from ecommerce.forms import *
+from ecommerce import db
+from flask import session
+#import secrets
+#from ecommerce.forms import *
 from ecommerce.models import *
 import os
 from PIL import Image
@@ -9,28 +9,18 @@ from ecommerce.functions import *
 
 
 
-def pull_supplier_orders(sid , pid=False , status=False , _dict=False , buyer_info=True):
+def pull_supplier_orders(sid , pid=False , status=False ):
     query = db.session.query(Order).filter(Order.supplier_id == sid)
     if pid :
         if type(pid) == int or  type(pid) == str:
             pid =  [int(pid)]
         query = query.filter(Order.product_id.in_(pid))
+
     if status :
         if type(status) == str:
             status =  [status]
         query = query.filter(Order.status.in_(status))
 
-    if _dict :
-        if not buyer_info :
-            return get_dict(query.all())
-        else :
-            orders = get_dict(query.all())
-            if orders :
-                for order in orders :
-                    order['buyer_name'] = Buyer.query.get(order['the_buyer']).name
-                    order['buyer_address'] = Buyer.query.get(order['the_buyer']).address
-            return orders
-    
     return query.all()
 
 
@@ -56,7 +46,6 @@ def add_product(supplier_add_product):
     db.session.commit()
 
 def check_sup_login(sup_loginform):
-    print ('check_sup_login run');
     supplier_logging = Supplier.query.filter_by(username = sup_loginform.username.data).first()
     if ( supplier_logging is not None and supplier_logging.check_password(sup_loginform.password.data) ) :
         session['supplier_username'] = sup_loginform.username.data
@@ -68,7 +57,6 @@ def check_sup_login(sup_loginform):
         return { 'login_error': 'username does not exists' }
 
 def sup_signup(sup_signupform):
-    print ('sup_signup run');
     try:
         new_supplier = Supplier(sup_signupform.email.data , sup_signupform.username.data , sup_signupform.password.data , sup_signupform.name.data , sup_signupform.type_of.data , sup_signupform.address.data)
         db.session.add(new_supplier)

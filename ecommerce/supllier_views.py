@@ -71,10 +71,10 @@ def sup_product_data(pid):
     if not product_belong_supplier(pid , session.get('supplier_id') ):
         return redirect(url_for('suppliers_main'))
 
-    data = {'sup_username' : session.get('supplier_username') ,
-            'sup_id' : session.get('supplier_id'),
+    data = {
             'forms': sup_forms(),
             'product' : Product.query.get(pid),
+            'supplier' : Supplier.query.get(session.get('supplier_id')),
             'categorys': Category.query.all() }
     
     return render_template('/suppliers/sup_product_data.html' , **data)
