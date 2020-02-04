@@ -3,23 +3,26 @@
 
 <link href="{{url_for('static',filename='css/product2.css')}}" rel="stylesheet">
 
+
 <script>
-{% if product %}
-product = JSON.parse('{{ product | tojson | safe}}');
-{% endif %}
+    product = { 'id' : parseInt("{{product.id}}"),
+                'price' : parseFloat("{{product.price}}") };
 </script>
+
+
 
 <div id='cont_product' class="container dark-grey-text">
     <div class="row justify-content-center">
         <div class="col">
-            <img id='product_img' class='product_img product_pic' src="{{url_for('static',filename='img/sample.jpg')}}">
+            <img id='product_img' class='product_img product_pic' src="{{product.picture}}">
         </div>
         <div class="col">
-            <p>Product name : <span id='name'></span></p>
-            <p>Product desc : <span id='desc'></span></p>
-            <p>Brand : <span id='brand'></span></p>
-            <p>Seller : <span id='seller'></span> </p>
-            <p>Price : <span id='price'></span> </p>
+            {{product}}
+            <p>Product name : <span id='name'>{{product.name}}</span></p>
+            <p>Product desc : <span id='desc'>{{product.desc}}</span></p>
+            <p>Brand : <span id='brand'>{{product.brand}}</span></p>
+            <p>Seller : <span id='seller'>{{product.supplier.name}}</span> </p>
+            <p>Price : <span id='price'>{{product.price | round(1)}}$</span> </p>
             <div class="form-group row order_tab">
                 <div class="col form-group text-center">
                 <label>qty</label>
@@ -27,7 +30,7 @@ product = JSON.parse('{{ product | tojson | safe}}');
                 </div>
                     <div class="form-group col text-center">
                 <label>Total</label>
-                 <input id="total" class="form-control text-center " placeholder="$0" type="number" value="0" disabled>
+                 <input id="total" class="form-control text-center " placeholder="$0" type="number" value="{{product.price | round(1)}}" disabled>
                 </div>
                 
                 </div>
@@ -39,17 +42,17 @@ product = JSON.parse('{{ product | tojson | safe}}');
     <div class="row justify-content-center">
         <div class="col-9">
             <h4 class="text-center">Additional information</h4>
-            <p id='more_info'>bdfkg flkhjdf gdkljgdf khjfdhl hfdiho hfdlkhf</p>
+            <p id='more_info'>{{product.Additional_information}}</p>
         </div>
     </div>
     <div class="row justify-content-center">
         <div class="col-9">
             <div class="row justify-content-center">
                 <div class="col text-center">
-                    <span id='stars'>No Reviews yet</span>
+                    <span id='stars'> {% if product.review_avg %} {{product.review_avg}} <i class="far fa-star" aria-hidden="true"></i> ,  {{product.review_count}} Reviews {% else %} No Reviews yet  {% endif %} </span>
                 </div>
                 <div class="col text-center">
-                    <p><span id='sold'></span> Sold  </p>
+                    <p><span id='sold'>{{product.units_sold}}</span> Sold  </p>
                 </div>
             </div>
         </div>
@@ -58,15 +61,45 @@ product = JSON.parse('{{ product | tojson | safe}}');
     <div class="row justify-content-center">
         <div class="col-9 text-center">
             <h4 class="text-center">Pictures</h4>
-            <img class='product_img product_pic big_product_imgs' src="{{url_for('static',filename='img/sample.jpg')}}">
+            <img class='product_img product_pic big_product_imgs' src="{{product.picture}}">
         </div>
     </div>
     <hr>
-    <h4 class="text-center">Reviews <span id='reviews_count'></span></h4>
     <div class="row justify-content-center">
-        <ul id='reviews' class="col-9">
+        <div id='reviews' class="col-9">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-center">Reviews :</h4>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <div class="row font-weight-bold">
+                        <div class="col text-center">By</div>
+                        <div class="col text-center">Review</div>
+                        <div class="col text-center">Rank</div>
+                    </div>
+                    {% if product.reviews %}
+                    {% for review in product.reviews %}
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col text-center">
+                                <p>{{review.order.the_buyer.name}}</p>
+                                <p>{{review.review_time.strftime("%d/%m/%y")}}</p>
+                            </div>
+                            <div class="col text-center">
+                                {{review.review_content}}
+                            </div>
+                            <div class="col text-center">
+                                {{review.stars}}<i class="far fa-star" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                         </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+
             
-        </ul>
+        </div>
     </div>
 
 

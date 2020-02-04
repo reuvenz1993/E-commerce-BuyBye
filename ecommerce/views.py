@@ -55,14 +55,14 @@ def handle_forms(forms):
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     forms = Forms()
-    data = {}
+    data = {'categorys': Category.query.all()}
     handle_forms(forms)
     
     if current_user.is_authenticated:
         data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address  , 'name' : current_user.name }
     
 
-    return render_template('index.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data )
+    return render_template('index.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data , **data )
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():
@@ -142,9 +142,10 @@ def new_order():
 @app.route('/product2/<pid>', methods = ['GET', 'POST'])
 def product(pid):
     forms = Forms()
+    productt = Product.query.get(pid)
     data = {}
     handle_forms(forms)
-    product = get_product_extra_info(pid)
+    #product = get_product_extra_info(int(pid))
     if product is False :
         return redirect (url_for('index'))
     
@@ -152,7 +153,7 @@ def product(pid):
         data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name  }
 
 
-    return render_template('product2.html' , product = product , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data)
+    return render_template('product2.html' , data=data , product2 = product , login_form = forms['login_form'] , signup_form=forms['signup_form'] , product=productt )
 
 
 '''

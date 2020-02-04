@@ -1,8 +1,10 @@
-qty = $('#qty').val();
+qty = parseInt($('#qty').val());
 $(document).ready(function ()
 {
     if ( product )
     {
+        var x = 5;
+        /*
         $("#name").html(product.name);
         $("#desc").html(product.desc);
         $("#price").html(product.price + ' $');
@@ -17,7 +19,7 @@ $(document).ready(function ()
         {
             $("#stars").html("")
             $("#stars").append("<div class='icon'>" + product.reviews.avg +  "<i class='far fa-star' aria-hidden='true'></i>" + "  , " + product.reviews.count + " reviews" + "</div>");
-        }
+        }*/
 
 
 
@@ -25,18 +27,6 @@ $(document).ready(function ()
     };
 
 
-    if ( product.reviews.count )
-    {
-        product.reviews.get_review.forEach(rev => {
-            product_parent = $("<li></li>").addClass('row text-center review').attr('id' ,'product num: ' + rev.id).appendTo($('#reviews'));
-            stars = $("<div></div>").text("Rank :" + rev.stars ).addClass('col').appendTo(product_parent);
-            review = $("<div></div>").addClass('col-6 pnt').attr('id' ,rev.id).appendTo(product_parent);
-            review_content =$("<div></div>").text(rev.review_content).addClass('row').appendTo(review);
-            reviewer_name =$("<div></div>").text('by: ' + rev.reviewer).addClass('row').appendTo(review);
-            review_time = $("<div></div>").text(rev.review_time.slice(5,16)).addClass('col').appendTo(product_parent);
-
-        });
-    }
 
     setTimeout(handlers,1000);
 
@@ -70,7 +60,7 @@ $(document).ready(function ()
                     $('#buy_now').hide();
                     $('#add_to_cart').hide();
                     $('#qty').prop( 'disabled' , 'true' );
-                    alart = $('<div></div>').text('order confirm').addClass('alert alert-success text-center').prependTo('#cont_product');
+                    alart = $('<div></div>').text('Item added to cart').addClass('alert alert-success text-center').prependTo('#cont_product');
                     $('#items_count').text(response['cart_size'])
                     $('#cart_success').modal('show');
 
@@ -80,10 +70,8 @@ $(document).ready(function ()
 
                     $('#View_Shopping_Cart').click( () => {
                         window.location.href = '/results'
-                    });                    
-                    
+                    });
                     }});
-            
             });
 
 

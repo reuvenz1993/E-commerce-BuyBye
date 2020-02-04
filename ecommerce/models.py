@@ -290,12 +290,19 @@ class Supplier(db.Model, UserMixin):
             response['avg'] = db.session.query(db.func.avg(Reviews.stars)).join(Order, Order.id == Reviews.order_id ).filter(Order.supplier_id == self.id).all()[0][0]
 
         return response
+    
+    @property
+    def review_avg(self):
+        res = db.session.query(db.func.avg(Reviews.stars)).join(Order, Order.id == Reviews.order_id).filter(Order.supplier_id == self.id).all()[0][0]
+        if res :
+            return round (res,2)
+        else :
+            return False
 
 
 class Product(db.Model, UserMixin):
 
     __tablename__ = 'products'
-    __searchable__ = ['name', 'desc']
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(256), nullable=False)

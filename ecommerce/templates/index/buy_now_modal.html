@@ -71,7 +71,7 @@
                 <h4 class="modal-title">Order details</h4>
                 <button type="button" onClick="window.location.reload()" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-body">
+            <div id="buy_now_body" class="modal-body">
                 <div class="accordion" id="accordionExample">
                     <div class="card">
                       <div class="card-header" id="headingOne">
@@ -88,13 +88,13 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text" id="basic-addon1">To</span>
                             </div>
-                            <input id='customer_name' disabled type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                            <input id='customer_name' value="{{current_user.name}}"  disabled type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                           </div>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Address :</span>
                             </div>
-                            <textarea id='order_address' disabled class="form-control" aria-label="With textarea"></textarea>
+                            <textarea id='order_address' disabled class="form-control" aria-label="With textarea">{{current_user.address}}</textarea>
                           </div>
                             <div class="footerNavWrap clearfix">
                                 <div id='step1' class="btn btn-success pull-right btn-fyi">CONFIRM<span class="glyphicon glyphicon-chevron-right"></span></div>
@@ -161,22 +161,34 @@
                             </div>
                           <hr>
                           <div id='product_name' class="justify-content-center row">
-                            
+                            <div class="col text-center">Seller  : {{product.supplier.name}} </div>
+                            <div class="col text-center">Supplier Average rank  : {{product.supplier.review_avg}} <i class="far fa-star" aria-hidden="true"></i>  </div>
                         </div>
+                        <hr>
                         <div id='product' class="row text-center" >
-                            
+                            <div class="col">
+                              <img src="{{product.picture}}" class="pic">
+                            </div>
+                            <div class="col align-self-center">
+                              {{product.desc}}
+                            </div>
                         </div>
+                        <hr>
                         <div id='stats' class="row text-center" >
-                            
+                          <div class="col">Units sold  : {{product.units_sold}} </div>
+                          <div class="col">Rank  : {{product.review_avg}} <i class="far fa-star" aria-hidden="true"></i>  </div>
                         </div>
                       <hr>
-                      <div id='message' class="row" >
-                        
+                      <div id='message' class="row justify-content-center" >
+                        <div class="form-group justify-content-center" style="width: 90%;">
+                          <label >Message to seller</label>
+                          <textarea class="form-control" name="" id="message_area" rows="3"></textarea>
+                        </div>
                     </div>
                   <hr>
                   <div id='amount' class="row text-center font-weight-bolder" >
                         <div class='col' > <span>Qty :</span> <span id='order_qty'></span>  </div>
-                        <div class='col' > <span>Unit price :</span> <span id='order_unit_price'></span>  </div>
+                        <div class='col' > <span>Unit price :</span> <span id='order_unit_price'> {{product.price | round(1)}} </span>  </div>
                         <div class='col'> <span>Total : </span>  <span id='order_total'></span>   <span>$</span></div>
                 </div>
               <hr>

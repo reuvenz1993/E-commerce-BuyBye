@@ -163,7 +163,7 @@ def buy_now_or_add_to_cart(buyer_id , product_id , qty , buyer_message=False , b
         db.session.add(cart_item)
         db.session.commit()
         if Cart.query.get(cart_item.id):
-            return { 'cart_item':cart_item.id , 'cart_size': len(Buyer.query.get(buyer_id).get_cart()) }
+            return { 'cart_item':cart_item.id , 'cart_size': Buyer.query.get(buyer_id).cart.filter(Cart.status == 1).count() }
         else :
             return False
 
