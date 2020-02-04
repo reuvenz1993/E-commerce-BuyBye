@@ -9,6 +9,8 @@ from sqlalchemy import func, or_
 from flask_marshmallow import Marshmallow
 from decimal import *
 
+
+
 login_manager = LoginManager()
 
 app = Flask(__name__)
