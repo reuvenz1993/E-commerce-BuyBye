@@ -65,7 +65,7 @@ def signup_buyer(signup_form):
         print(e)
         return 'error'
     
-    
+
     buyer_logging = Buyer.query.filter_by(username = login_form.username.data).first()
     if ( buyer_logging is not None and buyer_logging.check_password(login_form.password.data) ) :
         to_remember = login_form.remember.data

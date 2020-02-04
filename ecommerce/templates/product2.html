@@ -2,6 +2,7 @@
 {% block content %}
 
 <link href="{{url_for('static',filename='css/product2.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/buy_now_modal.css')}}" rel="stylesheet">
 
 
 <script>
@@ -132,16 +133,155 @@
 
 
 
+    <div class="modal fade" id="buy_now_modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Order details</h4>
+                <button type="button" onClick="window.location.reload()" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div id="buy_now_body" class="modal-body">
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Shipping Information
+                          </button>
+                        </h2>
+                      </div>
+                  
+                      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">To</span>
+                            </div>
+                            <input id='customer_name' value="{{current_user.name}}"  disabled type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                          </div>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Address :</span>
+                            </div>
+                            <textarea id='order_address' disabled class="form-control" aria-label="With textarea">{{current_user.address}}</textarea>
+                          </div>
+                            <div class="footerNavWrap clearfix">
+                                <div id='step1' class="btn btn-success pull-right btn-fyi">CONFIRM<span class="glyphicon glyphicon-chevron-right"></span></div>
+                                <div id="edit" class="btn btn-success pull-right btn-fyi">EDIT<span class="glyphicon glyphicon-chevron-right"></span></div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Payment Method
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="paymentCont">
+                                                <div class="headingWrap">
+                                                        <h3 class="headingTop text-center">Select Your Payment Method</h3>	
+                                                </div>
+                                                <div class="paymentWrap">
+                                                    <div class="btn-group paymentBtnGroup btn-group-justified" data-toggle="buttons">
+                                                        <label class="btn paymentMethod active">
+                                                            <div class="method visa"></div>
+                                                            <input type="radio" name="options" checked> 
+                                                        </label>
+                                                        <label class="btn paymentMethod">
+                                                            <div class="method master-card"></div>
+                                                            <input type="radio" name="options"> 
+                                                        </label>
+                                                        <label class="btn paymentMethod">
+                                                            <div class="method amex"></div>
+                                                            <input type="radio" name="options">
+                                                        </label>
+                                                         <label class="btn paymentMethod">
+                                                             <div class="method vishwa"></div>
+                                                            <input type="radio" name="options"> 
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="footerNavWrap clearfix">
+                                                    <div id='stap2' class="btn btn-success pull-right btn-fyi">CONFIRM<span class="glyphicon glyphicon-chevron-right"></span></div>
+                                                </div>
+                                            </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Order Review
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div id='order_review' class="card-body">
+                            <div id='order_seller' class="row" >
+                            </div>
+                          <hr>
+                          <div id='product_name' class="justify-content-center row">
+                            <div class="col text-center">Seller  : {{product.supplier.name}} </div>
+                            <div class="col text-center">Supplier Average rank  : {{product.supplier.review_avg}} <i class="far fa-star" aria-hidden="true"></i>  </div>
+                        </div>
+                        <hr>
+                        <div id='product' class="row text-center" >
+                            <div class="col">
+                              <img src="{{product.picture}}" class="pic">
+                            </div>
+                            <div class="col align-self-center">
+                              {{product.desc}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div id='stats' class="row text-center" >
+                          <div class="col">Units sold  : {{product.units_sold}} </div>
+                          <div class="col">Rank  : {{product.review_avg}} <i class="far fa-star" aria-hidden="true"></i>  </div>
+                        </div>
+                      <hr>
+                      <div id='message' class="row justify-content-center" >
+                        <div class="form-group justify-content-center" style="width: 90%;">
+                          <label >Message to seller</label>
+                          <textarea id="buyer_message" class="form-control" name="" id="message_area" rows="3"></textarea>
+                        </div>
+                    </div>
+                  <hr>
+                  <div id='amount' class="row text-center font-weight-bolder" >
+                        <div class='col' > <span>Qty :</span> <span id='order_qty'></span>  </div>
+                        <div class='col' > <span>Unit price :</span> <span id='order_unit_price'> {{product.price | round(1)}} </span>  </div>
+                        <div class='col'> <span>Total : </span>  <span id='order_total'></span>   <span>$</span></div>
+                </div>
+              <hr>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-{% include 'index/buy_now_modal.html' %}
 
 
+            </div>
+            <div class="modal-footer">
+
+            <div class='col'>
+              <button id='chackout' type="button" class="btn btn-default" data-dismiss="modal">Chackout</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
 
 
 
 <script type="text/javascript" src="{{url_for('static',filename='js/product/product.js')}}" ></script>
-<script type="text/javascript" src="{{url_for('static',filename='js/product/buy_now_modal.js')}}" ></script>
 
 {% endblock %}

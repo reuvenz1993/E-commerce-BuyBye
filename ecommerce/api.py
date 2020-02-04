@@ -105,13 +105,11 @@ def supplier_update_product():
 @login_required
 def account_actions():
     if request.args.get('type' , None ) == 'confirm' and request.args.get('id' , None ):
-        order_id = request.args.get('id')
-        if Order.query.get(order_id).buyer_id == current_user.id :
-            Order.query.get(order_id).confirm_supplied()
+        order = Order.query.get(request.args.get('id'))
+        if order.buyer_id == current_user.id :
+            order.confirm_supplied()
             db.session.commit()
-            if Order.query.get(order_id).status == 'closed':
-                return jsonify( True )
-        return jsonify ( False )
+            return jsonify (order.status == 3)
 
     if 'type' in request.json :
         kwargs = {}

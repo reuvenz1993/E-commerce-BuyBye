@@ -23,8 +23,8 @@ categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothi
 @login_required
 def account():
     forms = Forms()
-    data = {}
-    data['orders'] = pull_buyer_orders(current_user.id)
+    data = {'orders':current_user.orders.all() }
+    print (current_user.orders.all())
     print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
     if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
         print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
@@ -34,7 +34,7 @@ def account():
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
         check_login(forms['login_form'])
     if current_user.is_authenticated:
-        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address  , 'name' : current_user.name }
+        data['buyer'] = current_user
     
 
     return render_template('account.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data )

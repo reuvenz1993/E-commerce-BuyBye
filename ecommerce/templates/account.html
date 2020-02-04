@@ -4,11 +4,10 @@
 <link href="{{url_for('static',filename='css/account.css')}}" rel="stylesheet">
 
 
+
 <div class="container">
-    
 
-
-<div class="accordion" id="accordionExample275">
+  <div class="accordion" id="accordionExample275">
     <div class="card z-depth-0 bordered">
       <div class="card-header" id="headingOne2">
         <h5 class="mb-0">
@@ -26,7 +25,7 @@
                     <div class="form-group row">
                         <label for="inputName" class="col-auto col-form-label">Full name :</label>
                         <div class="col-auto">
-                            <input value="{{data.buyer['name']}}" disabled type="text" class="form-control" name="name_input" id="name_input" placeholder="">
+                            <input value="{{data.buyer.name}}" disabled type="text" class="form-control" name="name_input" id="name_input" placeholder="">
                         </div>
                       <div class="col-auto">
                           <button id='name_input_edit' type="submit" class="btn btn-primary">Edit</button>
@@ -39,7 +38,7 @@
                     <div class="form-group row">
                       <label for="inputName" class="col-auto col-form-label">Address :</label>
                       <div class="col-auto">
-                          <input  value="{{data.buyer['address']}}" disabled type="text" class="form-control" name="address_input" id="address_input" placeholder="">
+                          <input  value="{{data.buyer.address}}" disabled type="text" class="form-control" name="address_input" id="address_input" placeholder="">
                       </div>
                     <div class="col-auto">
                         <button id='address_input_edit' type="submit" class="btn btn-primary">Edit</button>
@@ -89,23 +88,23 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <img style="max-width: 125px;" src="{{order['product']['picture']}}" alt="">
+                            <img style="max-width: 125px;" src="{{order.product.picture}}" alt="">
                         </div>
                         <div class="col">
                             <div class="row">
-                            product name : {{order['product']['name']}}
+                            Product name : {{order.product.name}}
                         </div>
                         <div class="row">
-                            order time  : {{order['order_time']}}
+                            Order date  : {{order.order_time.strftime("%d/%m/%y")}}
                         </div>
                         </div>
                         <div class="col">
                             <div class="row">
-                              Status : <span id="s{{order.id}}"> {{order['status']}}  </span> 
+                              Status : <span id="s{{order.id}}"> {{order.the_status.name}}  </span> 
                             </div>
                         </div>
                         <div class="col">
-                            {% if order['status'] == 'open'  %}
+                            {% if order.status == 2  %}
                             <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" id="{{order.id}}" class="btn btn-primary btn-lg confirm">Confirm Received</button>
                             {% endif %}
                         </div>
@@ -124,24 +123,6 @@
 
 
 
-
-                    <!--
-                    <div class="card text-left mycard">
-                        <img class="card-img-top" src="holder.js/100px180/" alt="">
-                        <div class="card-body">
-                            <h4 class="card-title">My Payment Methods</h4>
-                            <hr>
-                            
-
-                        </div>
-                      </div>
-                      -->
-
-                      <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-                      <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-                      <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-                      <!------ Include the above in your HEAD tag ---------->
-                      
 
 
 

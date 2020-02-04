@@ -523,7 +523,7 @@ class Order(db.Model, UserMixin):
         return Product.query.filter_by(id=self.product_id).first()
     
     def confirm_supplied(self):
-        self.status = 'closed'
+        self.status = 3
         self.fulfillment_time = datetime.utcnow()
         self.last_change_time = datetime.utcnow()
 
