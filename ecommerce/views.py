@@ -43,12 +43,8 @@ def account():
 def handle_forms(forms):
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
         check_login(forms['login_form'])
-    print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
     if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
-        print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
-        print('gg')
         signup_status = signup_buyer(forms['signup_form'])
-        print (signup_status)
 
 
 @app.route('/', methods = ['GET', 'POST'])
@@ -78,41 +74,32 @@ def my_cart():
 
 @app.route('/results', methods = ['GET', 'POST'])
 def results():
-    if request.method == 'POST':
+    forms = Forms()
+    handle_forms(forms)
+    
+    if request.method == 'POST' and request.json:
         keyword_args = request.json
         results = search(**keyword_args)
         return render_template('result_rows.html', results=results)
     
-    
-    if request.method == 'GET':
-        keyword_args =  request.args
+    keyword_args = dict(request.args)
+    for key,value in keyword_args.items():
+        if key != 'word':
+            if type(value) is list :
+                keyword_args[key] = int(value[0])
+            if type(value) is str :
+                keyword_args[key] = int(value)
+        if key =='word' and type(value) is list :
+            keyword_args[key] = str(value[0])
+
+    if keyword_args :
         results = search(**keyword_args)
-        return render_template('result_rows.html', results=results)
-    
-    
-    forms = Forms()
-    data = {}
-    handle_forms(forms)
-    product_type = 'all'
-    filters = {}
-    filters['product_type'] = request.args.get('product_type')
-    filters['product_sub_type'] = request.args.get('product_sub_type')
-    filters['brand'] = request.args.get('brand')
-    filters['supplier_id'] = request.args.get('supplier_id')
-    if current_user.is_authenticated:
-        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name }
+    else :
+        results = search()
 
+    categorys = Category.query.all()
 
-    for key , value in filters.items():
-        if value is not None :
-            product_type = value
-    
-    #products = get_products(filters)
-    #product_list = []
-    #for p in products:
-    #    product_list.append( p.as_list() )
-    product_list = get_relvent_results(product_type)
-    return render_template('results.html' , product_list = product_list , login_form = forms['login_form'] , signup_form=forms['signup_form'] , data=data)
+    return render_template('results.html'  , results=results , categorys=categorys , **forms, **keyword_args )
 
 
 

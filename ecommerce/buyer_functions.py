@@ -254,6 +254,12 @@ def search( pid = [i for i in range( Product.query.count()+1 )] , category_list 
         
     if type(min_price) != int :
         min_price = int(min_price[0])
+        
+    if type(max_price) != int :
+        max_price = int(max_price[0])
+        
+    if type(min_avg) != int :
+        max_price = int(min_avg[0])
 
 
     search_query = db.session.query(Product.id).outerjoin(Order).outerjoin(Reviews).group_by(Product).having(or_(db.func.count(Reviews.id)==0 , db.func.avg(Reviews.stars) > min_avg )).subquery()

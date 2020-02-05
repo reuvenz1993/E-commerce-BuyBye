@@ -120,32 +120,32 @@
           {% if current_user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link rounded waves-effect"
-              target="_blank">
+              target="_self">
               <i class="fas fa-user mr-2"></i>{{current_user.username}}
             </a>
           </li>
           <li class="nav-item">
             <a href="{{url_for('account')}}" class="nav-link border border-light rounded waves-effect"
-              target="_blank">
+              target="_self">
               <i class="fas fa-user mr-2"></i>My Account
             </a>
           </li>
           <li class="nav-item">
             <a href="{{url_for('logout')}}" target='_self	' class="nav-link border border-light rounded waves-effect"
-              target="_blank">
+              target="_self">
               <i class="fas fa-sign-out-alt mr-2"></i>Logout
             </a>
           </li>
           {% else %}
           <li class="nav-item">
             <a id='buyer_login_toggle' class="nav-link border border-light rounded waves-effect"
-              target="_blank">
+              target="_self">
               <i class="fas fa-sign-in-alt mr-2"></i>login
             </a>
           </li>
           <li class="nav-item">
             <a id='buyer_signup_toggle' href="#" class="nav-link border border-light rounded waves-effect"
-              target="_blank">
+              target="_self">
               <i class="fas fa-user-plus mr-2"></i>Join
             </a>
           </li>

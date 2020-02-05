@@ -22,7 +22,7 @@
 function product_click()
 {
    $('li[data-pid]').click(function (e)
-   { 
+   {
     e.preventDefault();
     pid = e.currentTarget.dataset.pid
     location.href =  '/product2/' + pid;
@@ -30,9 +30,14 @@ function product_click()
 };
 
 
+product_click();
+
+
+
    function load_results()
 {
-    data = {'category_list' : category_list ,
+    data = {'search': true,
+            'category_list' : category_list ,
             'min_price' : min_price ,
             'max_price' : max_price ,
             'min_avg': min_avg}
@@ -96,7 +101,7 @@ $(document).ready(function () {
             
         });
 
-
+/*
     $.ajax({
         type: "POST",
         url: '/get_categories',
@@ -106,6 +111,8 @@ $(document).ready(function () {
             put_categories2()
 
             }});
+*/
+
 /*
     if ( product_list )
     {
@@ -142,14 +149,15 @@ $(document).ready(function () {
                 //load_results()
             }};
 
-
+            
 
     function get_list(){
-
+        /*
         categories.forEach(category =>
         {
             category_list.push(category[0]);
             });
+            */
         $('.category_item').change(function (e)
         {
             e.preventDefault();
@@ -168,7 +176,7 @@ $(document).ready(function () {
     };
 
 
-
+get_list();
 
 
 
