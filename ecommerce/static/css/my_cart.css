@@ -4,6 +4,12 @@ body
     margin-top: 80px;
 }
 
+
+#sum_row
+{
+    padding-top: 4vh;
+}
+
 .part
 {
     margin: 15px;

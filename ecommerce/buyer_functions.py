@@ -79,7 +79,7 @@ def remove_from_cart(cart_item_id):
         return False
     Cart.query.get(cart_item_id).cancal()
     
-    if not Cart.query.get(cart_item_id).status =='canceled':
+    if not Cart.query.get(cart_item_id).status == 3 :
         return False
 
     return True
@@ -244,13 +244,16 @@ def product_supplier_name(pid):
     supplier = Supplier.query.filter_by(id = product.supplier_id).first()
     return supplier.name
 
-def search( pid = [i for i in range( Product.query.count()+1 )] , category_list = [i for i in range( Category.query.count()+1 )] ,min_price=0 , max_price=100000 , min_avg=0 , word=False ):
+def search( pid = [i for i in range( Product.query.count()+1 )] , category_list = [i for i in range( Category.query.count()+1 )] ,min_price=0 , max_price=100000 , min_avg=0 , word=False , as_json=False ):
     
     if type(pid) == int :
         pid = [pid]
     
     if type(category_list) == int :
         category_list = [category_list]
+        
+    if type(min_price) != int :
+        min_price = int(min_price[0])
 
 
     search_query = db.session.query(Product.id).outerjoin(Order).outerjoin(Reviews).group_by(Product).having(or_(db.func.count(Reviews.id)==0 , db.func.avg(Reviews.stars) > min_avg )).subquery()
@@ -273,16 +276,17 @@ def search( pid = [i for i in range( Product.query.count()+1 )] , category_list 
 
     #search_query = search_query.all()
     #temp = search_query.all()
-    
-    products = []
-    for product in search_query :
-        row = product.__dict__
-        row['supplier'] = product.supplier.get_info()
-        row['reviews'] = product.get_review(get_review=False ,avg=True , count=True)
-        row['orders'] = product.get_product_orders( get_product_orders=False, count_orders=True , count_units=True)
-        row['price'] = round( float( row['price'] ) , 1 )
-        if row['_sa_instance_state']:
-            del row['_sa_instance_state']
-        products.append(row)
-    
-    return products
+    if as_json:
+        products = []
+        for product in search_query :
+            row = product.__dict__
+            row['supplier'] = product.supplier.get_info()
+            row['reviews'] = product.get_review(get_review=False ,avg=True , count=True)
+            row['orders'] = product.get_product_orders( get_product_orders=False, count_orders=True , count_units=True)
+            row['price'] = round( float( row['price'] ) , 1 )
+            if row['_sa_instance_state']:
+                del row['_sa_instance_state']
+            products.append(row)
+        return products
+    else :
+        return search_query.all()

@@ -28,7 +28,6 @@ def account():
     print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
     if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
         print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
-        print('gg')
         signup_status = signup_buyer(forms['signup_form'])
         print (signup_status)
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
@@ -74,15 +73,23 @@ def logout():
 @login_required
 def my_cart():
     forms = Forms()
-    data = dict()
-    cart = pull_cart(current_user.id)
-    if current_user.is_authenticated:
-        data['buyer'] = { 'id' : current_user.id , 'username' : current_user.username , 'photo' : current_user.photo , 'address' : current_user.address , 'name' : current_user.name  }
-    return render_template('my_cart.html' , cart=cart , data=data  , login_form = forms['login_form'] , signup_form=forms['signup_form'])
+    return render_template('my_cart.html' , login_form = forms['login_form'] , signup_form=forms['signup_form'])
 
 
 @app.route('/results', methods = ['GET', 'POST'])
 def results():
+    if request.method == 'POST':
+        keyword_args = request.json
+        results = search(**keyword_args)
+        return render_template('result_rows.html', results=results)
+    
+    
+    if request.method == 'GET':
+        keyword_args =  request.args
+        results = search(**keyword_args)
+        return render_template('result_rows.html', results=results)
+    
+    
     forms = Forms()
     data = {}
     handle_forms(forms)

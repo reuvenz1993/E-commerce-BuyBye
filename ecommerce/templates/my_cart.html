@@ -3,20 +3,13 @@
 
 <link href="{{url_for('static',filename='css/my_cart.css')}}" rel="stylesheet">
 
-
-<script>
-    {% if cart %}
-    cart = JSON.parse('{{ cart | tojson | safe}}');
-    {% endif %}
-    </script>
-
 <div class="container">
 
     <div class="justify-content-center row">
         <div class="col">
                 <div class="card part">
                     <div class="card-header text-center">
-                        <h1> Shopping Cart (<span id='cart_count'>5</span>) </h1>
+                        <h1> Shopping Cart (<span id='cart_count'>{% if current_user.open_cart %} {{current_user.open_cart | length }} {% else %} 0 {% endif %} </span>) </h1>
                     </div>
                   </div>
             <div class="row">
@@ -29,13 +22,13 @@
                                     <div class="input-group-prepend">
                                       <span class="input-group-text" id="basic-addon1">To</span>
                                     </div>
-                                    <input id='to' type="text" disabled class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                                    <input id='to' value="{{current_user.name}}" type="text" disabled class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
                                   </div>
                                   <div class="input-group">
                                     <div class="input-group-prepend">
                                       <span class="input-group-text">Address :</span>
                                     </div>
-                                    <textarea id='address' disabled class="form-control" aria-label="With textarea"></textarea>
+                                    <textarea id='address' disabled class="form-control" aria-label="With textarea">{{current_user.address}}</textarea>
                                   </div>
                                     <div class="justify-content-center row">
                                     <button id='change_shipping_info' type="button" class="btn btn-outline-secondary btn-md btn_radius">Change</button>
@@ -49,20 +42,6 @@
 
             </div>
 
-            <div class="row">
-                <div class="col">
-                    <div class="card part">
-                        <div class="card-header text-center">
-                            <h2>Items :</h2>
-                        </div>
-                        <div class="card-body">
-                            <ul id='products'>
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col">
@@ -104,11 +83,51 @@
 
             <div class="row">
                 <div class="col">
+                    <div class="card part">
+                        <div class="card-header text-center">
+                            <h2>Items :</h2>
+                        </div>
+                        <div class="card-body">
+                            <ul id='products'>
+                                {% if current_user.open_cart %}
+                                {% for cart_item in current_user.open_cart %}
+                                
+                                <div class="card-footer product_list_item">
+                                    <div id="product_name id :207" class="row text-center justify-content-center h4">{{cart_item.cart_product.name}}</div>
+                                    <div class="justify-content-center row text-center">
+                                        <div class="col-3">
+                                            <img src="{{cart_item.cart_product.picture}}" style="max-width: 125px;">
+                                        </div>
+                                        <div class="col mid">
+                                            <div class="row justify-content-center">{{cart_item.cart_product.desc}}</div>
+                                        </div>
+                                        <div id="{{cart_item.id}}" class="col-3" style="max-width: 125px;">
+                                            <button data-item_id="{{cart_item.id}}" class="btn btn-sm row buy_this btn_radius">Buy this</button>
+                                            <button data-item_id="{{cart_item.id}}" class="btn btn-sm row remove_this btn_radius">Remove</button>
+                                        </div>
+                                    </div>
+                                    <div id="sum_row" class="row text-center font-weight-bold">
+                                        <div class="col">Qty : {{cart_item.qty}}</div>
+                                        <div class="col">Price : {{cart_item.price}} $</div>
+                                        <div class="col">Total : {{cart_item.total}} $ </div>
+                                    </div>
+                                </div>
+
+                                {% endfor %}
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
                         <div class="card part">
                             <div class="card-body">
                                 <div class="row justify-content-center row">
                                     <div class="paymentCont">
-                                        <div class='text-center'> Total : <span id='total_price'></span> $ </div>
+                                        <div class='text-center'> Total : <span id='total_price'>{% if current_user.open_cart %} {{current_user.open_cart_total_price}} {% endif %}</span> $ </div>
                                         <div>
                                            <a href="/cart_actions?type=buy_all"> <button id='chackout' type="button" class="btn btn-default btn_radius" data-dismiss="modal">Chackout</button></a>
                                         </div>

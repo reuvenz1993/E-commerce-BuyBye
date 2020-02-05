@@ -97,6 +97,15 @@ class Cart(db.Model, UserMixin):
             self.stamp_ordered()
 
 
+    @property
+    def price(self):
+        return round(self.cart_product.price, 1)
+
+    @property
+    def total(self):
+        return round(self.cart_product.price * int(self.qty), 1)
+
+
     def add_buyer_message(self , buyer_message=False):
         if buyer_message :
             self.buyer_message = buyer_message
@@ -156,9 +165,16 @@ class Buyer(db.Model, UserMixin):
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
 
-
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
+
+    @property
+    def open_cart(self):
+        return self.cart.join(Cart_status).filter(Cart_status.is_open == True).all()
+    
+    @property
+    def open_cart_total_price(self):
+        return sum(item.total for item in self.open_cart)
     
     def update_personal(self , name=False , address=False):
         if name:
@@ -334,7 +350,7 @@ class Product(db.Model, UserMixin):
 
 
     def as_list(self):
-        return [self.id ,self.name ,self.desc,self.supplier_id,self.product_type,self.product_sub_type, self.brand, float(self.price), self.picture, self.Additional_information]
+        return [self.id ,self.name ,self.desc,self.supplier_id, self.brand, float(self.price), self.picture, self.Additional_information]
 
 
     def get_info(self):

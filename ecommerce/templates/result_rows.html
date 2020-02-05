@@ -1,0 +1,25 @@
+{% if results %}
+{% for product in results %}
+
+<li class="row text-center item align-items-center" id="product num: {{product.id}}" data-pid="{{product.id}}">
+    <div id="product_pic1" class="col">
+        <img src="{{product.picture}}" class="pic">
+    </div>
+    <div class="col-6 pnt" id="{{product.id}}">
+        <div class="row">{{product.name}}</div>
+        <div class="row">{{product.desc}}</div>
+        <div class="row text-black-50 text-monospace">{{product.supplier.name}}</div>
+    </div>
+    <div class="col font-weight-bold">
+        <div class="row">{{product.price | round(1)}}</div>
+        <div class="row">{% if product.review_avg %} {{product.review_avg | round(1)}} {% endif %}
+            <div class="icon">
+                <i class="far fa-star" aria-hidden="true"></i>
+            </div>{% if product.review_count %} {{product.review_count}} {% endif %} reviews
+        </div>
+        <div class="row">{{product.units_sold}} Sold</div>
+    </div>
+</li>
+
+{% endfor %}
+{% endif %}

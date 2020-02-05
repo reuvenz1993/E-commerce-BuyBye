@@ -19,33 +19,40 @@
    var k ;
 
 
+function product_click()
+{
+   $('li[data-pid]').click(function (e)
+   { 
+    e.preventDefault();
+    pid = e.currentTarget.dataset.pid
+    location.href =  '/product2/' + pid;
+    });
+};
 
-   
+
    function load_results()
 {
     data = {'category_list' : category_list ,
             'min_price' : min_price ,
             'max_price' : max_price ,
             'min_avg': min_avg}
-    
+
     if ( $('#search').val() != "" )
     {
     data['word'] = $('#search').val()
     };
 
 
-$.ajax({
-    type: "POST",
-    url: '/get_search_res',
-    contentType: 'application/json',
-    dataType : 'json',
-    data : JSON.stringify( data ),
-    success: function (response) {
-        product_list = response;
-        console.log(response);
-        show_products();
-        
-        }});
+    $.ajax({
+        type: "POST",
+        url: '/results',
+        contentType: 'application/json',
+        dataType : 'html',
+        data : JSON.stringify( data ),
+        success: function (response) {
+        $('#products').empty().append(response)
+        product_click()
+            }});
 };
 
 function show_products()
@@ -132,7 +139,7 @@ $(document).ready(function () {
                     category_items= $("<span></span>").addClass('close text-black-50').text(category[2]).appendTo(category_li);
             });
                 get_list();
-                load_results()
+                //load_results()
             }};
 
 

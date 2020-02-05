@@ -101,6 +101,7 @@ def supplier_update_product():
 
 
 
+
 @app.route('/account_actions', methods = ['GET', 'POST'])
 @login_required
 def account_actions():
@@ -218,6 +219,14 @@ def get_categories():
 
     categories_list = db.session.query(Category.id , Category.name , db.func.count(Product.id)).outerjoin(Product).group_by(Category).all()
     return jsonify(categories_list)
+
+@app.route('/get_search_res2', methods = ['GET', 'POST'])
+def get_search_res2():
+    if request.method == 'POST':
+
+        keyword_args = request.json
+        results = search(**keyword_args)
+        return render_template('result_rows.html', results=results)
 
 
 @app.route('/get_search_res', methods = ['GET', 'POST'])
