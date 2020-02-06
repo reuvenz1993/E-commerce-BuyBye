@@ -46,9 +46,7 @@ $('#search_submit').click(e =>
     
     });
 
-});
-
-$('#search').keyup(function(e)
+    $('#search').keyup(function(e)
 {
     if (event.keyCode === 13) {
     e.preventDefault();
@@ -56,3 +54,7 @@ $('#search').keyup(function(e)
     window.location.href = '/results?word=' + searchtext ;
     }
 });
+
+
+});
+

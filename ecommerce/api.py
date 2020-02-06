@@ -220,48 +220,6 @@ def get_categories():
     categories_list = db.session.query(Category.id , Category.name , db.func.count(Product.id)).outerjoin(Product).group_by(Category).all()
     return jsonify(categories_list)
 
-@app.route('/get_search_res2', methods = ['GET', 'POST'])
-def get_search_res2():
-    if request.method == 'POST':
-
-        keyword_args = request.json
-        results = search(**keyword_args)
-        return render_template('result_rows.html', results=results)
-
-
-@app.route('/get_search_res', methods = ['GET', 'POST'])
-def get_search_res():
-
-    if request.method == 'POST':
-
-        keyword_args = request.json
-        res = search(**keyword_args)
-        return jsonify(res)
-
-    if request.method == 'GET':
-        keyword_args = dict()
-        if request.args.get('min_price'):
-            keyword_args['min_price'] = int ( request.args.get('min_price') )
-
-        if request.args.get('max_price'):
-            keyword_args['max_price'] = int ( request.args.get('max_price') )
-
-        if request.args.get('min_avg'):
-            keyword_args['min_avg'] = int ( request.args.get('min_avg') )
-
-        if request.args.get('word'):
-            keyword_args['word'] = request.args.get('word')
-            
-        if request.args.get('category_list'):
-            keyword_args['category_list'] = request.args.get('category_list')
-            
-        category_list
-
-        res = search(**keyword_args)
-        return jsonify(res)
-
-    return abort(404)
-
 
 
 @app.route('/temp2/<pid>', methods = ['GET', 'POST'])
@@ -280,3 +238,5 @@ def get_product_data(pid):
 
     res.append(responce)
     return jsonify ( res )
+
+

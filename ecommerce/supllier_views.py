@@ -23,6 +23,9 @@ def sup_orders():
     GET request - returns sup_orders template with and apply relvent filter to effect the Post request
     POST request - return "order_items" sub template with relvent orders, this get injected into sup_orders
     '''
+    if not session.get('supplier_id'):
+        return redirect(url_for('suppliers_index'))
+    
     if request.method == 'POST' and 'make_shipment' not in request.json:
         kwargs = {'pid' : request.json.get('pid',False),
                   'status' : request.json.get('status',False),
@@ -53,7 +56,6 @@ def sup_orders():
     return render_template('/suppliers/sup_orders.html' , **data )
 
 
-
 @app.route('/suppliers/', methods = ['GET', 'POST'])
 def suppliers_index():
     data = {'forms': sup_forms()}
@@ -71,8 +73,7 @@ def sup_product_data(pid):
     if not product_belong_supplier(pid , session.get('supplier_id') ):
         return redirect(url_for('suppliers_main'))
 
-    data = {
-            'forms': sup_forms(),
+    data = {'forms': sup_forms(),
             'product' : Product.query.get(pid),
             'supplier' : Supplier.query.get(session.get('supplier_id')),
             'categorys': Category.query.all() }
