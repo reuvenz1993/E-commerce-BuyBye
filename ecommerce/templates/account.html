@@ -79,8 +79,8 @@
         data-parent="#accordionExample275">
         <div >
             <ul class="list-group">
-                {% if data.orders %}
-                {% for order in data.orders %}
+                {% if current_user.orders %}
+                {% for order in current_user.sorted_orders %}
 
                 <li class="list-group-item">
                     <div class="justify-content-center row">

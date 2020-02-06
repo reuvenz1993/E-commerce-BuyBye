@@ -173,6 +173,10 @@ class Buyer(db.Model, UserMixin):
         return self.cart.join(Cart_status).filter(Cart_status.is_open == True).all()
     
     @property
+    def sorted_orders(self):
+        return self.orders.order_by(Order.status).order_by(Order.order_time.desc()).all()
+    
+    @property
     def open_cart_total_price(self):
         return sum(item.total for item in self.open_cart)
     
@@ -181,6 +185,8 @@ class Buyer(db.Model, UserMixin):
             self.name = name
         if address :
             self.address = address
+
+
 
     # returns all cart item with statis active.
     def get_cart(self):

@@ -1,17 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<script>
-    {% if product_list %}
-    product_list = JSON.parse('{{ product_list | tojson | safe}}');
-    {% endif %}
-
-    {% if product_data %}
-    product_data = JSON.parse('{{ product_data | tojson | safe}}');
-    {% endif %}
-
-</script>
-
 <link href="{{url_for('static',filename='css/results.css')}}" rel="stylesheet">
 <link href="{{url_for('static',filename='css/index.css')}}" rel="stylesheet">
 

@@ -21,7 +21,7 @@ def pull_supplier_orders(sid , pid=False , status=False ):
             status =  [status]
         query = query.filter(Order.status.in_(status))
 
-    return query.all()
+    return query.order_by(Order.status).order_by(Order.order_time.desc())
 
 
 def product_belong_supplier(pid , supplier_id):
