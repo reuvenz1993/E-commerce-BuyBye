@@ -274,8 +274,10 @@ class Supplier(db.Model, UserMixin):
         return response
 
 
-    def update_photo(self,photo_filename):
-        self.photo = "/static/img/suppliers/" + photo_filename
+    def update_photo(self,picture):
+        picture_fn = save_photo(photo=picture, dir='suppliers')
+        self.photo = "/static/img/suppliers/" + picture_fn
+        db.session.commit()
 
     # gets an Supplier object and return list of his products
     def get_products(self):
@@ -354,7 +356,6 @@ class Product(db.Model, UserMixin):
         self.last_change_time = datetime.utcnow()
 
 
-
     def as_list(self):
         return [self.id ,self.name ,self.desc,self.supplier_id, self.brand, float(self.price), self.picture, self.Additional_information]
 
@@ -399,7 +400,8 @@ class Product(db.Model, UserMixin):
         return response
 
     def update_picture(self,picture):
-        self.picture = "/static/img/products/" + picture
+        picture_fn = save_photo(photo=picture,dir='product')
+        self.picture = "/static/img/products/" + picture_fn
         db.session.commit()
         
     @property

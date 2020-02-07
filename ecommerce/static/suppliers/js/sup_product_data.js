@@ -1,32 +1,20 @@
 
+$("#file").change(function() {
+    readURL(this);
+    });
 
-    $("#file").change(function() {
-        readURL(this);
-        });
-    
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
 
-            reader.onload = function(e)
-            {
-            $('#img').attr('src', e.target.result);
-            $('#preview').css('display' , 'block');
-            }
-            reader.readAsDataURL(input.files[0]);
+        reader.onload = function(e)
+        {
+        $('#img').attr('src', e.target.result);
+        $('#preview').css('display' , 'block');
         }
-        };
-
-
-
-
-
-
-
-
-
-
-
+        reader.readAsDataURL(input.files[0]);
+    }
+    };
 
 
 $('.change').click(function(e)
@@ -70,10 +58,10 @@ $("#but_upload").click(function(){
     var fd = new FormData();
     var files = $('#file')[0].files[0];
     fd.append('file',files);
-    fd.append('pid',product.id  )
+    fd.append('product_id',product.id  )
 
     $.ajax({
-        url: '/edit_product_pic',
+        url: '/supplier_update_product',
         type: 'post',
         data: fd,
         contentType: false,
@@ -108,8 +96,7 @@ function update_product_info(product_id , input , value)
         $.ajax({
             type: "POST",
             url: '/supplier_update_product',
-            contentType: 'application/json',
-            data:JSON.stringify (data),
+            data: data,
             dataType : "json" ,
             success: function (response)
                 {

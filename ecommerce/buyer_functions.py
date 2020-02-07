@@ -46,48 +46,37 @@ def signup_buyer(signup_form):
         print ('buy_now_or_add_to_cart function fail - on buy now action')
         print(e)
         return 'error'
-    
-
-    buyer_logging = Buyer.query.filter_by(username = login_form.username.data).first()
-    if ( buyer_logging is not None and buyer_logging.check_password(login_form.password.data) ) :
-        to_remember = login_form.remember.data
-        login_user(buyer_logging , remember = to_remember)
-        print ('login scss')
 
 
-
-def remove_from_cart(cart_item_id):
-    if not Cart.query.get(cart_item_id) or not Cart.query.get(cart_item_id).buyer_id == current_user.id:
+def remove_from_cart(item_id):
+    if not Cart.query.get(item_id) or not Cart.query.get(item_id).buyer_id == current_user.id:
         return False
-    Cart.query.get(cart_item_id).cancal()
+    Cart.query.get(item_id).cancal()
 
-    if not Cart.query.get(cart_item_id).status == 3 :
+    if not Cart.query.get(item_id).status == 3 :
         return False
 
     return True
 
-def order_item(cart_item_id):
-    if not Cart.query.get(cart_item_id) or not Cart.query.get(cart_item_id).buyer_id == current_user.id:
-        return False
-    Cart.query.get(cart_item_id).cancal()
-    
-    if not Cart.query.get(cart_item_id).status =='canceled':
+
+def buy_all(buyer_id=None, **kwargs):
+    if buyer_id :
+        buyer = Buyer.query.get(buyer_id)
+    elif current_user :
+        buyer = current_user
+    else:
         return False
 
-    return True
-
-def buy_all(buyer_id):
-    cart = Buyer.query.get(buyer_id).get_cart()
-    for item in cart:
+    for item in buyer.open_cart:
         buy_one(item_id=item.id)
-    if len(Buyer.query.get(buyer_id).get_cart()) == 0 :
+    if len(buyer.open_cart) == 0 :
         return True
     else:
         return False
-    
+
 # buy one product from those in the cart, pram : *[1]-cart.id , [2]-buyer_message
 def buy_one(item_id , buyer_message=False):
-    if not Cart.query.get(item_id):
+    if not Cart.query.get(item_id) or not Cart.query.get(item_id).buyer_id == current_user.id:
         return False
 
     cart_item = Cart.query.get(item_id)
@@ -103,7 +92,7 @@ def buy_now_or_add_to_cart(buyer_id , product_id , qty , buyer_message=False , b
                'qty' : qty ,
                'buy_now' : buy_now ,
                'buyer_message': buyer_message}
-    # if buyer choose buy now on product screen, prama 
+    # if buyer choose buy now on product screen, prama
     if buy_now :
         if buyer_message :
             kwargs['buyer_message'] = buyer_message
@@ -192,6 +181,7 @@ def search( pid = [i for i in range( Product.query.count()+1 )] , category_list 
         return products
     else :
         return search_query.all()
+
 
 
 

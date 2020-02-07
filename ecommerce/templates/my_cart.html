@@ -7,6 +7,23 @@
 
     <div class="justify-content-center row">
         <div class="col">
+            {% if action %}
+            {% if action.success %}
+            <div class="alert alert-success font-weight-bold text-center" role="alert">
+            {% if action.type == 'remove' %}
+                {{action.item.cart_product.name}} removed successfully !
+            {% elif action.type == 'buy_one' %}
+                {{action.item.cart_product.name}} Ordered successfully - Order id : {{action.item.order_id.id}}
+            {% elif action.type == 'buy_all' %}
+                All items ordered successfully !
+            {% endif %}
+              </div>
+            {% elif not action.success %}
+            <div class="alert alert-danger font-weight-bold text-center" role="alert">
+                Sorry, we couldn't perform action please try again later
+            </div>
+            {% endif %}
+            {% endif %}
                 <div class="card part">
                     <div class="card-header text-center">
                         <h1> Shopping Cart (<span id='cart_count'>{% if current_user.open_cart %} {{current_user.open_cart | length }} {% else %} 0 {% endif %} </span>) </h1>
@@ -129,7 +146,7 @@
                                     <div class="paymentCont">
                                         <div class='text-center'> Total : <span id='total_price'>{% if current_user.open_cart %} {{current_user.open_cart_total_price}} {% endif %}</span> $ </div>
                                         <div>
-                                           <a href="/cart_actions?type=buy_all"> <button id='chackout' type="button" class="btn btn-default btn_radius" data-dismiss="modal">Chackout</button></a>
+                                           <a href="/my_cart?type=buy_all"> <button id='chackout' type="button" class="btn btn-default btn_radius" data-dismiss="modal">Chackout</button></a>
                                         </div>
                                     </div>
                                 </div>

@@ -8,11 +8,11 @@ $(document).ready(function () {
 
     $('.buy_this').click(e =>
         {
-            window.location.href = '/cart_actions?type=buy_one&&item_id=' + e.currentTarget.dataset.item_id;
+            window.location.href = '/my_cart?type=buy_one&&item_id=' + e.currentTarget.dataset.item_id;
         });
 
     $('.remove_this').click(e =>
         {
-            window.location.href = '/cart_actions?type=remove&&item_id=' + e.currentTarget.dataset.item_id;
+            window.location.href = '/my_cart?type=remove&&item_id=' + e.currentTarget.dataset.item_id;
         });
 });
