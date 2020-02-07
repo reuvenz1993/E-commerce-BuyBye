@@ -83,33 +83,29 @@ def buy_one(item_id , buyer_message=False):
     order_id = cart_item.stamp_ordered(buyer_message=buyer_message)
     return order_id
 
-def buy_now_or_add_to_cart(buyer_id , product_id , qty , buyer_message=False , buy_now=False ):
-    if not Buyer.query.get(buyer_id) or not Product.query.get(product_id):
+
+def buy_now(product_id ,qty ,buyer_id, buyer_message=False, **kwargs):
+    
+    params = {'product_id': product_id, 'buyer_id': buyer_id,
+              'qty': int(qty),'buyer_message': buyer_message}
+
+    cart = Cart(**params, buy_now=True)
+    db.session.add(cart)
+    db.session.commit()
+    if Cart.query.get(cart.id):
+        return { 'cart_item':cart.id, 'cart_size': Buyer.query.get(buyer_id).open_cart_count, 'order_id': cart.order_id.id }
+    else :
         return False
 
-    kwargs = { 'buyer_id' : buyer_id ,
-               'product_id' : product_id,
-               'qty' : qty ,
-               'buy_now' : buy_now ,
-               'buyer_message': buyer_message}
-    # if buyer choose buy now on product screen, prama
-    if buy_now :
-        if buyer_message :
-            kwargs['buyer_message'] = buyer_message
-        cart_item = Cart(**kwargs)
-        if cart_item.order_id:
-            return cart_item.order_id.id
-        else :
-            return False
-    # if buyer choose "add to cart, on kwargs buyer_message=False so item will only be added to cart "
+def add_to_cart(product_id ,qty ,buyer_id, **kwargs):
+
+    cart = Cart(buyer_id=buyer_id, product_id=product_id, qty=int(qty), buy_now=False)
+    db.session.add(cart)
+    db.session.commit()
+    if Cart.query.get(cart.id):
+        return { 'cart_item':cart.id, 'cart_size': Buyer.query.get(buyer_id).open_cart_count }
     else :
-        cart_item = Cart( **kwargs )
-        db.session.add(cart_item)
-        db.session.commit()
-        if Cart.query.get(cart_item.id):
-            return { 'cart_item':cart_item.id , 'cart_size': Buyer.query.get(buyer_id).cart.filter(Cart.status == 1).count() }
-        else :
-            return False
+        return False
 
 
 def get_product_extra_info(pid):
@@ -136,7 +132,6 @@ def get_product_extra_info(pid):
         del product_data['_sa_instance_state']
 
     return product_data
-
 
 
 def search( pid = [i for i in range( Product.query.count()+1 )] , category_list = [i for i in range( Category.query.count()+1 )] ,min_price=0 , max_price=100000 , min_avg=0 , word=False , as_json=False ):
@@ -184,6 +179,37 @@ def search( pid = [i for i in range( Product.query.count()+1 )] , category_list 
 
 
 
+
+
+"""
+def buy_now_or_add_to_cart(buyer_id , product_id , qty , buyer_message=False , buy_now=False ):
+    if not Buyer.query.get(buyer_id) or not Product.query.get(product_id):
+        return False
+
+    kwargs = { 'buyer_id' : buyer_id ,
+               'product_id' : product_id,
+               'qty' : qty ,
+               'buy_now' : buy_now ,
+               'buyer_message': buyer_message}
+    # if buyer choose buy now on product screen, prama
+    if buy_now :
+        if buyer_message :
+            kwargs['buyer_message'] = buyer_message
+        cart_item = Cart(**kwargs)
+        if cart_item.order_id:
+            return cart_item.order_id.id
+        else :
+            return False
+    # if buyer choose "add to cart, on kwargs buyer_message=False so item will only be added to cart "
+    else :
+        cart_item = Cart( **kwargs )
+        db.session.add(cart_item)
+        db.session.commit()
+        if Cart.query.get(cart_item.id):
+            return { 'cart_item':cart_item.id , 'cart_size': Buyer.query.get(buyer_id).cart.filter(Cart.status == 1).count() }
+        else :
+            return False
+"""
 
 
 

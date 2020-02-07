@@ -4,6 +4,7 @@ from flask import render_template, redirect, request, url_for, flash, abort , js
 from flask_login import login_user, login_required, logout_user, current_user
 from ecommerce.functions import *
 from ecommerce.buyer_functions import *
+from ecommerce.supplier_functions import update_product
 import json
 
 
@@ -43,20 +44,6 @@ def supplier_update_product():
     return jsonify(False)
 
 
-def update_product(product, field, value):
-    if field not in ['name', 'desc' , 'category' , 'brand' , 'price' , 'Additional_information'] or value in [None , ""]:
-        return False
-    if field == 'price':
-        value = float(value)
-    if field == 'category':
-        value = int(value)
-
-    product.__setattr__(field, value)
-    db.session.commit()
-    return product.__getattribute__(field) == value
-
-
-
 @app.route('/account_actions', methods = ['GET', 'POST'])
 @login_required
 def account_actions():
@@ -67,59 +54,28 @@ def account_actions():
             db.session.commit()
             return jsonify (order.status == 3)
 
-    if 'type' in request.json :
-        kwargs = {}
-        if request.json['type'] == 'personal':
-            if 'name' in request.json :
-                kwargs['name'] = request.json['name']
-            if 'address' in request.json :
-                kwargs['address'] = request.json['address']
-            Buyer.query.get(current_user.id).update_personal(**kwargs)
-            db.session.commit()
-            return jsonify( 'personal info changed' )
-        return jsonify ( False )
+    if 'type' in request.json and request.json['type'] == 'personal' :
+        kwargs = {'name': request.json.get('name'), 'address':  request.json.get('address')}
+        current_user.update_personal(**kwargs)
+        db.session.commit()
+        return jsonify( 'personal info changed' )
+
+    return jsonify ( False )
 
 
 @app.route('/buy_now_or_cart', methods = ['GET', 'POST'])
 @login_required
 def buy_now_or_cart():
-    keyword_args = {}
-    keyword_args['buyer_id'] = current_user.id
-    keyword_args['product_id'] = int( request.json['product_id'] )
-    keyword_args['qty'] = int ( request.json['qty'] )
-
+    buyer_id = current_user.id
     #preform a buy now
     if request.json['type'] == 'buy':
-        keyword_args['buy_now'] = True
-        if 'buyer_message' in request.json :
-            keyword_args['buyer_message'] = request.json['buyer_message']
-        res = buy_now_or_add_to_cart(**keyword_args)
+        res = buy_now(buyer_id = buyer_id, **request.json)
 
     #just add to cart
     if request.json['type'] == 'cart':
-        res = buy_now_or_add_to_cart(**keyword_args)
+        res = add_to_cart(buyer_id = buyer_id, **request.json)
 
     return jsonify (res)
-
-
-    if request.json['type'] == 'buy_one':
-        responce = { 'status':False , 'type' : request.json['type'] }
-        kwargs = { item_id : request.json['type'] }
-        item_id = request.json['cart_item']
-        if 'buyer_message' in request.json :
-            kwargs['buyer_message'] = request.json['buyer_message']
-        order_id = buy_one(**kwargs)
-        if order_id:
-            responce['order_id'] = order_id
-            responce['status'] = True
-
-    if request.json['type'] == 'buy_all':
-        pass
-
-    return jsonify ( responce )
-
-
-
 
 
 

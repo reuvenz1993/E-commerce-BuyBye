@@ -7,6 +7,17 @@ import os
 from PIL import Image
 from ecommerce.functions import *
 
+def update_product(product, field, value):
+    if field not in ['name', 'desc' , 'category' , 'brand' , 'price' , 'Additional_information'] or value in [None , ""]:
+        return False
+    if field == 'price':
+        value = float(value)
+    if field == 'category':
+        value = int(value)
+
+    product.__setattr__(field, value)
+    db.session.commit()
+    return product.__getattribute__(field) == value
 
 
 def pull_supplier_orders(sid , pid=False , status=False ):

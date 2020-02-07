@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 from flask_marshmallow import Marshmallow
+from ecommerce.functions import save_photo
 import pdb
 
 def product_info_to_ui(pid):
@@ -171,6 +172,10 @@ class Buyer(db.Model, UserMixin):
     @property
     def open_cart(self):
         return self.cart.join(Cart_status).filter(Cart_status.is_open == True).all()
+    
+    @property
+    def open_cart_count(self):
+        return self.cart.join(Cart_status).filter(Cart_status.is_open == True).count()
     
     @property
     def sorted_orders(self):
