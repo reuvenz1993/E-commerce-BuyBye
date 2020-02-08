@@ -25,7 +25,7 @@
                     <div class="form-group row">
                         <label for="inputName" class="col-auto col-form-label">Full name :</label>
                         <div class="col-auto">
-                            <input value="{{data.buyer.name}}" disabled type="text" class="form-control" name="name_input" id="name_input" placeholder="">
+                            <input value="{{current_user.name}}" disabled type="text" class="form-control" name="name_input" id="name_input" placeholder="">
                         </div>
                       <div class="col-auto">
                           <button id='name_input_edit' type="submit" class="btn btn-primary">Edit</button>
@@ -38,7 +38,7 @@
                     <div class="form-group row">
                       <label for="inputName" class="col-auto col-form-label">Address :</label>
                       <div class="col-auto">
-                          <input  value="{{data.buyer.address}}" disabled type="text" class="form-control" name="address_input" id="address_input" placeholder="">
+                          <input  value="{{current_user.address}}" disabled type="text" class="form-control" name="address_input" id="address_input" placeholder="">
                       </div>
                     <div class="col-auto">
                         <button id='address_input_edit' type="submit" class="btn btn-primary">Edit</button>
@@ -75,14 +75,14 @@
           </button>
         </h5>
       </div>
-      <div id="collapseThree2" class="collapse" aria-labelledby="headingThree2"
+      <div id="collapseThree2" {% if focus_order %} class="collapse show" {% else %} class="collapse" {% endif %} aria-labelledby="headingThree2"
         data-parent="#accordionExample275">
         <div >
             <ul class="list-group">
                 {% if current_user.orders %}
                 {% for order in current_user.sorted_orders %}
 
-                <li class="list-group-item">
+                <li class="list-group-item" data-list_order_id="{{order.id}}">
                     <div class="justify-content-center row">
                         <h3> order id : {{order.id}} </h3>
                     </div>
@@ -121,7 +121,14 @@
 </div>
 
 
-
+{% if focus_on %}
+<script type="text/javascript">
+$('html, body, .container').animate(
+{
+scrollTop: $("[data-list_order_id={{focus_on}}]").offset().top-$("[data-list_order_id=232]").height()
+},1500)
+</script>
+{% endif %}
 
 
 

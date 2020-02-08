@@ -43,7 +43,7 @@ $(document).ready(function ()
                     $('#buy_now').hide();
                     $('#add_to_cart').hide();
                     $('#qty').prop( 'disabled' , 'true' );
-                    alart = $('<div></div>').text('Item added to cart').addClass('alert alert-success text-center').prependTo('#cont_product');
+                    alert = $('<div></div>').text('Item added to cart').addClass('alert alert-success text-center').prependTo('#cont_product');
                     $('#items_count').text(response['cart_size'])
                     $('#cart_success').modal('show');
 
@@ -63,7 +63,7 @@ $(document).ready(function ()
     function order_or_cart()
 {   
     console.log('order_or_cart run');
-    $('#chackout').click( (e) => {
+    $('#checkout').click( (e) => {
 
         console.log(e)
         data = { 'type' : 'buy' , 'product_id' : product.id , 'qty' : qty , 'buyer_message' : $('#buyer_message').val() };

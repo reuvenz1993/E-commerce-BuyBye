@@ -25,29 +25,21 @@ categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothi
 @login_required
 def account():
     forms = Forms()
-    data = {'orders':current_user.orders.all() }
-    print (current_user.orders.all())
-    print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
-    if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
-        print(forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit())
-        signup_status = signup_buyer(forms['signup_form'])
-        print (signup_status)
-    if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
-        check_login(forms['login_form'])
-    if current_user.is_authenticated:
-        data['buyer'] = current_user
-    
+    handle_forms(forms)
+    data = {**forms, 'focus_order' : request.args.get('focus_order') }
+    if request.args.get('focus_order') and int(request.args.get('focus_order')) in (order.id for order in current_user.orders):
+        data['focus_on'] = int(request.args.get('focus_order'))
 
-    return render_template('account.html' , **forms , data=data )
+    return render_template('account.html', **data )
 
 
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     forms = Forms()
-    data = {'categorys': Category.query.all()}
     handle_forms(forms)
+    data = {**forms ,'categorys': Category.query.all()}
 
-    return render_template('index.html' , **forms , **data )
+    return render_template('index.html', **data )
 
 @app.route('/logout', methods = ['GET', 'POST'])
 def logout():

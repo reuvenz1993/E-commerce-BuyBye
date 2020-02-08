@@ -10,10 +10,9 @@ import secrets
 from decimal import Decimal
 import decimal
 
-file_locations = { 'product':'static/img/products',
+file_locations = {'product':'static/img/products',
                   'buyer_photo':'static/img/buyers',
                   'suppliers':'static/img/suppliers' }
-
 
 
 def save_photo(photo , dir):
@@ -25,28 +24,10 @@ def save_photo(photo , dir):
     image = Image.open(photo)
     image.thumbnail(output_size)
     image.save(photo_path)
-    return photo_fn
 
 
-def dec_2_float(x):
-    if isinstance(x , Decimal):
-        print (x)
-        x = int (x)
-    if isinstance(x , list):
-        for index in range(len(x)) :
-            if isinstance(x[index] , Decimal):
-                x[index] = int (x[index])
-            else: 
-                dec_2_float(x[index])
 
-    elif isinstance(x , dict) :
-        for key , value in x.items() :
-            if isinstance(x[key], Decimal):
-                x[key] = int (value)
-            else :
-                dec_2_float(x[key])
-
-
+'''
 # function to abstract the use of schema, it gets a list or single object of any type of model and return a clean dict repr
 def get_dict(object_or_list):
     import ecommerce
@@ -61,9 +42,11 @@ def get_dict(object_or_list):
     res = schema.dump(object_or_list)
     dec_2_float(res)
     return res
-    
+'''
 
-# gets object 
+
+'''
+# gets object
 def get_schema(model , many=True):
     import ecommerce
     schema_type = ""
@@ -74,11 +57,8 @@ def get_schema(model , many=True):
         #print (s)
         #print (type(s))
         if isinstance(arg , val ):
-            #print ('True')
-            #print (idx)
-            #print (val)
-            #print (schemas[idx])
             model = idx
             schema = schemas[idx]
             schema.many = many
             return schema
+'''

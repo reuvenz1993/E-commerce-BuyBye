@@ -13,7 +13,7 @@
             {% if action.type == 'remove' %}
                 {{action.item.cart_product.name}} removed successfully !
             {% elif action.type == 'buy_one' %}
-                {{action.item.cart_product.name}} Ordered successfully - Order id : {{action.item.order_id.id}}
+                {{action.item.cart_product.name}} Ordered successfully -  Order id : <a href="/account?focus_order={{action.item.order_id.id}}"> {{action.item.order_id.id}} </a>
             {% elif action.type == 'buy_all' %}
                 All items ordered successfully !
             {% endif %}
