@@ -16,8 +16,6 @@ from ecommerce.api import *
 from ecommerce.supplier_functions import *
 import ecommerce.supllier_views
 
-functions = {'remove' : remove_from_cart, 'buy_one': buy_one ,'buy_all': buy_all}
-
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
@@ -47,17 +45,21 @@ def logout():
     return redirect (url_for('index'))
 
 
-
 @app.route('/my_cart', methods = ['GET', 'POST'])
 @login_required
 def my_cart():
-    data = {}
     forms = Forms()
-    if request.args.get('type') in functions :
-        res = functions[request.args.get('type')](item_id=request.args.get('item_id'))
-        data['action'] = {'success': res , 'type': request.args.get('type'),'item': Cart.query.get(request.args.get('item_id', False))}
+    data = {**forms}
+    args = request.args
+    if args.get('type') == 'update_buyer_message':
+        return jsonify(update_buyer_message(item_id=args.get('item_id'), buyer_message=args.get('buyer_message')))
     
-    return render_template('my_cart.html' , **forms , **data)
+    cart_functions = {'remove' : remove_from_cart, 'buy_one': buy_one ,'buy_all': buy_all}
+    if args.get('type') in cart_functions:
+        res = cart_functions[args.get('type')](item_id=args.get('item_id'))
+        data['action'] = {'success': res, 'type': args.get('type'),'item': Cart.query.get(args.get('item_id', False))}
+    
+    return render_template('my_cart.html', **data)
 
 
 @app.route('/results', methods = ['GET', 'POST'])

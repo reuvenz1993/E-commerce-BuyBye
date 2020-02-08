@@ -48,15 +48,16 @@ def signup_buyer(signup_form):
         return 'error'
 
 
+def update_buyer_message(item_id, buyer_message):
+    cart = Cart.query.get(item_id)
+    cart.add_buyer_message(buyer_message=buyer_message)
+    return buyer_message == cart.buyer_message
+
+
 def remove_from_cart(item_id):
-    if not Cart.query.get(item_id) or not Cart.query.get(item_id).buyer_id == current_user.id:
-        return False
-    Cart.query.get(item_id).cancal()
-
-    if not Cart.query.get(item_id).status == 3 :
-        return False
-
-    return True
+    cart = Cart.query.get(item_id)
+    cart.cancal()
+    return Cart.query.get(item_id).status == 3
 
 
 def buy_all(buyer_id=None, **kwargs):
@@ -75,12 +76,9 @@ def buy_all(buyer_id=None, **kwargs):
         return False
 
 # buy one product from those in the cart, pram : *[1]-cart.id , [2]-buyer_message
-def buy_one(item_id , buyer_message=False):
-    if not Cart.query.get(item_id) or not Cart.query.get(item_id).buyer_id == current_user.id:
-        return False
-
+def buy_one(item_id):
     cart_item = Cart.query.get(item_id)
-    order_id = cart_item.stamp_ordered(buyer_message=buyer_message)
+    order_id = cart_item.stamp_ordered()
     return order_id
 
 

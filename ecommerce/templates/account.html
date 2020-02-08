@@ -88,27 +88,48 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <img style="max-width: 125px;" src="{{order.product.picture}}" alt="">
+                            <img class='product_img' style="max-width: 125px;" src="{{order.product.picture}}" alt="">
                         </div>
                         <div class="col">
-                            <div class="row">
+                            <p>
                             Product name : {{order.product.name}}
-                        </div>
-                        <div class="row">
+                        </p>
+                        <p>
                             Order date  : {{order.order_time.strftime("%d/%m/%y")}}
-                        </div>
+                        </p>
                         </div>
                         <div class="col">
-                            <div class="row">
+                          <p class="row">
+                            Qty: {{order.qty}}
+                          </p>
+                            <p>
                               Status : <span id="s{{order.id}}"> {{order.the_status.name}}  </span>
-                            </div>
-                        </div>
-                        <div class="col">
-                            {% if order.status == 2  %}
-                            <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" id="{{order.id}}" class="btn btn-primary btn-lg confirm">Confirm Received</button>
+                            </p>
+                            {% if order.shipment_time %}
+                            <p>
+                              Shipment date : {{order.shipment_time.strftime("%d/%m/%y")}}
+                            </p>
+                            <p>
+                              Tracking number : {{order.tracking_number}}
+                            </p>
                             {% endif %}
                         </div>
+                        {% if order.status == 2  %}
+                        <div class="col">
+                            <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" id="{{order.id}}" class="btn btn-primary btn-lg confirm">Confirm Received</button>
+                        </div>
+                        {% endif %}
                     </div>
+                    {% if order.buyer_message and order.buyer_message != "" %}
+                    <hr>
+                    <div class="row justify-content-center">
+                      <div class="form-group justify-content-center" style="width: 90%;">
+                          <label>My message to seller</label>
+                          <textarea class="form-control" disabled rows="3">{{order.buyer_message}}</textarea>
+                      </div>
+                    </div>
+                    {% endif %}
+                  </li>
                     {% endfor %}
                     {% endif %}
 

@@ -8,3 +8,12 @@ body
 {
     margin-bottom: 20px;
 }
+
+.product_img_col{
+    max-width: 135px;
+}
+
+.product_img{
+    max-width: 125px;
+    max-height: 125px;
+}

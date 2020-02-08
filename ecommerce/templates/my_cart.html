@@ -119,7 +119,7 @@
                                             <div class="row justify-content-center">{{cart_item.cart_product.desc}}</div>
                                         </div>
                                         <div id="{{cart_item.id}}" class="col-3" style="max-width: 125px;">
-                                            <button data-item_id="{{cart_item.id}}" class="btn btn-sm row buy_this btn_radius">Buy this</button>
+                                            <button data-item_id="{{cart_item.id}}" data-type="buy_this" class="btn btn-sm row buy_this btn_radius">Buy this</button>
                                             <button data-item_id="{{cart_item.id}}" class="btn btn-sm row remove_this btn_radius">Remove</button>
                                         </div>
                                     </div>
@@ -127,6 +127,13 @@
                                         <div class="col">Qty : {{cart_item.qty}}</div>
                                         <div class="col">Price : {{cart_item.price}} $</div>
                                         <div class="col">Total : {{cart_item.total}} $ </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group justify-content-center" style="width: 90%;">
+                                          <label>Message to seller</label>
+                                          <textarea class="form-control" rows="3" data-type="message" data-item_id="{{cart_item.id}}">{% if cart_item.buyer_message %}{{cart_item.buyer_message}}{% endif %}</textarea>
+                                        </div>
                                     </div>
                                 </div>
 

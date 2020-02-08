@@ -51,14 +51,12 @@ def account_actions():
         order = Order.query.get(request.args.get('id'))
         if order.buyer_id == current_user.id :
             order.confirm_supplied()
-            db.session.commit()
             return jsonify (order.status == 3)
 
     if 'type' in request.json and request.json['type'] == 'personal' :
         kwargs = {'name': request.json.get('name'), 'address':  request.json.get('address')}
         current_user.update_personal(**kwargs)
-        db.session.commit()
-        return jsonify( 'personal info changed' )
+        return jsonify('personal info changed')
 
     return jsonify ( False )
 
@@ -66,16 +64,14 @@ def account_actions():
 @app.route('/buy_now_or_cart', methods = ['GET', 'POST'])
 @login_required
 def buy_now_or_cart():
+    func = {'buy': buy_now, 'cart': add_to_cart }
     buyer_id = current_user.id
-    #preform a buy now
-    if request.json['type'] == 'buy':
-        res = buy_now(buyer_id = buyer_id, **request.json)
-
-    #just add to cart
-    if request.json['type'] == 'cart':
-        res = add_to_cart(buyer_id = buyer_id, **request.json)
-
-    return jsonify (res)
+    # pick buy now / add to cart args('type') and execute it with args
+    if request.json.get('type') in func:
+        res = func[request.json.get('type')](buyer_id = buyer_id, **request.json)
+        return jsonify (res)
+    else :
+        return jsonify (False)
 
 
 

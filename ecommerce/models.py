@@ -112,6 +112,7 @@ class Cart(db.Model, UserMixin):
             self.buyer_message = buyer_message
         else:
             print ('you called add_buyer_message function without a message ')
+        db.session.commit()
 
     def stamp_ordered(self , buyer_message=False):
         if buyer_message :
@@ -190,6 +191,7 @@ class Buyer(db.Model, UserMixin):
             self.name = name
         if address :
             self.address = address
+        db.session.commit()
 
 
 
@@ -528,6 +530,8 @@ class Order(db.Model, UserMixin):
     def make_shipment(self, tracking_number):
         self.status = 2
         self.tracking_number = tracking_number
+        self.shipment_time = datetime.utcnow()
+        self.last_change_time = datetime.utcnow()
         db.session.commit()
 
     def finish_order(self):
@@ -555,6 +559,7 @@ class Order(db.Model, UserMixin):
         self.status = 3
         self.fulfillment_time = datetime.utcnow()
         self.last_change_time = datetime.utcnow()
+        db.session.commit()
 
 
 class Reviews(db.Model, UserMixin):
