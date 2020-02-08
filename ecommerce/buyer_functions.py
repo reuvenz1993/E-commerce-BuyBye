@@ -93,7 +93,7 @@ def buy_now(product_id ,qty ,buyer_id, buyer_message=False, **kwargs):
     db.session.add(cart)
     db.session.commit()
     if Cart.query.get(cart.id):
-        return { 'cart_item':cart.id, 'cart_size': Buyer.query.get(buyer_id).open_cart_count, 'order_id': cart.order_id.id }
+        return { 'cart_item':cart.id, 'cart_size': Buyer.query.get(buyer_id).open_cart_count, 'order_id': cart.order_id.id, 'product_name': cart.cart_product.name }
     else :
         return False
 

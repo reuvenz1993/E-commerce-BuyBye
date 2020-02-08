@@ -76,15 +76,13 @@ $(document).ready(function ()
             dataType : 'json',
             data : JSON.stringify( data ),
             success: function (response) {
-                product_list = response;
-                console.log(response);
+                temp = response;
+                console.log(temp);
                 $('#buy_now_modal').hide();
                 $('#buy_now').hide();
                 $('#add_to_cart').hide();
                 $('#qty').prop( 'disabled' , 'true' );
-                alert = $('<div></div>').text('Order Confirmed').addClass('alert alert-success text-center').prependTo('#cont_product');
-                //$('#cart_success').modal('show');
-                
+                alert = $('<div></div>').html(temp.product_name +' Ordered successfully - Order id :' + "<a href='/account?focus_order="+temp.order_id+"'>" + temp.order_id + "</a>").addClass('alert alert-success text-center').prependTo('#cont_product');
                 }});
         
         });
