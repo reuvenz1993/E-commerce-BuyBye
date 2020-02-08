@@ -87,10 +87,10 @@
                         <h3> order id : {{order.id}} </h3>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col product_img_col">
                             <img class='product_img' style="max-width: 125px;" src="{{order.product.picture}}" alt="">
                         </div>
-                        <div class="col">
+                        <div class="col text-center">
                             <p>
                             Product name : {{order.product.name}}
                         </p>
@@ -98,8 +98,8 @@
                             Order date  : {{order.order_time.strftime("%d/%m/%y")}}
                         </p>
                         </div>
-                        <div class="col">
-                          <p class="row">
+                        <div class="col text-center">
+                          <p>
                             Qty: {{order.qty}}
                           </p>
                             <p>

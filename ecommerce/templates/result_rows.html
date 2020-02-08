@@ -1,6 +1,6 @@
+<h3 class="text-center">Page {{results.page}} / {{results.pages}} ({{results.total}} Products)</h3>
 {% if results %}
-{% for product in results %}
-
+{% for product in results.items %}
 <li class="row text-center item align-items-center" id="product num: {{product.id}}" data-pid="{{product.id}}">
     <div id="product_pic1" class="col">
         <img src="{{product.picture}}" class="pic">
@@ -24,3 +24,17 @@
 
 {% endfor %}
 {% endif %}
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if results.has_prev %}
+      <li class="page-item" data-page_action="prev" data-page_number="{{results.prev_num}}"><a class="page-link" href="#">Previous</a></li>
+      {% endif %}
+      <li class="page-item"><a class="page-link">{{results.page}}</a></li>
+      {% if results.has_next %}
+      <li class="page-item" data-page_action="next" data-page_number="{{results.next_num}}" ><a class="page-link" href="#">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  

@@ -16,6 +16,7 @@ from ecommerce.api import *
 from ecommerce.supplier_functions import *
 import ecommerce.supllier_views
 
+per_page = 10
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
@@ -77,10 +78,13 @@ def results():
     # word="search products contains this word", as_json=False(set true to get json response)
     if request.method == 'POST' and request.json:
         keyword_args = request.json
-        results = search(**keyword_args)
+        page = int(keyword_args.pop("page", 1))
+        results = search(**keyword_args).paginate(page, per_page, False)
+
         return render_template('result_rows.html', results=results)
 
     keyword_args = dict(request.args)
+    keyword_args.pop("page", None)
     for key,value in keyword_args.items():
         if key != 'word':
             if type(value) is list :
@@ -91,7 +95,7 @@ def results():
             keyword_args[key] = str(value[0])
 
 
-    results = search(**keyword_args) # proform search with params, if keyword_args is None - return all products
+    results = search(**keyword_args).paginate(1, per_page, False)# proform search with params, if keyword_args is None - return all products
 
     categorys = Category.query.all()
 

@@ -4,7 +4,8 @@
         'min_price': parseInt($("#min").val()),
         'max_price': parseInt($('#max').val()),
         'min_avg': parseInt($("input[type='radio']:checked").val()),
-        'word':"" };
+        'word':"",
+        'page': 1};
 
 function load_results()
 {
@@ -55,10 +56,10 @@ function search_products()
     } else
     {
         search_filters['word'] = false;
-    }
+    };
     search_filters['category_list'] = selected_category_list();
-    search_filters['min_price'] = parseInt(  $('#min').val() );
-    search_filters['max_price'] = parseInt(  $('#max').val() );
+    search_filters['min_price'] = parseInt($('#min').val());
+    search_filters['max_price'] = parseInt($('#max').val());
     search_filters['min_avg'] = parseInt ( $("input[type='radio']:checked").val() );
     res = load_results();
     res.then((results) =>
@@ -91,7 +92,11 @@ function event_handlers()
 };
 
 
-
+$('[data-page_number]').click((e)=>
+{
+    search_filters['page'] = e.currentTarget.dataset.page_number;
+    search_products()
+});
 
 
 

@@ -173,7 +173,7 @@ def search( pid = [i for i in range( Product.query.count()+1 )] , category_list 
             products.append(row)
         return products
     else :
-        return search_query.all()
+        return search_query
 
 
 
