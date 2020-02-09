@@ -1,4 +1,5 @@
 qty = parseInt($('#qty').val());
+page = 1
 $(document).ready(function ()
 {
 
@@ -22,7 +23,8 @@ $(document).ready(function ()
             qty = $('#qty').val();
             total_price = qty * product.price;
             $('#total').val(total_price);
-            
+
+
 
         });
 
@@ -57,6 +59,13 @@ $(document).ready(function ()
                     }});
             });
 
+
+
+    $('[data-page_number]').click((e)=>
+    {
+    page = e.currentTarget.dataset.page_number;
+    search_products()
+    });
 
     };
 

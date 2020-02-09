@@ -16,7 +16,7 @@ from ecommerce.api import *
 from ecommerce.supplier_functions import *
 import ecommerce.supllier_views
 
-per_page = 10
+per_page = 2
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
@@ -105,9 +105,18 @@ def results():
 @app.route('/product2/<pid>', methods = ['GET', 'POST'])
 def product(pid):
     forms = Forms()
-    product = Product.query.get(pid)
     handle_forms(forms)
+    product = Product.query.get(pid)
+    reviews = product.reviews
+    if request.method == 'POST' and 'page' in request.json:
+        page = int(request.json.get('page',1))
+        reviews = reviews.paginate(page,per_page,False)
+        return render_template('product.html', product=product, reviews=reviews)
+    
+    reviews = reviews.paginate(1,per_page,False)
+    data = {**forms, 'product': product, 'reviews': reviews}
+
     if not product :
         return redirect (url_for('index'))
 
-    return render_template('product2.html', **forms , product=product )
+    return render_template('product2.html', **data)

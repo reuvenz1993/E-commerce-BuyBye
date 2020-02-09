@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <h4 class="card-title text-center">Reviews :</h4>
+        <h4 class="card-title text-center">Reviews {% if reviews %}({{product.review_count}}) {% endif %}:</h4>
     </div>
     <ul class="list-group list-group-flush">
         <div class="row font-weight-bold">
@@ -8,8 +8,8 @@
             <div class="col text-center">Review</div>
             <div class="col text-center">Rank</div>
         </div>
-        {% if product.reviews %}
-        {% for review in product.reviews %}
+        {% if reviews %}
+        {% for review in reviews.items %}
         <li class="list-group-item">
             <div class="row">
                 <div class="col text-center">
@@ -28,3 +28,15 @@
         {% endif %}
     </ul>
 </div>
+
+<nav id='pages' class="row justify-content-center m-3">
+    <ul class="pagination pagination-lg ">
+        {% if reviews.has_prev %}
+      <li class="page-item" data-page_action="prev" data-page_number="{{reviews.prev_num}}"><div class="page-link" href="#">Previous</div></li>
+      {% endif %}
+      <li class="page-item active"><div class="page-link">{{reviews.page}}</div></li>
+      {% if reviews.has_next %}
+      <li class="page-item" data-page_action="next" data-page_number="{{reviews.next_num}}" ><div class="page-link" href="#">Next <span class="sr-only">(current)</span></div></li>
+      {% endif %}
+    </ul>
+  </nav>

@@ -453,7 +453,7 @@ class Product(db.Model, UserMixin):
 
     @property
     def reviews(self):
-        res = db.session.query(Reviews).join(Order).filter(Order.product_id == self.id).all()
+        res = db.session.query(Reviews).join(Order).filter(Order.product_id == self.id)
         if res :
             return res
         else:
