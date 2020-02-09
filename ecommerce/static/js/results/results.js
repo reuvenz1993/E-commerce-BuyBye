@@ -89,14 +89,16 @@ function event_handlers()
     });
 
     make_products_clickable();
-};
 
-
-$('[data-page_number]').click((e)=>
+    $('[data-page_number]').click((e)=>
 {
     search_filters['page'] = e.currentTarget.dataset.page_number;
     search_products()
 });
+};
+
+
+
 
 
 

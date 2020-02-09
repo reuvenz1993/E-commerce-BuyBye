@@ -6,7 +6,7 @@
         <img src="{{product.picture}}" class="pic">
     </div>
     <div class="col-6 pnt" id="{{product.id}}">
-        <div class="row">{{product.name}}</div>
+        <div class="row">{{product.name[0:4]}}</div>
         <div class="row">{{product.desc}}</div>
         <div class="row text-black-50 text-monospace">{{product.supplier.name}}</div>
         <div class="row text-black-50">{{product.the_category.name}}</div>
@@ -25,16 +25,22 @@
 {% endfor %}
 {% endif %}
 
-<nav aria-label="Page navigation example">
-    <ul class="pagination">
+<nav id='pages' class="row justify-content-center">
+    <ul class="pagination pagination-lg ">
         {% if results.has_prev %}
-      <li class="page-item" data-page_action="prev" data-page_number="{{results.prev_num}}"><a class="page-link" href="#">Previous</a></li>
+      <li class="page-item" data-page_action="prev" data-page_number="{{results.prev_num}}"><div class="page-link" href="#">Previous</div></li>
       {% endif %}
-      <li class="page-item"><a class="page-link">{{results.page}}</a></li>
+      <li class="page-item active"><div class="page-link">{{results.page}}</div></li>
       {% if results.has_next %}
-      <li class="page-item" data-page_action="next" data-page_number="{{results.next_num}}" ><a class="page-link" href="#">Next</a></li>
+      <li class="page-item" data-page_action="next" data-page_number="{{results.next_num}}" ><div class="page-link" href="#">Next <span class="sr-only">(current)</span></div></li>
       {% endif %}
     </ul>
   </nav>
 
   
+<script>
+event_handlers()
+$('html, body, .container').animate(
+{
+scrollTop: $("#products").offset().top-90}, 1500)
+</script>
