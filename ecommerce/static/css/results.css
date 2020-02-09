@@ -4,7 +4,8 @@
     max-width: 950px;
     border-radius: 15px;
     cursor: pointer;
-    height: 185px;
+    min-height: 185px;
+    max-height: 200px;
 }
 
 .pnt{ cursor: pointer; }

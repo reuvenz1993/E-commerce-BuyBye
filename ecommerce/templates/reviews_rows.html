@@ -1,0 +1,30 @@
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title text-center">Reviews :</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <div class="row font-weight-bold">
+            <div class="col text-center">By</div>
+            <div class="col text-center">Review</div>
+            <div class="col text-center">Rank</div>
+        </div>
+        {% if product.reviews %}
+        {% for review in product.reviews %}
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col text-center">
+                    <p>{{review.order.the_buyer.name}}</p>
+                    <p>{{review.review_time.strftime("%d/%m/%y")}}</p>
+                </div>
+                <div class="col text-center align-self-md-center">
+                    {{review.review_content}}
+                </div>
+                <div class="col text-center align-self-md-center">
+                    {{review.stars}}<i class="far fa-star" aria-hidden="true"></i>
+                </div>
+            </div>
+             </li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+</div>
