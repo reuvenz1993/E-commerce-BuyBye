@@ -1,13 +1,14 @@
+page = 1
 $(document).ready(function () {
 
 
-    $("#name_input_edit").click(function (e) { 
+    $("#name_input_edit").click(function (e) {
         e.preventDefault();
         $("#name_input_edit").prop("disabled" , true)
         $("#name_input_confirm , #name_input").prop("disabled" , false)
     });
 
-    $("#name_input_confirm").click(function (e) { 
+    $("#name_input_confirm").click(function (e) {
         e.preventDefault();
         $("#name_input_edit").prop("disabled" , false)
         $("#name_input_confirm , #name_input").prop("disabled" , true)
@@ -52,6 +53,8 @@ $(document).ready(function () {
 
 
 
+orders_init()
+
     $(".confirm").click( e =>
         {
             console.log(e);
@@ -79,3 +82,28 @@ $(document).ready(function () {
     });
 
 });
+
+function orders_init()
+{
+$('[data-page_number]').click((e)=>
+{
+page = e.currentTarget.dataset.page_number;
+$.ajax({
+    type: "POST",
+    url: '/account',
+    contentType: 'application/json',
+    dataType : 'html',
+    data : JSON.stringify( {'page': page} ),
+    success: function (response)
+        {
+        res = response;
+        $("#order_list").empty().append(response);
+        $('html, body, .container').animate(
+            {
+            scrollTop: $("#order_list").offset().top-90}, 1500);
+        }
+})
+});
+};
+
+orders_init()

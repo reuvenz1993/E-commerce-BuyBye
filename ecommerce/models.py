@@ -180,7 +180,7 @@ class Buyer(db.Model, UserMixin):
     
     @property
     def sorted_orders(self):
-        return self.orders.order_by(Order.status).order_by(Order.order_time.desc()).all()
+        return self.orders.order_by(Order.status).order_by(Order.order_time.desc())
     
     @property
     def open_cart_total_price(self):

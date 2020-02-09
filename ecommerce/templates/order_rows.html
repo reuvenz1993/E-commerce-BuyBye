@@ -1,0 +1,72 @@
+<ul class="list-group">
+    {% if orders %}
+    {% for order in orders.items %}
+
+    <li class="list-group-item" data-list_order_id="{{order.id}}">
+        <div class="justify-content-center row">
+            <h3> order id : {{order.id}} </h3>
+        </div>
+        <div class="row">
+            <div class="col product_img_col">
+                <img class='product_img' style="max-width: 125px;" src="{{order.product.picture}}" alt="">
+            </div>
+            <div class="col text-center">
+                <p>
+                Product name : {{order.product.name}}
+            </p>
+            <p>
+                Order date  : {{order.order_time.strftime("%d/%m/%y")}}
+            </p>
+            </div>
+            <div class="col text-center">
+              <p>
+                Qty: {{order.qty}}
+              </p>
+                <p>
+                  Status : <span id="s{{order.id}}"> {{order.the_status.name}}  </span>
+                </p>
+                {% if order.shipment_time %}
+                <p>
+                  Shipment date : {{order.shipment_time.strftime("%d/%m/%y")}}
+                </p>
+                <p>
+                  Tracking number : {{order.tracking_number}}
+                </p>
+                {% endif %}
+            </div>
+            {% if order.status == 2  %}
+            <div class="col">
+                <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" id="{{order.id}}" class="btn btn-primary btn-lg confirm">Confirm Received</button>
+            </div>
+            {% endif %}
+        </div>
+        {% if order.buyer_message and order.buyer_message != "" %}
+        <hr>
+        <div class="row justify-content-center">
+          <div class="form-group justify-content-center" style="width: 90%;">
+              <label>My message to seller</label>
+              <textarea class="form-control" disabled rows="3">{{order.buyer_message}}</textarea>
+          </div>
+        </div>
+        {% endif %}
+      </li>
+        {% endfor %}
+        {% endif %}
+
+  </ul>
+
+  <nav id='pages' class="row justify-content-center m-3">
+    <ul class="pagination pagination-lg ">
+        {% if orders.has_prev %}
+      <li class="page-item" data-page_action="prev" data-page_number="{{orders.prev_num}}"><div class="page-link" href="#">Previous</div></li>
+      {% endif %}
+      <li class="page-item active"><div class="page-link">{{orders.page}}</div></li>
+      {% if orders.has_next %}
+      <li class="page-item" data-page_action="next" data-page_number="{{orders.next_num}}" ><div class="page-link" href="#">Next <span class="sr-only">(current)</span></div></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+<script>
+orders_init();
+</script>

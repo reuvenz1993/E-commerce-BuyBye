@@ -16,18 +16,25 @@ from ecommerce.api import *
 from ecommerce.supplier_functions import *
 import ecommerce.supllier_views
 
-per_page = 2
+per_page = 10
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
 @app.route('/account', methods = ['GET', 'POST'])
 @login_required
 def account():
+    if request.method == 'POST':
+        page = int(request.json.get('page',1))
+        orders = current_user.sorted_orders.paginate(page, per_page, False)
+        return render_template('order_rows.html', orders=orders )
+
     forms = Forms()
     handle_forms(forms)
     data = {**forms, 'focus_order' : request.args.get('focus_order') }
     if request.args.get('focus_order') and int(request.args.get('focus_order')) in (order.id for order in current_user.orders):
         data['focus_on'] = int(request.args.get('focus_order'))
+
+    data['orders'] = current_user.sorted_orders.paginate(1, per_page, False)
 
     return render_template('account.html', **data )
 

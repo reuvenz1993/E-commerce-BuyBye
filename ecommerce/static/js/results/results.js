@@ -1,11 +1,10 @@
-
-   var search_filters = {
-       'category_list': selected_category_list(),
-        'min_price': parseInt($("#min").val()),
-        'max_price': parseInt($('#max').val()),
-        'min_avg': parseInt($("input[type='radio']:checked").val()),
-        'word':"",
-        'page': 1};
+var search_filters = {
+    'category_list': selected_category_list(),
+    'min_price': parseInt($("#min").val()),
+    'max_price': parseInt($('#max').val()),
+    'min_avg': parseInt($("input[type='radio']:checked").val()),
+    'word':"",
+    'page': 1};
 
 function load_results()
 {

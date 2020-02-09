@@ -77,63 +77,8 @@
       </div>
       <div id="collapseThree2" {% if focus_order %} class="collapse show" {% else %} class="collapse" {% endif %} aria-labelledby="headingThree2"
         data-parent="#accordionExample275">
-        <div >
-            <ul class="list-group">
-                {% if current_user.orders %}
-                {% for order in current_user.sorted_orders %}
-
-                <li class="list-group-item" data-list_order_id="{{order.id}}">
-                    <div class="justify-content-center row">
-                        <h3> order id : {{order.id}} </h3>
-                    </div>
-                    <div class="row">
-                        <div class="col product_img_col">
-                            <img class='product_img' style="max-width: 125px;" src="{{order.product.picture}}" alt="">
-                        </div>
-                        <div class="col text-center">
-                            <p>
-                            Product name : {{order.product.name}}
-                        </p>
-                        <p>
-                            Order date  : {{order.order_time.strftime("%d/%m/%y")}}
-                        </p>
-                        </div>
-                        <div class="col text-center">
-                          <p>
-                            Qty: {{order.qty}}
-                          </p>
-                            <p>
-                              Status : <span id="s{{order.id}}"> {{order.the_status.name}}  </span>
-                            </p>
-                            {% if order.shipment_time %}
-                            <p>
-                              Shipment date : {{order.shipment_time.strftime("%d/%m/%y")}}
-                            </p>
-                            <p>
-                              Tracking number : {{order.tracking_number}}
-                            </p>
-                            {% endif %}
-                        </div>
-                        {% if order.status == 2  %}
-                        <div class="col">
-                            <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" id="{{order.id}}" class="btn btn-primary btn-lg confirm">Confirm Received</button>
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% if order.buyer_message and order.buyer_message != "" %}
-                    <hr>
-                    <div class="row justify-content-center">
-                      <div class="form-group justify-content-center" style="width: 90%;">
-                          <label>My message to seller</label>
-                          <textarea class="form-control" disabled rows="3">{{order.buyer_message}}</textarea>
-                      </div>
-                    </div>
-                    {% endif %}
-                  </li>
-                    {% endfor %}
-                    {% endif %}
-
-              </ul>
+        <div id="order_list" >
+          {% include 'order_rows.html' %}
         </div>
       </div>
     </div>
