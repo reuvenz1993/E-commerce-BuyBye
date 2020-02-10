@@ -29,6 +29,7 @@ Migrate(app,db)
 Debug(app)
 ma = Marshmallow(app)
 
+'''
 app.config.update(dict(
     DEBUG = True,
     MAIL_SERVER = 'smtp.gmail.com',
@@ -45,7 +46,7 @@ msg = Message("Hello",
             recipients=["rovenroven1@gmail.com"])
 
 mail.send(msg)
-
+'''
 
 # We can now pass in our app to the login manager
 login_manager.init_app(app)
