@@ -1,0 +1,255 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<link href="{{url_for('static',filename='css/product2.css')}}" rel="stylesheet">
+<link href="{{url_for('static',filename='css/buy_now_modal.css')}}" rel="stylesheet">
+
+
+<script>
+    product = { 'id' : parseInt("{{product.id}}"),
+                'price' : parseFloat("{{product.price}}") };
+</script>
+
+
+
+<div id='cont_product' class="container dark-grey-text">
+    <div class="row justify-content-center">
+        <div class="col">
+            <img id='product_img' class='product_img product_pic' src="{{product.picture}}">
+        </div>
+        <div class="col">
+            <p>Product name : <span id='name'>{{product.name}}</span></p>
+            <p>Product desc : <span id='desc'>{{product.desc}}</span></p>
+            <p>Brand : <span id='brand'>{{product.brand}}</span></p>
+            <p>Seller : <span id='seller'>{{product.supplier.name}}</span> </p>
+            <p>Price : <span id='price'>{{product.price | round(1)}}$</span> </p>
+            <div class="form-group row order_tab">
+                <div class="col form-group text-center">
+                <label>qty</label>
+                 <input id="qty" class="form-control text-center " placeholder="1" type="number" value="1">
+                </div>
+                    <div class="form-group col text-center">
+                <label>Total</label>
+                 <input id="total" class="form-control text-center " placeholder="$0" type="number" value="{{product.price | round(1)}}" disabled>
+                </div>
+                
+                </div>
+            <button id='buy_now' type="button" class="btn btn-success btn_radius" role="button">Buy Now</button>
+            <button id='add_to_cart' type="button" class="btn btn-primary btn_radius" role="button">Add to cart</button>
+        </div>
+    </div>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <h4 class="text-center">Additional information</h4>
+            <p id='more_info'>{{product.Additional_information}}</p>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-9">
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id='stars'> {% if product.review_avg %} {{product.review_avg}} <i class="far fa-star" aria-hidden="true"></i> ,  {{product.review_count}} Reviews {% else %} No Reviews yet  {% endif %} </span>
+                </div>
+                <div class="col text-center">
+                    <p><span id='sold'>{{product.units_sold}}</span> Sold  </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row justify-content-center">
+        <div class="col-9 text-center">
+            <h4 class="text-center">Pictures</h4>
+            <img class='product_img product_pic big_product_imgs' src="{{product.picture}}">
+        </div>
+    </div>
+    <hr>
+    <div class="row justify-content-center">
+        <div id='reviews' class="col-9">
+          {% include 'reviews_rows.html' %}
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="cart_success" tabindex="-1" role="dialog" aria-labelledby="cart_success" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Item Added to your Shopping Cart
+
+            </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                A new item has been added to your Shopping Cart. You now have <span id='items_count'></span> items in your Shopping Cart.
+
+            </div>
+            <div class="modal-footer justify-content-around">
+                <a href="/my_cart"> <button id='continue_shopping' type="button" class="btn btn-danger btn_radius" data-dismiss="modal">View Shopping Cart</button> </a>
+               <button id='View_Shopping_Cart' type="button" class="btn btn-outline-primary btn_radius">Continue Shopping</button> 
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+</div>
+
+
+
+    <div class="modal fade" id="buy_now_modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Order details</h4>
+                <button type="button" onClick="window.location.reload()" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div id="buy_now_body" class="modal-body">
+                <div class="accordion" id="accordionExample">
+                    <div class="card">
+                      <div class="card-header" id="headingOne">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Shipping Information
+                          </button>
+                        </h2>
+                      </div>
+                  
+                      <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                        <div class="card-body">
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">To</span>
+                            </div>
+                            <input id='customer_name' value="{{current_user.name}}"  disabled type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                          </div>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Address :</span>
+                            </div>
+                            <textarea id='order_address' disabled class="form-control" aria-label="With textarea">{{current_user.address}}</textarea>
+                          </div>
+                            <div class="footerNavWrap clearfix">
+                                <div id='step1' class="btn btn-success pull-right btn-fyi">CONFIRM<span class="glyphicon glyphicon-chevron-right"></span></div>
+                                <div id="edit" class="btn btn-success pull-right btn-fyi">EDIT<span class="glyphicon glyphicon-chevron-right"></span></div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingTwo">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Payment Method
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="paymentCont">
+                                                <div class="headingWrap">
+                                                        <h3 class="headingTop text-center">Select Your Payment Method</h3>	
+                                                </div>
+                                                <div class="paymentWrap">
+                                                    <div class="btn-group paymentBtnGroup btn-group-justified" data-toggle="buttons">
+                                                        <label class="btn paymentMethod active">
+                                                            <div class="method visa"></div>
+                                                            <input type="radio" name="options" checked> 
+                                                        </label>
+                                                        <label class="btn paymentMethod">
+                                                            <div class="method master-card"></div>
+                                                            <input type="radio" name="options"> 
+                                                        </label>
+                                                        <label class="btn paymentMethod">
+                                                            <div class="method amex"></div>
+                                                            <input type="radio" name="options">
+                                                        </label>
+                                                         <label class="btn paymentMethod">
+                                                             <div class="method vishwa"></div>
+                                                            <input type="radio" name="options"> 
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="footerNavWrap clearfix">
+                                                    <div id='stap2' class="btn btn-success pull-right btn-fyi">CONFIRM<span class="glyphicon glyphicon-chevron-right"></span></div>
+                                                </div>
+                                            </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingThree">
+                        <h2 class="mb-0">
+                          <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Order Review
+                          </button>
+                        </h2>
+                      </div>
+                      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                        <div id='order_review' class="card-body">
+                            <div id='order_seller' class="row" >
+                            </div>
+                          <hr>
+                          <div id='product_name' class="justify-content-center row">
+                            <div class="col text-center">Seller  : {{product.supplier.name}} </div>
+                            <div class="col text-center">Supplier Average rank  : {{product.supplier.review_avg}} <i class="far fa-star" aria-hidden="true"></i>  </div>
+                        </div>
+                        <hr>
+                        <div id='product' class="row text-center" >
+                            <div class="col">
+                              <img src="{{product.picture}}" class="pic">
+                            </div>
+                            <div class="col align-self-center">
+                              {{product.desc}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div id='stats' class="row text-center" >
+                          <div class="col">Units sold  : {{product.units_sold}} </div>
+                          <div class="col">Rank  : {{product.review_avg}} <i class="far fa-star" aria-hidden="true"></i>  </div>
+                        </div>
+                      <hr>
+                      <div id='message' class="row justify-content-center" >
+                        <div class="form-group justify-content-center" style="width: 90%;">
+                          <label >Message to seller</label>
+                          <textarea id="buyer_message" class="form-control" name="" id="message_area" rows="3"></textarea>
+                        </div>
+                    </div>
+                  <hr>
+                  <div id='amount' class="row text-center font-weight-bolder" >
+                        <div class='col' > <span>Qty :</span> <span id='order_qty'></span>  </div>
+                        <div class='col' > <span>Unit price :</span> <span id='order_unit_price'> {{product.price | round(1)}} </span>  </div>
+                        <div class='col'> <span>Total : </span>  <span id='order_total'></span>   <span>$</span></div>
+                </div>
+              <hr>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+            </div>
+            <div class="modal-footer">
+
+            <div class='col'>
+              <button id='checkout' type="button" class="btn btn-default" data-dismiss="modal">checkout</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+<script type="text/javascript" src="{{url_for('static',filename='js/product/product.js')}}" ></script>
+
+{% endblock %}

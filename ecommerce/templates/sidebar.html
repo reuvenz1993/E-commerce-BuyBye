@@ -1,0 +1,79 @@
+<link href="{{url_for('static',filename='css/sidebar.css')}}" rel="stylesheet">
+
+<div class="card">
+    <article class="filter-group">
+        <div class="card-header"> <a href="#" data-toggle="collapse" data-target="#collapse_aside1" data-abc="true" aria-expanded="false" class="collapsed"> <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Categories </h6>
+            </a> </div>
+        <div class="filter-content collapse" id="collapse_aside1">
+            <div class="card-body">
+                <div id='current_cat_view'>
+                    <button id='go_back_cat'>back to all categories</button>
+                    <h5 id='current_cat'>all</h5>
+                </div>
+                <ul id='sidebar_categories' class="list-menu">
+                    {% if categorys %}
+                    {% for cat in categorys %}
+                    <li class="checkbox filter_category" style="cursor: pointer;">
+                        <label>
+                            <input type="checkbox" {% if category_list %} {% if category_list == cat.id %} checked {% endif %} {% else %} checked {% endif %} value="{{cat.id}}" data-category="{{cat.id}}" class="category_checkbox category_item">
+                            {{cat.name}}
+                        </label>
+                        <span class="close text-black-50">{{cat.products.count()}}</span>
+                        {% endfor %}
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </article>
+
+    <article class="filter-group">
+        <div class="card-header"> <a href="#" data-toggle="collapse" data-target="#collapse_aside2" data-abc="true" aria-expanded="false" class="collapsed"> <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Price </h6>
+            </a> </div>
+        <div class="filter-content collapse" id="collapse_aside2">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-6"> <label>Min</label> <input id='min' class="form-control category_item" placeholder="$0" type="number" {% if min_price %} value='{{min_price}}' {% else %}  value='0' {% endif %} > </div>
+                    <div class="form-group text-right col-md-6"> <label>Max</label> <input id='max' class="form-control category_item" placeholder="$10,000" type="number" {% if max_price %} value='{{max_price}}' {% else %}  value='10000' {% endif %}> </div>
+                </div>
+            </div>
+        </div>
+    </article>
+    <article class="filter-group">
+        <div class="card-header"> <a href="#" data-toggle="collapse" data-target="#collapse_aside4" data-abc="true" class="collapsed" aria-expanded="false"> <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Min Rating </h6>
+            </a> </div>
+        <div class="filter-content collapse" id="collapse_aside4">
+            <div class="card-body">
+                <!-- Default unchecked -->
+                <!-- Group of default radios - option 1 -->
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input category_item" id="defaultGroupExample1" name="groupOfDefaultRadios" {% if min_avg and min_avg == 4 %} checked {% endif %} value="4">
+                    <label class="custom-control-label" for="defaultGroupExample1"><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></label>
+                </div>
+                
+                <!-- Group of default radios - option 2 -->
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input category_item" id="defaultGroupExample2" name="groupOfDefaultRadios" {% if min_avg and min_avg == 3 %} checked {% endif %} value="3" >
+                    <label class="custom-control-label" for="defaultGroupExample2"><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i></label>
+                </div>
+                
+                <!-- Group of default radios - option 3 -->
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input category_item" id="defaultGroupExample3" name="groupOfDefaultRadios" {% if min_avg and min_avg == 2 %} checked {% endif %} value="2">
+                    <label class="custom-control-label" for="defaultGroupExample3"><i class="far fa-star"></i><i class="far fa-star"></i></label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input category_item" id="defaultGroupExample4" name="groupOfDefaultRadios" value="1"{% if not min_avg %} checked {% endif %}>
+                    <label class="custom-control-label" for="defaultGroupExample4">All</label>
+                </div>
+
+
+            </div>
+        </div>
+    </article>
+</div>
+
+

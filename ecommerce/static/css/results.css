@@ -1,0 +1,37 @@
+.item{
+    border-style: solid;
+    border-width: 2px;
+    max-width: 950px;
+    border-radius: 15px;
+    cursor: pointer;
+    min-height: 185px;
+    max-height: 380px;
+}
+
+.pnt{ cursor: pointer; }
+
+.pic
+{
+    max-width: 120px;
+    max-height: 120px;
+    min-width: 90px;
+    min-height: 90px;
+}
+
+li:hover {
+    background: gainsboro;
+    cursor: pointer;}
+
+.fa-star::before {
+    content: "\f005"!important;
+}
+
+#pages{
+    margin-top:4vh
+}
+
+.product_pic{
+    max-width: 135px;
+    max-height: 140px;
+    padding-left: 5px;
+}

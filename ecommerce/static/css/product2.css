@@ -1,0 +1,36 @@
+.product_img {
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.order_tab{
+    max-width: 300px;
+}
+
+.big_product_imgs {
+    max-width: 80%;
+    max-height: 80%;
+}
+
+#cont_product{
+    margin-top: 70px;
+    margin-bottom: 70px;
+    padding: 40px;
+}
+
+.review 
+{
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 20px;
+}
+
+#add_product_card{
+    padding: 5% 20% 5% 20%;
+}
+
+
+.btn_radius
+{
+    border-radius: 15px;
+}

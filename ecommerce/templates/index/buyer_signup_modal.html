@@ -1,0 +1,75 @@
+<style>
+.error
+{
+  color:coral;
+  font-weight:bold;
+}
+</style>
+
+
+
+<div class="modal fade" id="buyer_signup_modal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Signup Now !</h4>
+                <button type="button" onClick="$('#buyer_signup_modal').modal('hide')" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    {% if signup_form.errors %}
+                    <hr>
+                    <ul class="errors">
+                      {% for field_name, field_errors in signup_form.errors|dictsort if field_errors %}
+                      {% for error in field_errors %}
+                      <li class='error'>{{ signup_form[field_name].label }} {{ error }}</li>
+                      {% endfor %}
+                      {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <form method="POST" action="" class="form-signin" enctype="multipart/form-data">
+                          <label for="inputEmail">*Email :</label>
+                          <div class="form-label-group">
+                            {{signup_form.email(id="signup_email", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                            {% if signup_error and 'email' in signup_error %}
+                            <p class='error'>⚠ - {{signup_error.email}}</p>
+                            {% endif %}
+                        </div>
+                          <label for="inputEmail">*Username :</label>
+                          <div class="form-label-group">
+                            {{signup_form.username(id="signup_username", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                            {% if signup_error and 'username' in signup_error %}
+                            <p class='error'>⚠ - {{signup_error.username}}</p>
+                            {% endif %}
+                        </div>
+                          <label for="inputEmail">*Password :</label>
+                          <div class="form-label-group">
+                            {{signup_form.password(id="signup_password", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                          </div>
+                          <label for="inputEmail">*Full Name :</label>
+                          <div class="form-label-group">
+                              {{ signup_form.hidden_tag() }}
+                              {{signup_form.name(id="signup_name" ,class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                            </div>
+                            <label for="inputEmail">*Shipping Address :</label>
+                            <div class="form-label-group">
+                                {{ signup_form.hidden_tag() }}
+                                {{signup_form.address(id="signup_address", class="form-control" , placeholder="Username" , required="",  autofocus="")}}
+                              </div>
+                          <label for="inputEmail">Profile Picture :</label>
+                          <div class="custom-file">
+                            {{signup_form.photo(id="buyer_signup_photo" , class="custom-file-input" )}}
+                            <label class="custom-file-label" for="buyer_signup_photo">Choose Picture:</label>
+                          </div>
+                          <hr>
+                          {{signup_form.signup(class="btn btn-lg btn-primary btn-block text-uppercase", id='buyer_signup_submit')}}
+
+
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

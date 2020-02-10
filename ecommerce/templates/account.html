@@ -1,0 +1,143 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+<link href="{{url_for('static',filename='css/account.css')}}" rel="stylesheet">
+
+
+
+
+<div class="container">
+
+  <div class="accordion" id="accordionExample275">
+    <div class="card z-depth-0 bordered">
+      <div class="card-header" id="headingOne2">
+        <h5 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne2"
+            aria-expanded="true" aria-controls="collapseOne2">
+            My details
+          </button>
+        </h5>
+      </div>
+      <div id="collapseOne2" class="collapse" aria-labelledby="headingOne2"
+        data-parent="#accordionExample275">
+        <div class="card-body">
+            <h4 class="card-title">My Details</h4>
+            <hr>
+                    <div class="form-group row">
+                        <label for="inputName" class="col-auto col-form-label">Full name :</label>
+                        <div class="col-auto">
+                            <input value="{{current_user.name}}" disabled type="text" class="form-control" name="name_input" id="name_input" placeholder="">
+                        </div>
+                      <div class="col-auto">
+                          <button id='name_input_edit' type="submit" class="btn btn-primary">Edit</button>
+                      </div>
+                      <div class="col-auto">
+                          <button id='name_input_confirm' type="submit" class="btn btn-primary" disabled>Confirm</button>
+                      </div>
+                    </div>
+
+                    <div class="form-group row">
+                      <label for="inputName" class="col-auto col-form-label">Address :</label>
+                      <div class="col-auto">
+                          <input  value="{{current_user.address}}" disabled type="text" class="form-control" name="address_input" id="address_input" placeholder="">
+                      </div>
+                    <div class="col-auto">
+                        <button id='address_input_edit' type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                    <div class="col-auto">
+                        <button id='address_input_confirm' type="submit" class="btn btn-primary" disabled>Confirm</button>
+                    </div>
+                    
+                  </div>
+          </div>
+      </div>
+    </div>
+    <div class="card z-depth-0 bordered">
+      <div class="card-header" id="headingTwo2">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+            data-target="#collapseTwo2" aria-expanded="false" aria-controls="collapseTwo2">
+            My Payment Methods 
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo2" class="collapse" aria-labelledby="headingTwo2"
+        data-parent="#accordionExample275">
+        <div class="card-body">
+        </div>
+      </div>
+    </div>
+    <div class="card z-depth-0 bordered">
+      <div class="card-header" id="headingThree2">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+            data-target="#collapseThree2" aria-expanded="false" aria-controls="collapseThree2">
+            My Orders
+          </button>
+        </h5>
+      </div>
+      <div id="collapseThree2" {% if focus_order %} class="collapse show" {% else %} class="collapse" {% endif %} aria-labelledby="headingThree2"
+        data-parent="#accordionExample275">
+        <div id="order_list" >
+          {% include 'order_rows.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal fade" id="review_modal" tabindex="-1" role="dialog" aria-labelledby="review_modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Leave Review :</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="stars">
+          <form action="">
+            <input class="star star-5" id="star-5" type="radio" value="5" name="star"/>
+            <label class="star star-5" for="star-5"></label>
+            <input class="star star-4" id="star-4" type="radio" value="4" name="star"/>
+            <label class="star star-4" for="star-4"></label>
+            <input class="star star-3" id="star-3" type="radio" value="3" name="star"/>
+            <label class="star star-3" for="star-3"></label>
+            <input class="star star-2" id="star-2" type="radio" value="2" name="star"/>
+            <label class="star star-2" for="star-2"></label>
+            <input class="star star-1" id="star-1" type="radio" value="1" name="star"/>
+            <label class="star star-1" for="star-1"></label>
+          </form>
+        </div>
+        <hr>
+        <textarea id="review_text" placeholder="More feedback" class="form-control" rows="3" style="display: none;"></textarea i>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button id="submit_review" type="button" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% if focus_on %}
+<script type="text/javascript">
+$('html, body, .container').animate(
+{
+scrollTop: $("[data-list_order_id={{focus_on}}]").offset().top-$("[data-list_order_id=232]").height()
+},1500)
+</script>
+{% endif %}
+
+
+
+
+<script type="text/javascript" src="{{url_for('static',filename='js/account.js')}}" ></script>
+
+
+
+
+{% endblock %}

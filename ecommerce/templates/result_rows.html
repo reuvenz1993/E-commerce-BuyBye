@@ -1,0 +1,46 @@
+<h3 class="text-center">Page {{results.page}} / {{results.pages}} ({{results.total}} Products)</h3>
+{% if results %}
+{% for product in results.items %}
+<li class="row text-center item align-items-center" id="product num: {{product.id}}" data-pid="{{product.id}}">
+    <div class="col product_pic">
+        <img src="{{product.picture}}" class="pic">
+    </div>
+    <div class="col-6 pnt text-left" id="{{product.id}}">
+        <div class="font-weight-bold">{{product.name[0:40]}}</div>
+        <div>{{product.desc[0:90]}}</div>
+        <div class="text-black-50 text-monospace">{{product.supplier.name}}</div>
+        <div class="text-black-50 ">{{product.the_category.name}}</div>
+    </div>
+    <div class="col font-weight-bold text-right">
+        <div>{{product.price | round(1)}} $ </div>
+        <div>{% if product.review_avg %} {{product.review_avg | round(1)}} {% endif %}
+            <span class="icon">
+                <i class="far fa-star" aria-hidden="true"></i>
+            </span>{% if product.review_count %} {{product.review_count}} {% endif %} reviews
+        </div>
+        <div>{{product.units_sold}} Sold</div>
+    </div>
+</li>
+
+{% endfor %}
+{% endif %}
+
+<nav id='pages' class="row justify-content-center">
+    <ul class="pagination pagination-lg ">
+        {% if results.has_prev %}
+      <li class="page-item" data-page_action="prev" data-page_number="{{results.prev_num}}"><div class="page-link" href="#">Previous</div></li>
+      {% endif %}
+      <li class="page-item active"><div class="page-link">{{results.page}}</div></li>
+      {% if results.has_next %}
+      <li class="page-item" data-page_action="next" data-page_number="{{results.next_num}}" ><div class="page-link" href="#">Next <span class="sr-only">(current)</span></div></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  
+<script>
+event_handlers()
+$('html, body, .container').animate(
+{
+scrollTop: $("#products").offset().top-90}, 1500)
+</script>
