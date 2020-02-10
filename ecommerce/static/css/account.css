@@ -17,3 +17,141 @@ body
     max-width: 125px;
     max-height: 125px;
 }
+
+div.stars {
+    width: 270px;
+    display: inline-block;
+  }
+  
+  input.star { display: none; }
+  
+  label.star {
+    float: right;
+    padding: 10px;
+    font-size: 36px;
+    color: #444;
+    transition: all .2s;
+  }
+  
+  input.star:checked ~ label.star:before {
+    content: '\f005';
+    color: #FD4;
+    transition: all .25s;
+  }
+  
+  input.star-5:checked ~ label.star:before {
+    color: #FE7;
+    text-shadow: 0 0 20px #952;
+  }
+  
+  input.star-1:checked ~ label.star:before { color: #F62; }
+  
+  label.star:hover { transform: rotate(-15deg) scale(1.3); }
+  
+  label.star:before {
+    content: '\f006';
+    font-family: FontAwesome;
+  }
+
+#submit_review
+{
+    font-size: 100%;
+    border-radius: 5rem;
+    letter-spacing: .1rem;
+    font-weight: bold;
+    padding: 1rem;
+    transition: all 0.2s;
+    background-color: coral;
+    min-width: 200px;
+}
+
+.review_btn {
+	-moz-box-shadow:inset -2px -4px 5px 0px #d197fe;
+	-webkit-box-shadow:inset -2px -4px 5px 0px #d197fe;
+	box-shadow:inset -2px -4px 5px 0px #d197fe;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a53df6), color-stop(1, #7c16cb) );
+	background:-moz-linear-gradient( center top, #a53df6 5%, #7c16cb 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#a53df6', endColorstr='#7c16cb');
+	background-color:#a53df6;
+	-webkit-border-top-left-radius:28px;
+	-moz-border-radius-topleft:28px;
+	border-top-left-radius:28px;
+	-webkit-border-top-right-radius:0px;
+	-moz-border-radius-topright:0px;
+	border-top-right-radius:0px;
+	-webkit-border-bottom-right-radius:28px;
+	-moz-border-radius-bottomright:28px;
+	border-bottom-right-radius:28px;
+	-webkit-border-bottom-left-radius:0px;
+	-moz-border-radius-bottomleft:0px;
+	border-bottom-left-radius:0px;
+	text-indent:0px;
+	border:1px solid #9c33ed;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+	font-style:normal;
+	height:56px;
+	line-height:56px;
+	width:120px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:-1px 0px 0px #7d15cd;
+}
+.review_btn:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #7c16cb), color-stop(1, #a53df6) );
+	background:-moz-linear-gradient( center top, #7c16cb 5%, #a53df6 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#7c16cb', endColorstr='#a53df6');
+	background-color:#7c16cb;
+}.review_btn:active {
+	position:relative;
+	top:1px;
+}
+
+
+.conf_received_btn {
+	-moz-box-shadow:inset -2px 0px 5px 0px #d197fe;
+	-webkit-box-shadow:inset -2px 0px 5px 0px #d197fe;
+	box-shadow:inset -2px 0px 5px 0px #d197fe;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a1a9ff), color-stop(1, #2241bd) );
+	background:-moz-linear-gradient( center top, #a1a9ff 5%, #2241bd 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1a9ff', endColorstr='#2241bd');
+	background-color:#a1a9ff;
+	-webkit-border-top-left-radius:0px;
+	-moz-border-radius-topleft:0px;
+	border-top-left-radius:0px;
+	-webkit-border-top-right-radius:21px;
+	-moz-border-radius-topright:21px;
+	border-top-right-radius:21px;
+	-webkit-border-bottom-right-radius:0px;
+	-moz-border-radius-bottomright:0px;
+	border-bottom-right-radius:0px;
+	-webkit-border-bottom-left-radius:21px;
+	-moz-border-radius-bottomleft:21px;
+	border-bottom-left-radius:21px;
+	text-indent:0px;
+	border:1px solid #b083d4;
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:14px;
+	font-weight:bold;
+	font-style:normal;
+	height:55px;
+	line-height:55px;
+	width:135px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:-1px 0px 0px #7d15cd;
+}
+.conf_received_btn:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #2241bd), color-stop(1, #a1a9ff) );
+	background:-moz-linear-gradient( center top, #2241bd 5%, #a1a9ff 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#2241bd', endColorstr='#a1a9ff');
+	background-color:#2241bd;
+}.conf_received_btn:active {
+	position:relative;
+	top:1px;
+}

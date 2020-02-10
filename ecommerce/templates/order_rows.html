@@ -35,8 +35,12 @@
                 {% endif %}
             </div>
             {% if order.status == 2  %}
-            <div class="col">
-                <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" id="{{order.id}}" class="btn btn-primary btn-lg confirm">Confirm Received</button>
+            <div class="col align-self-center  text-center">
+                <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" class="conf_received_btn confirm">Confirm Received</button>
+            </div>
+            {% elif order.status == 3 and not order.reviews.first() %}
+            <div class="col align-self-center  text-center">
+                <button type="button" name="{{order.id}}" data-order_id="{{order.id}}" class="review_btn review" data-toggle="modal" data-target="#review_modal">Leave Review</button>
             </div>
             {% endif %}
         </div>
@@ -68,5 +72,7 @@
   </nav>
 
 <script>
+{% if orders.page != 1 %}
 orders_init();
+{% endif %}
 </script>

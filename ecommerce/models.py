@@ -546,14 +546,18 @@ class Order(db.Model, UserMixin):
         review = Reviews.query.filter_by(order_id=self.id).first()
         return review
 
-    def get_order_buyer(self):
-        return Buyer.query.get(self.buyer_id)
+    def submit_review(self, stars, review_content=None, return_review_object=False):
+        if not self.reviews.first() and self.status == 3:
+            review = Reviews(order=self, stars=stars, review_content=review_content)
+            db.session.add(review)
+            db.session.commit()
+            if return_review_object :
+                return {'success': len(self.reviews.all()) == 1 , 'review':self.reviews.first() }
+            else :
+                return {'success': len(self.reviews.all()) == 1 , 'review':self.reviews.first().id }
 
-    def get_order_supplier(self):
-        return Supplier.query.get(Product.query.get(self.product_id).supplier_id)
+        return False
 
-    def get_order_product(self):
-        return Product.query.filter_by(id=self.product_id).first()
     
     def confirm_supplied(self):
         self.status = 3
@@ -572,13 +576,16 @@ class Reviews(db.Model, UserMixin):
     review_content = db.Column(db.String(512), default="N/A")
     review_time = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __init__(self, order_id, stars=5 , review_content="N/A"):
+    def __init__(self, order, stars=5 , review_content="N/A"):
 
-        if Order.query.get(order_id) and (Reviews.query.filter(Reviews.order_id == order_id).count() == 0)  :
-            self.order_id = order_id
+        if order and (Reviews.query.filter(Reviews.order_id == order.id).count() == 0)  :
+            self.order_id = order.id
             self.stars = stars
-            self.review_content = review_content
             self.review_time = datetime.utcnow()
+            if review_content:
+                self.review_content = review_content
+            else:
+                self.review_content = "N/A"
         else :
             return False
         

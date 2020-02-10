@@ -16,7 +16,7 @@ from ecommerce.api import *
 from ecommerce.supplier_functions import *
 import ecommerce.supllier_views
 
-per_page = 10
+per_page = 20
 
 categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
 
@@ -24,9 +24,18 @@ categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothi
 @login_required
 def account():
     if request.method == 'POST':
-        page = int(request.json.get('page',1))
-        orders = current_user.sorted_orders.paginate(page, per_page, False)
-        return render_template('order_rows.html', orders=orders )
+        if 'page' in request.json:
+            page = int(request.json.get('page',1))
+            orders = current_user.sorted_orders.paginate(page, per_page, False)
+            return render_template('order_rows.html', orders=orders )
+
+        elif 'stars' in request.json and 'order_id' in request.json:
+            order = Order.query.get(int(request.json.get('order_id', 0)))
+            del request.json['order_id']
+            if order.id in (order.id for order in current_user.orders if not order.reviews.first()):
+                return jsonify(order.submit_review(**request.json))
+        else:
+            return jsonify (False)
 
     forms = Forms()
     handle_forms(forms)
