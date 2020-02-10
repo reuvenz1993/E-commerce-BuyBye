@@ -8,9 +8,9 @@ from ecommerce.functions import *
 
 def handle_forms(forms):
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
-        check_login(forms['login_form'])
+        return check_login(forms['login_form'])
     if forms['signup_form'].signup.data and forms['signup_form'].validate_on_submit():
-        signup_status = signup_buyer(forms['signup_form'])
+        return signup_buyer(forms['signup_form'])
 
 
 def check_login(login_form):
@@ -19,33 +19,42 @@ def check_login(login_form):
         to_remember = login_form.remember.data
         login_user(buyer_logging , remember = to_remember)
         print ('login scss')
+        return {'login_successful': 'Logged in successfully'}
+    elif buyer_logging is not None:
+        return {'login_error': {'password': 'Password is incorrect'}}
+    else :
+        return {'login_error': {'username': 'Username does not exist'}}
 
 
 def signup_buyer(signup_form):
-    if Buyer.query.filter_by(username = signup_form.username.data).first():
-        return 'Username already exists, Please Choose an other username'
-    if  Buyer.query.filter_by(email = signup_form.email.data).first() :
-        return 'Email address is already in use'
-    
     kwargs = { 'email':signup_form.email.data ,
                 'username' :signup_form.username.data ,
                 'password':signup_form.password.data ,
                 'name':signup_form.name.data ,
                 'address':signup_form.address.data}
+
+    signup_error = {}
+    if Buyer.query.filter_by(username = kwargs['username']).first():
+        signup_error['username'] = 'Username already exists, Please Choose an other username'
+    if  Buyer.query.filter_by(email = kwargs['email']).first() :
+        signup_error['email'] = 'Email address is already in use'
+
+    if signup_error:
+        return {'signup_error': signup_error}
+
     if signup_form.photo.data:
-        print ('photo attached')
         kwargs['photo'] = save_photo( photo=signup_form.photo.data , dir='buyer_photo' )
 
-    try :
-        print (kwargs)
-        new_buyer = Buyer(**kwargs )
-        db.session.add(new_buyer)
-        db.session.commit()
-        return True
-    except Exception as e:
-        print ('buy_now_or_add_to_cart function fail - on buy now action')
-        print(e)
-        return 'error'
+
+    new_buyer = Buyer(**kwargs )
+    db.session.add(new_buyer)
+    db.session.commit()
+    if Buyer.query.filter_by(username = kwargs['username']).first:
+        return {'signup_successful': 'Signup successful'}
+    else :
+        return {'signup_error': 'unknown reason'}
+    
+
 
 
 def update_buyer_message(item_id, buyer_message):

@@ -1,3 +1,4 @@
+<h3 class="text-center m-3">Page {{orders.page}} / {{orders.pages}} ({{orders.total}} Orders)</h3>
 <ul class="list-group">
     {% if orders %}
     {% for order in orders.items %}
@@ -7,10 +8,10 @@
             <h3> order id : {{order.id}} </h3>
         </div>
         <div class="row">
-            <div class="col product_img_col">
+            <div class="col product_img_col align-self-center text-center">
                 <img class='product_img' style="max-width: 125px;" src="{{order.product.picture}}" alt="">
             </div>
-            <div class="col text-center">
+            <div class="align-self-center col text-center">
                 <p>
                 Product name : {{order.product.name}}
             </p>
@@ -18,7 +19,7 @@
                 Order date  : {{order.order_time.strftime("%d/%m/%y")}}
             </p>
             </div>
-            <div class="col text-center">
+            <div class="align-self-center col text-center">
               <p>
                 Qty: {{order.qty}}
               </p>

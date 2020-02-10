@@ -51,8 +51,11 @@ def account():
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     forms = Forms()
-    handle_forms(forms)
     data = {**forms ,'categorys': Category.query.all()}
+    user_messages = handle_forms(forms)
+    if user_messages :
+        data.update(user_messages)
+
 
     return render_template('index.html', **data )
 

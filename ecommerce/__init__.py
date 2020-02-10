@@ -8,6 +8,8 @@ from flask_debug import Debug
 from sqlalchemy import func, or_
 from flask_marshmallow import Marshmallow
 from decimal import *
+from flask_mail import Mail
+from flask_mail import Message
 
 
 
@@ -26,6 +28,24 @@ db = SQLAlchemy(app)
 Migrate(app,db)
 Debug(app)
 ma = Marshmallow(app)
+
+app.config.update(dict(
+    DEBUG = True,
+    MAIL_SERVER = 'smtp.gmail.com',
+    MAIL_PORT = 587,
+    MAIL_USE_TLS = True,
+    MAIL_USE_SSL = False,
+    MAIL_USERNAME = 'my_username@gmail.com',
+    MAIL_PASSWORD = 'my_password',
+))
+
+mail = Mail(app)
+msg = Message("Hello",
+            sender="from@example.com",
+            recipients=["rovenroven1@gmail.com"])
+
+mail.send(msg)
+
 
 # We can now pass in our app to the login manager
 login_manager.init_app(app)

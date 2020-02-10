@@ -11,16 +11,29 @@
           </button>
         </div>
         <div class="modal-body">
+          {% if signup_successful %}
+          <div class="success-msg text-center">
+            <i class="fa fa-check"></i>
+            {{-signup_successful-}}
+          </div>
+          {% endif %}
           <div class="card-body">
             <form method="POST" action="" class="form-signin">
               <label for="inputEmail">Username</label>
               <div class="form-label-group">
                 {{ login_form.hidden_tag() }}
                 {{login_form.username(class="form-control" , placeholder="Username" , required="",  autofocus="", id='login_username')}}
+                {% if login_error and 'username' in login_error %}
+                <p class='error'> - ⚠{{login_error.username}}</p>
+                {% endif %}
               </div>
               <label for="inputPassword">Password</label>
               <div class="form-label-group">
                 {{login_form.password( class="form-control" , placeholder="Password", required="" ,id='login_password')}}
+                {% if login_error and 'password' in login_error %}
+                <p class='error'>⚠ - {{login_error.password}}</p>
+                {% endif %}
+                <a>Forget your password ?</a>
               </div>
 
               <div class="custom-control custom-checkbox mb-3">
@@ -28,6 +41,16 @@
                 <label class="custom-control-label" for="customCheck1">Remember password</label>
               </div>
               {{login_form.login(class="btn btn-lg btn-primary btn-block text-uppercase", id='login_submit')}}
+              {% if login_form.errors %}
+              <hr>
+              <ul class="errors">
+                {% for field_name, field_errors in login_form.errors|dictsort if field_errors %}
+                {% for error in field_errors %}
+                <li class='error'>{{ login_form[field_name].label }}: {{ error }}</li>
+                {% endfor %}
+                {% endfor %}
+              </ul>
+              {% endif %}
               <hr class="my-4">
               <button id="or_join" class="btn btn-lg btn-block text-uppercase" type="submit"> Don't have account ? Join now!</button>
             </form>
@@ -36,3 +59,5 @@
       </div>
     </div>
   </div>
+
+

@@ -5,13 +5,13 @@
     <div class="col product_pic">
         <img src="{{product.picture}}" class="pic">
     </div>
-    <div class="col-6 pnt" id="{{product.id}}">
+    <div class="col-6 pnt text-left" id="{{product.id}}">
         <div class="font-weight-bold">{{product.name[0:40]}}</div>
-        <div class="text-left">{{product.desc[0:90]}}</div>
+        <div>{{product.desc[0:90]}}</div>
         <div class="text-black-50 text-monospace">{{product.supplier.name}}</div>
-        <div class="text-black-50">{{product.the_category.name}}</div>
+        <div class="text-black-50 ">{{product.the_category.name}}</div>
     </div>
-    <div class="col font-weight-bold">
+    <div class="col font-weight-bold text-right">
         <div>{{product.price | round(1)}} $ </div>
         <div>{% if product.review_avg %} {{product.review_avg | round(1)}} {% endif %}
             <span class="icon">

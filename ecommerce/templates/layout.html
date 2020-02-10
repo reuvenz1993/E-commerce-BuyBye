@@ -29,41 +29,6 @@
   </script>
 {% endif %}
 
-
-  <!--
-
-  <style type="text/css">
-    html,
-    body,
-    header,
-    .carousel {
-      height: 60vh;
-    }
-
-    @media (max-width: 740px) {
-
-      html,
-      body,
-      header,
-      .carousel {
-        height: 100vh;
-      }
-    }
-
-    @media (min-width: 800px) and (max-width: 850px) {
-
-      html,
-      body,
-      header,
-      .carousel {
-        height: 100vh;
-      }
-    }
-
-  
-  </style>
--->
-
 </head>
 
 <body>
@@ -159,14 +124,26 @@
   <!-- Navbar -->
 
 
-
   {% include 'index/buyer_login_modal.html' %}
   {% include 'index/buyer_signup_modal.html' %}
+
 
 
 {%block content%}
 {%endblock%}
 
+
+{% if login_error or login_form.errors or signup_successful %}
+<script type="text/javascript">
+  $("#buyer_login_modal").modal('show');
+  </script>
+{% endif %}
+
+{% if signup_error or signup_form.errors %}
+<script type="text/javascript">
+  $("#buyer_signup_modal").modal('show');
+  </script>
+{% endif %}
 
 
 
