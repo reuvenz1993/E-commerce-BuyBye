@@ -40,9 +40,14 @@
   
 <script>
 event_handlers();
-/*
-$('html, body, .container').animate(
+$(".page-item").click((e) =>
 {
-scrollTop: $("#products").offset().top-90}, 1500)
-*/
+
+
+    $('html, body, .container').animate(
+    {
+    scrollTop: $("#products").offset().top-90
+    }, 1500);
+
+});
 </script>
