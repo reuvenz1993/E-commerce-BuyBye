@@ -1,5 +1,4 @@
 from ecommerce.models import *
-from ecommerce.forms import *
 from sqlalchemy import func, or_
 from flask_login import login_user, current_user
 from ecommerce.functions import save_photo
@@ -16,7 +15,7 @@ def check_login(login_form):
     buyer_logging = Buyer.query.filter_by(username = login_form.username.data).first()
     if ( buyer_logging is not None and buyer_logging.check_password(login_form.password.data) ) :
         to_remember = login_form.remember.data
-        login_user(buyer_logging , remember = to_remember)
+        login_user(buyer_logging, remember = to_remember)
         print ('login scss')
         return {'login_successful': 'Logged in successfully'}
     elif buyer_logging is not None:
@@ -42,7 +41,7 @@ def signup_buyer(signup_form):
         return {'signup_error': signup_error}
 
     if signup_form.photo.data:
-        kwargs['photo'] = save_photo( photo=signup_form.photo.data , dir='buyer_photo' )
+        kwargs['photo'] = save_photo(photo=signup_form.photo.data, dir='buyer_photo' )
 
 
     new_buyer = Buyer(**kwargs )
@@ -50,7 +49,7 @@ def signup_buyer(signup_form):
     db.session.commit()
     if Buyer.query.filter_by(username = kwargs['username']).first:
         return {'signup_successful': 'Signup successful'}
-    else :
+    else:
         return {'signup_error': 'unknown reason'}
     
 

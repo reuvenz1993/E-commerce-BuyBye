@@ -1,14 +1,8 @@
-from ecommerce import app, db
-from ecommerce.models import *
-from sqlalchemy import func, or_
-from flask_login import login_user, login_required, logout_user, current_user
-from flask import  request , jsonify, session
-import json
+from ecommerce import app
 import os
 from PIL import Image
 import secrets
-from decimal import Decimal
-import decimal
+
 
 file_locations = {'product':'static/img/products',
                   'buyer_photo':'static/img/buyers',
@@ -24,6 +18,7 @@ def save_photo(photo , dir):
     image = Image.open(photo)
     image.thumbnail(output_size)
     image.save(photo_path)
+    return photo_fn
 
 
 

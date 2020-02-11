@@ -3,7 +3,6 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
-from sqlalchemy.orm import relationship, join
 from flask_debug import Debug
 from flask_marshmallow import Marshmallow
 #from decimal import *

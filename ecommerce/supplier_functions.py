@@ -1,11 +1,7 @@
 from ecommerce import db
 from flask import session
-#import secrets
-#from ecommerce.forms import *
 from ecommerce.models import *
-import os
-from PIL import Image
-from ecommerce.functions import *
+from ecommerce.functions import save_photo
 
 def update_product(product, field, value):
     if field not in ['name', 'desc' , 'category' , 'brand' , 'price' , 'Additional_information'] or value in [None , ""]:
@@ -72,7 +68,7 @@ def sup_signup(sup_signupform):
         new_supplier = Supplier(sup_signupform.email.data , sup_signupform.username.data , sup_signupform.password.data , sup_signupform.name.data , sup_signupform.type_of.data , sup_signupform.address.data)
         db.session.add(new_supplier)
         db.session.commit()
-        return { 'signup_complete' : 'signup_successful' };
+        return { 'signup_complete' : 'signup_successful' }
     except:
         return  { 'signup_error': 'signup_failed' }
 

@@ -1,19 +1,18 @@
 from ecommerce import app, db
-from flask import render_template, redirect, request, url_for, flash, abort , jsonify, session
+from flask import render_template, redirect, request, url_for , jsonify, session
 from ecommerce.forms import *
 from ecommerce.models import *
 from ecommerce.supplier_functions import *
 from ecommerce.buyer_functions import *
-from ecommerce.functions import *
 
 
 @app.route('/suppliers/supplier_account', methods = ['GET', 'POST'])
 def supplier_account():
         if session.get('supplier_username', None) is None:
             return redirect(url_for('suppliers_index'))
-        data = { 'supplier' : Supplier.query.get(session.get('supplier_id'))}
-        
-        return render_template('/suppliers/supplier_account.html' , **data)
+        data = {'supplier' : Supplier.query.get(session.get('supplier_id'))}
+
+        return render_template('/suppliers/supplier_account.html', **data)
 
 
 @app.route('/suppliers/sup_orders', methods = ['GET', 'POST'])
