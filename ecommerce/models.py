@@ -4,7 +4,7 @@ from flask_login import UserMixin
 from datetime import datetime
 from flask_marshmallow import Marshmallow
 from ecommerce.functions import save_photo
-import pdb
+#import pdb
 
 def product_info_to_ui(pid):
     response = dict()

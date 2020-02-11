@@ -3,7 +3,7 @@ from ecommerce.models import *
 from ecommerce.forms import *
 from sqlalchemy import func, or_
 from flask_login import login_user, login_required, logout_user, current_user
-from ecommerce.functions import *
+from ecommerce.functions import save_photo
 
 
 def handle_forms(forms):

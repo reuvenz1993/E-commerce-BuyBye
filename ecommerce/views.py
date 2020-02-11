@@ -14,7 +14,7 @@ from ecommerce.functions import *
 from ecommerce.buyer_functions import *
 from ecommerce.api import *
 from ecommerce.supplier_functions import *
-import ecommerce.supllier_views
+
 
 per_page = 20
 
@@ -127,7 +127,7 @@ def product(pid):
     handle_forms(forms)
     product = Product.query.get(pid)
     reviews = product.reviews
-    if request.method == 'POST' and 'page' in request.json:
+    if request.method == 'POST' and request.json and 'page' in request.json:
         page = int(request.json.get('page',1))
         reviews = reviews.paginate(page,per_page,False)
         return render_template('product.html', product=product, reviews=reviews)

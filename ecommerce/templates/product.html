@@ -1,7 +1,0 @@
-{{product_data}}
-
-<script>
-{% if product_data %}
-product_data = JSON.parse('{{ product_data | tojson | safe}}');
-{% endif %}
-</script>
