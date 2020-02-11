@@ -1,24 +1,11 @@
-from ecommerce import app, db
-from flask import render_template, redirect, request, url_for, flash, abort , jsonify, session
-from flask_login import login_user, login_required, logout_user, current_user
-from ecommerce.forms import *
+from ecommerce import app
+from flask import render_template, redirect, request, url_for , jsonify
+from flask_login import login_required, logout_user, current_user
+from ecommerce.forms import Forms
 from ecommerce.models import *
-import secrets
-import os
-import json
-from sqlalchemy.sql import text
-from PIL import Image
-from sqlalchemy import or_
-from ecommerce.models import *
-from ecommerce.functions import *
 from ecommerce.buyer_functions import *
-from ecommerce.api import *
-from ecommerce.supplier_functions import *
 
-
-per_page = 20
-
-categories = ['Sports' , 'House' , 'Electronics' , 'Men Clothing', 'Women Clothing', 'Phone accessories', 'Phones' , 'Computer and office']
+PER_PAGE = 20
 
 @app.route('/account', methods = ['GET', 'POST'])
 @login_required
@@ -26,7 +13,7 @@ def account():
     if request.method == 'POST':
         if 'page' in request.json:
             page = int(request.json.get('page',1))
-            orders = current_user.sorted_orders.paginate(page, per_page, False)
+            orders = current_user.sorted_orders.paginate(page, PER_PAGE, False)
             return render_template('order_rows.html', orders=orders )
 
         elif 'stars' in request.json and 'order_id' in request.json:
@@ -43,7 +30,7 @@ def account():
     if request.args.get('focus_order') and int(request.args.get('focus_order')) in (order.id for order in current_user.orders):
         data['focus_on'] = int(request.args.get('focus_order'))
 
-    data['orders'] = current_user.sorted_orders.paginate(1, per_page, False)
+    data['orders'] = current_user.sorted_orders.paginate(1, PER_PAGE, False)
 
     return render_template('account.html', **data )
 
@@ -98,7 +85,7 @@ def results():
     if request.method == 'POST' and request.json:
         keyword_args = request.json
         page = int(keyword_args.pop("page", 1))
-        results = search(**keyword_args).paginate(page, per_page, False)
+        results = search(**keyword_args).paginate(page, PER_PAGE, False)
 
         return render_template('result_rows.html', results=results)
 
@@ -114,7 +101,7 @@ def results():
             keyword_args[key] = str(value[0])
 
 
-    results = search(**keyword_args).paginate(1, per_page, False)# proform search with params, if keyword_args is None - return all products
+    results = search(**keyword_args).paginate(1, PER_PAGE, False)# proform search with params, if keyword_args is None - return all products
 
     categorys = Category.query.all()
 
@@ -129,10 +116,10 @@ def product(pid):
     reviews = product.reviews
     if request.method == 'POST' and request.json and 'page' in request.json:
         page = int(request.json.get('page',1))
-        reviews = reviews.paginate(page,per_page,False)
+        reviews = reviews.paginate(page,PER_PAGE,False)
         return render_template('product.html', product=product, reviews=reviews)
     
-    reviews = reviews.paginate(1,per_page,False)
+    reviews = reviews.paginate(1,PER_PAGE,False)
     data = {**forms, 'product': product, 'reviews': reviews}
 
     if not product :

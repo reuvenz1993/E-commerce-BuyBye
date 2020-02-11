@@ -2,7 +2,6 @@ from ecommerce import db,login_manager, ma
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
-from flask_marshmallow import Marshmallow
 from ecommerce.functions import save_photo
 #import pdb
 

@@ -5,11 +5,10 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from sqlalchemy.orm import relationship, join
 from flask_debug import Debug
-from sqlalchemy import func, or_
 from flask_marshmallow import Marshmallow
-from decimal import *
-from flask_mail import Mail
-from flask_mail import Message
+#from decimal import *
+#from flask_mail import Mail
+#from flask_mail import Message
 
 
 
