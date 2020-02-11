@@ -105,10 +105,10 @@ $(document).ready(function ()
 
         if (typeof current_user === 'undefined' || current_user === null)
         {
-            $("#buy_now , #add_to_cart").attr("disabled", true);
+            //$("#buy_now , #add_to_cart").attr("disabled", true);
             $("#buy_now , #add_to_cart").click(()=>
             {
-                $('#buyer_signup_modal').modal('toggle');
+                $('#buyer_login_modal').modal('show');
             })
         } else
         {
