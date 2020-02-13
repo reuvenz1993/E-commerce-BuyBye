@@ -4,7 +4,7 @@ from wtforms import (IntegerField, PasswordField, StringField, SubmitField, Bool
                      ValidationError , DecimalField, SelectField )
 from wtforms.validators import DataRequired, Email, EqualTo, NumberRange
 from flask_wtf.file import FileField
-from ecommerce.models import *
+from ecommerce.models import Category
 from ecommerce import db
 
 
@@ -83,38 +83,14 @@ class LoginForm(FlaskForm):
         self.password.data = ""
 
 
+
 class UpdateForm(FlaskForm):
     email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
     password = PasswordField('Enter Password: ',validators=[DataRequired()] )
     update = SubmitField("update")
-    
+
+'''
 class UpdatePhoto(FlaskForm):
     photo = FileField()
     Upload = SubmitField("update")
-    
-
-class Buyer_Login(FlaskForm):
-    username = StringField('Enter Username : ' , validators=[DataRequired()] )
-    password = PasswordField('Enter Password: ', validators=[DataRequired()] )
-    remember = BooleanField('Remember Me')
-    login = SubmitField("Log in")
-    
-    def reset(self):
-        self.username.data = ""
-        self.password.data = ""
-        
     '''
-
-class Buyer_Signup(FlaskForm):
-    email = StringField('Enter your email : ' , validators=[DataRequired() ,Email() ])
-    username StringField('Enter Username : ' , validators=[DataRequired()] )
-    password = PasswordField('Enter Password: ',validators=[DataRequired()] )
-    nama = StringField('Enter Full : ')
-    signup = SubmitField("Sign up")
-    '''
-
-
-    def reset(self):
-        self.email.data = ""
-        self.username.data = ""
-        self.password.data = ""
