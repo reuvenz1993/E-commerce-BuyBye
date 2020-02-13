@@ -58,12 +58,12 @@ def sup_orders():
 @app.route('/suppliers/', methods = ['GET', 'POST'])
 def suppliers_index():
     data = {'forms': sup_forms()}
-    if check_sup_user_event(data['forms']) == True :
+    if check_sup_user_event(data['forms']):
         return redirect(url_for('suppliers_main'))
     else:
-        data['login_signup_message']  = check_sup_user_event(data['forms'])
+        data['login_signup_message'] = check_sup_user_event(data['forms'])
 
-    return render_template('/suppliers/index.html' , **data )
+    return render_template('/suppliers/index.html', **data )
 
 @app.route('/suppliers/sup_product_data/<pid>', methods = ['GET', 'POST'])
 def sup_product_data(pid):
@@ -107,5 +107,6 @@ def suppliers_main():
 
 @app.route('/suppliers/logout', methods = ['GET', 'POST'])
 def suppliers_logout():
-    session.pop('supplier_username')
+    if session.get('supplier_username',None):
+        session.pop('supplier_username')
     return redirect(url_for('suppliers_index'))

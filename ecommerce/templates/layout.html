@@ -33,47 +33,33 @@
 
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
     <div class="container">
 
-      <!-- Brand -->
       <a class="navbar-brand waves-effect" href="{{url_for('index')}}" target="_self">
         <strong class="blue-text">BuyBye</strong>
       </a>
 
-      <!-- Collapse -->
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- Links -->
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-        <!-- Left -->
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
             <a class="nav-link waves-effect" href="{{url_for('index')}}">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
-          <!-- keeping for "my account" 
-          <li class="nav-item">
-            <a class="nav-link waves-effect" href="https://mdbootstrap.com/docs/jquery/" target="_blank">About MDB</a>
-          </li>
-          -->
           <li class="nav-item">
             <a class="nav-link waves-effect" href="{{url_for('results')}}"
               target="_self">Search</a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link waves-effect" href="https://mdbootstrap.com/education/bootstrap/" target="_blank">Free
-              tutorials</a>
-          </li> -->
+
         </ul>
 
-        <!-- Right -->
         <ul class="navbar-nav nav-flex-icons">
           <li class="nav-item">
             <a href="{{url_for('my_cart')}}" class="nav-link waves-effect">
@@ -115,6 +101,12 @@
             </a>
           </li>
           {% endif %}
+          <li id='seller_link' style="margin-left: 4vw; font-size: 90%;" class="nav-item align-self-center">
+            <a href="{{url_for('suppliers_index')}}" class="nav-link rounded waves-effect"
+              target="_self">
+              <i class="fas fa-handshake"></i>Sell on buybye
+            </a>
+          </li>
         </ul>
 
       </div>
@@ -149,18 +141,6 @@
 
 
 <script type="text/javascript" src="{{url_for('static',filename='js/layout.js')}}" ></script>
-
-<!-- 
-<footer class="fixed-bottom page-footer font-small blue">
-
-
-    <div class="footer-copyright text-center py-3">© 2019 Copyright:
-      <a href="#"> Reuven zolo</a>
-    </div>
-
-
-    </footer>
-Copyright -->
 
     </body>
 </html>
