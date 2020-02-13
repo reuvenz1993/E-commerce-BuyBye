@@ -1,25 +1,25 @@
 from ecommerce import app
 import os
-from PIL import Image
 import secrets
+from PIL import Image
 
 
-file_locations = {'product':'static/img/products',
-                  'buyer_photo':'static/img/buyers',
-                  'suppliers':'static/img/suppliers' }
+file_locations = {'product': 'static/img/products', 
+                  'buyer_photo': 'static/img/buyers', 
+                  'suppliers': 'static/img/suppliers'}
 
 
-def save_photo(photo , dir):
+def save_photo(photo, dir):
     random_hex = secrets.token_hex(8)
-    _ , f_ext = os.path.splitext(photo.filename)
+    _, f_ext = os.path.splitext(photo.filename)
     photo_fn = random_hex + f_ext
-    photo_path = os.path.join(app.root_path, file_locations[dir] , photo_fn )
-    output_size = (800 , 800)
+    photo_path = os.path.join(app.root_path, file_locations[dir], photo_fn)
+    output_size = (800, 800)
     image = Image.open(photo)
     image.thumbnail(output_size)
+
     image.save(photo_path)
     return photo_fn
-
 
 
 '''
@@ -28,11 +28,11 @@ def get_dict(object_or_list):
     import ecommerce
     if type(object_or_list) is list :
         if len(object_or_list) > 0 :
-            schema = get_schema(object_or_list[0] , many=True )
+            schema = get_schema(object_or_list[0] , many = True )
         else :
             return None
     else :
-        schema = get_schema(object_or_list , many=False )
+        schema = get_schema(object_or_list , many = False )
     
     res = schema.dump(object_or_list)
     dec_2_float(res)
@@ -42,11 +42,11 @@ def get_dict(object_or_list):
 
 '''
 # gets object
-def get_schema(model , many=True):
+def get_schema(model , many = True):
     import ecommerce
     schema_type = ""
-    models = (ecommerce.models.Category ,ecommerce.models.Cart ,ecommerce.models.Buyer ,ecommerce.models.Supplier , ecommerce.models.Product , ecommerce.models.Order , ecommerce.models.Reviews)
-    schemas = [category_schema ,cart_schema , buyer_schema , supllier_schema , product_schema, order_schema  , reviews_schema ]
+    models = (ecommerce.models.Category , ecommerce.models.Cart , ecommerce.models.Buyer , ecommerce.models.Supplier , ecommerce.models.Product , ecommerce.models.Order , ecommerce.models.Reviews)
+    schemas = [category_schema , cart_schema , buyer_schema , supllier_schema , product_schema, order_schema  , reviews_schema ]
     arg = model
     for idx, val in enumerate(models):
         #print (s)

@@ -1,15 +1,9 @@
 from ecommerce import db,login_manager, ma
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 from ecommerce.functions import save_photo
 #import pdb
-
-def product_info_to_ui(pid):
-    response = dict()
-    response = Product.query.get(pid).get_info()
-    response['supplier'] = Product.query.get(pid).supplier.get_info()
-    return response
 
 
 @login_manager.user_loader
@@ -24,7 +18,7 @@ def convert_to_list(val):
 
 class Coupon(db.Model, UserMixin):
     __tablename__ = 'coupon'
-    
+
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(256), default='N/A')
     product = db.Column(db.Integer, db.ForeignKey('products.id') , nullable=False)

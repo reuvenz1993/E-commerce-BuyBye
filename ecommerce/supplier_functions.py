@@ -34,15 +34,14 @@ def pull_supplier_orders(sid , pid=False , status=False ):
 def product_belong_supplier(pid , supplier_id):
     if not Product.query.get(pid) or not Product.query.get(pid).supplier_id == supplier_id :
         return False
-    else :
-        return True
+    return True
 
 
 def add_product(supplier_add_product):
     if supplier_add_product.picture.data :
         picture_fn = save_photo(photo=supplier_add_product.picture.data, dir='product')
     else:
-        picture_fn= 'default.png'
+        picture_fn = 'default.png'
 
     supplier_id = session['supplier_id']
     new_product = Product (name=supplier_add_product.name.data, supplier_id=supplier_id,

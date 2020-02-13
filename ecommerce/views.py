@@ -1,9 +1,9 @@
-from ecommerce import app
 from flask import render_template, redirect, request, url_for , jsonify
 from flask_login import login_required, logout_user, current_user
+from ecommerce import app
 from ecommerce.forms import Forms
 from ecommerce.models import *
-from ecommerce.buyer_functions import *
+from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search
 
 PER_PAGE = 20
 
@@ -12,9 +12,9 @@ PER_PAGE = 20
 def account():
     if request.method == 'POST':
         if 'page' in request.json:
-            page = int(request.json.get('page',1))
+            page = int(request.json.get('page', 1))
             orders = current_user.sorted_orders.paginate(page, PER_PAGE, False)
-            return render_template('order_rows.html', orders=orders )
+            return render_template('order_rows.html', orders = orders)
 
         elif 'stars' in request.json and 'order_id' in request.json:
             order = Order.query.get(int(request.json.get('order_id', 0)))
@@ -38,7 +38,7 @@ def account():
 @app.route('/', methods = ['GET', 'POST'])
 def index():
     forms = Forms()
-    data = {**forms ,'categorys': Category.query.all()}
+    data = {**forms , 'categorys': Category.query.all()}
     user_messages = handle_forms(forms)
     if user_messages :
         data.update(user_messages)
@@ -59,13 +59,13 @@ def my_cart():
     data = {**forms}
     args = request.args
     if args.get('type') == 'update_buyer_message':
-        return jsonify(update_buyer_message(item_id=args.get('item_id'), buyer_message=args.get('buyer_message')))
-    
-    cart_functions = {'remove' : remove_from_cart, 'buy_one': buy_one ,'buy_all': buy_all}
+        return jsonify(update_buyer_message(item_id = args.get('item_id'), buyer_message = args.get('buyer_message')))
+
+    cart_functions = {'remove' : remove_from_cart, 'buy_one': buy_one , 'buy_all': buy_all}
     if args.get('type') in cart_functions:
-        res = cart_functions[args.get('type')](item_id=args.get('item_id'))
-        data['action'] = {'success': res, 'type': args.get('type'),'item': Cart.query.get(args.get('item_id', False))}
-    
+        res = cart_functions[args.get('type')](item_id = args.get('item_id'))
+        data['action'] = {'success': res, 'type': args.get('type'), 'item': Cart.query.get(args.get('item_id', False))}
+
     return render_template('my_cart.html', **data)
 
 
@@ -80,24 +80,24 @@ def results():
     handle_forms(forms)
     
     # return result_rows sub template with the products in search results
-    # params : pid=[], category_list=[],min_price, max_price, min_avg,
-    # word="search products contains this word", as_json=False(set true to get json response)
+    # params : pid = [], category_list = [], min_price, max_price, min_avg, 
+    # word = "search products contains this word", as_json = False(set true to get json response)
     if request.method == 'POST' and request.json:
         keyword_args = request.json
         page = int(keyword_args.pop("page", 1))
         results = search(**keyword_args).paginate(page, PER_PAGE, False)
 
-        return render_template('result_rows.html', results=results)
+        return render_template('result_rows.html', results = results)
 
     keyword_args = dict(request.args)
     keyword_args.pop("page", None)
-    for key,value in keyword_args.items():
+    for key, value in keyword_args.items():
         if key != 'word':
             if type(value) is list :
                 keyword_args[key] = int(value[0])
             if type(value) is str :
                 keyword_args[key] = int(value)
-        if key =='word' and type(value) is list :
+        if key == 'word' and type(value) is list :
             keyword_args[key] = str(value[0])
 
 
@@ -105,7 +105,7 @@ def results():
 
     categorys = Category.query.all()
 
-    return render_template('results.html'  , results=results , categorys=categorys , **forms, **keyword_args )
+    return render_template('results.html'  , results = results , categorys = categorys , **forms, **keyword_args )
 
 
 @app.route('/product2/<pid>', methods = ['GET', 'POST'])
@@ -115,11 +115,11 @@ def product(pid):
     product = Product.query.get(pid)
     reviews = product.reviews
     if request.method == 'POST' and request.json and 'page' in request.json:
-        page = int(request.json.get('page',1))
-        reviews = reviews.paginate(page,PER_PAGE,False)
-        return render_template('product.html', product=product, reviews=reviews)
+        page = int(request.json.get('page', 1))
+        reviews = reviews.paginate(page, PER_PAGE, False)
+        return render_template('product.html', product = product, reviews = reviews)
     
-    reviews = reviews.paginate(1,PER_PAGE,False)
+    reviews = reviews.paginate(1, PER_PAGE, False)
     data = {**forms, 'product': product, 'reviews': reviews}
 
     if not product :

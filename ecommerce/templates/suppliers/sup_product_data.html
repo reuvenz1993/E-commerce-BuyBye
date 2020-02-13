@@ -48,7 +48,7 @@
             </select>  <span> <i id='category_edit' data-sibling='category_confirm' data-change='category' class="fas fa-edit change"></i><i id='category_confirm' data-sibling='category_edit' data-change='category' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
             <p>Brand : <input class="form-control" type="text" disabled id='brand'  value="{{product.brand}}"> <span> <i id='brand_edit' data-sibling='brand_confirm' data-change='brand' class="fas fa-edit change"></i><i id='brand_confirm' data-sibling='brand_edit' data-change='brand' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
             <p>Seller : <span id='seller'> {{product.supplier.name}} </span>  </p>
-            <p>Price $ : <input class="form-control" type="text" disabled  id='price' value="{{product.price}}">  <span> <i id='price_edit' data-sibling='price_confirm' data-change='price' class="fas fa-edit change"></i><i id='price_confirm' data-sibling='price_edit' data-change='price' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
+            <p>Price $ : <input class="form-control" type="text" disabled  id='price' value="{{product.price | round(1)}}">  <span> <i id='price_edit' data-sibling='price_confirm' data-change='price' class="fas fa-edit change"></i><i id='price_confirm' data-sibling='price_edit' data-change='price' class="fas fa-check-circle change confirm" style="display: none;"></i> </span> </p>
 
         </div>
     </div>
@@ -79,24 +79,10 @@
         </div>
     </div>
     <hr>
-    <h4 class="text-center">Reviews <span id='reviews_count'></span></h4>
     <div class="row justify-content-center">
-        <ul id='reviews' class="col-9">
-            {% if product.reviews %}
-            {% for review in product.reviews %}
-
-            <li class="row text-center review" id="product num: 1">
-                <div class="col">{{review.stars}}</div>
-                <div class="col-6 pnt">
-                    <div class="row">{{review.review_content}}</div>
-                    <div class="row">{{review.order.the_buyer.name}}</div>
-                </div>
-                <div class="col">{{review.review_time.strftime("%d/%m/%y")}}</div>
-            </li>
-            {% endfor %}
-            {% endif %}
-
-        </ul>
+        <div id='reviews' class="col-9">
+          {% include 'reviews_rows.html' %}
+        </div>
     </div>
 
 
