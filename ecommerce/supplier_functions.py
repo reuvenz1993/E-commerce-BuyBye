@@ -39,7 +39,7 @@ def product_belong_supplier(pid , supplier_id):
 
 def add_product(supplier_add_product):
     if supplier_add_product.picture.data :
-        picture_fn = save_photo(photo=supplier_add_product.picture.data, dir='product')
+        picture_fn = save_photo(photo=supplier_add_product.picture.data, _dir='product')
     else:
         picture_fn = 'default.png'
 

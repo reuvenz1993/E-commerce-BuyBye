@@ -41,7 +41,7 @@ def signup_buyer(signup_form):
         return {'signup_error': signup_error}
 
     if signup_form.photo.data:
-        kwargs['photo'] = save_photo(photo=signup_form.photo.data, dir='buyer_photo' )
+        kwargs['photo'] = save_photo(photo=signup_form.photo.data, _dir='buyer_photo' )
 
 
     new_buyer = Buyer(**kwargs )
