@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_debug import Debug
 from flask_marshmallow import Marshmallow
+from flask_pymongo import PyMongo
 #from decimal import *
 #from flask_mail import Mail
 #from flask_mail import Message
@@ -20,6 +21,8 @@ app.config['SECRET_KEY'] = 'mysecretkey'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["MONGO_URI"] = "mongodb+srv://reuvenz:ox4MnL8lfZE4tSwx@reuvenz-mongo-xatdp.mongodb.net/test?retryWrites=true&w=majority"
+mongo = PyMongo(app)
 
 
 db = SQLAlchemy(app)
