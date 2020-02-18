@@ -25,6 +25,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["MONGO_URI"] = "mongodb+srv://reuvenz:ox4MnL8lfZE4tSwx@reuvenz-mongo-xatdp.mongodb.net/reuven-db-1?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 
+
+app.config["MONGODB_SETTINGS"] = {'DB': "my_app", "host":'mongodb+srv://reuvenz:ox4MnL8lfZE4tSwx@reuvenz-mongo-xatdp.mongodb.net/reuven-db-1?retryWrites=true&w=majority'}
+
+
 db2 = MongoEngine(app)
 
 db = SQLAlchemy(app)
