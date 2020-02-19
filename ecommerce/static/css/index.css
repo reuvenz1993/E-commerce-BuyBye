@@ -3,6 +3,11 @@
     cursor:pointer !important;
 }
 
+.card_cat_img{
+  width:150px;
+  height: 180px;
+}
+
 .search-key-box
 {
     position: relative;

@@ -400,7 +400,7 @@ class Product(db.Model, UserMixin):
         return response
 
     def update_picture(self,picture):
-        picture_fn = save_photo(photo=picture,dir='product')
+        picture_fn = save_photo(photo=picture,_dir='product')
         self.picture = "/static/img/products/" + picture_fn
         db.session.commit()
         
