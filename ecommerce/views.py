@@ -4,8 +4,30 @@ from ecommerce import app
 from ecommerce.forms import Forms
 from ecommerce.models import *
 from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search
+from ecommerce.utils.GoogleAuth import GoogleStrategy
 
 PER_PAGE = 20
+
+props = {     'scope': 'profile+email',
+            'access_type': 'offline',
+            'redirect_uri' : 'http://localhost:5000/auth/google/callback',
+            'client_id' : '1064746606031-kftok01lmpn0rsirm3l036lqr75pp20l.apps.googleusercontent.com',
+                'client_secret':'HVbVI3cNHnK70z7XADuClmuB'}
+
+GoogleAuth = GoogleStrategy(**props)
+
+@app.route('/auth/google', methods=['GET', 'POST'])
+def login():
+    return redirect(GoogleAuth.authenticationLink())
+
+
+@app.route('/auth/google/callback', methods=['GET', 'POST'])
+def completeAuth():
+    authorizationCode = request.args.get('code')
+    profile = GoogleAuth.completeAuth(authorizationCode)
+    
+    return f"aa {profile}"
+
 
 @app.route('/account', methods = ['GET', 'POST'])
 @login_required
