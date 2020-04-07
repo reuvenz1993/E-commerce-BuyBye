@@ -25,7 +25,7 @@ if is_prod:
     facebookKeys['client_secret'] = os.environ.get('FACEBOOK_OUATH_SECRET', None)
     facebookKeys['redirect_uri']= 'https://reuven-flask-test.herokuapp.com/auth/facebook/callback'
     GoogleKeys['client_secret'] = os.environ.get('GOOGLE_OUATH_SECRET', None)
-    GoogleKeys['redirect_uri']= 'https://reuven-flask-test.herokuapp.com/auth/facebook/callback'
+    GoogleKeys['redirect_uri']= 'https://reuven-flask-test.herokuapp.com/auth/google/callback'
 else:
     from ecommerce.dev import facebook_oauth_secret, google_oauth_secret
     facebookKeys['client_secret'] = facebook_oauth_secret
