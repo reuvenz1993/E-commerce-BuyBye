@@ -2,6 +2,7 @@ from ecommerce.models import *
 from sqlalchemy import func, or_
 from flask_login import login_user, current_user
 from ecommerce.functions import save_photo
+import random 
 
 
 def authenticate_buyer_google(profile):
@@ -10,7 +11,12 @@ def authenticate_buyer_google(profile):
         login_user(buyer)
         return buyer
     else:
-        return False
+        new_buyer = Buyer(username=profile['name'], email=profile['email'], password=random.randint(1, 100000), name=profile['name'])
+        db.session.add(new_buyer)
+        db.session.commit()
+        new_buyer = Buyer.query.filter_by(email= profile['email']).first()
+        login_user(new_buyer)
+        return new_buyer
 
 def handle_forms(forms):
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
