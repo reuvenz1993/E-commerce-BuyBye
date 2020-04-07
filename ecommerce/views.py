@@ -4,7 +4,8 @@ from ecommerce import app
 from ecommerce.forms import Forms
 from ecommerce.models import *
 from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search, authenticate_buyer_google
-from ecommerce.utils.GoogleAuth import GoogleStrategy
+from ecommerce.utils.GoogleAuth import GoogleStrategy, FacebookStrategy
+from ecommerce.dev import facebookKeys
 
 PER_PAGE = 20
 
@@ -15,6 +16,8 @@ props = {     'scope': 'profile+email',
                 'client_secret':'HVbVI3cNHnK70z7XADuClmuB'}
 
 GoogleAuth = GoogleStrategy(**props)
+FacebookAuth = FacebookStrategy(**facebookKeys)
+
 
 @app.route('/auth/google', methods=['GET', 'POST'])
 def login():
@@ -28,6 +31,19 @@ def completeAuth():
     buyer = authenticate_buyer_google(profile)
     
     return redirect(url_for('index'))
+
+
+@app.route('/auth/facebook', methods=['GET', 'POST'])
+def facebook_login():
+    return redirect(FacebookAuth.authenticationLink())
+
+
+@app.route('/auth/facebook/callback', methods=['GET', 'POST'])
+def facebook_completeAuth():
+    authorizationCode = request.args.get('code')
+    credentials = FacebookAuth.getCredentials(authorizationCode)
+    
+    return f"test {credentials}"
 
 
 @app.route('/account', methods = ['GET', 'POST'])
