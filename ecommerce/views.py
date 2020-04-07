@@ -41,9 +41,9 @@ def facebook_login():
 @app.route('/auth/facebook/callback', methods=['GET', 'POST'])
 def facebook_completeAuth():
     authorizationCode = request.args.get('code')
-    credentials = FacebookAuth.getCredentials(authorizationCode)
+    profile = FacebookAuth.completeAuth(authorizationCode)
     
-    return f"test {credentials}"
+    return f"test {profile}"
 
 
 @app.route('/account', methods = ['GET', 'POST'])

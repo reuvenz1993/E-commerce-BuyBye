@@ -69,8 +69,8 @@ class FacebookStrategy():
 
 
     def getProfile(self, credentials):
-        headers = {'Authorization': 'Bearer {}'.format(credentials['access_token'])}
-        URL = 'https://www.googleapis.com/oauth2/v2/userinfo'
-        rawProfile = requests.get(url=URL, headers=headers)
+        params = { 'fields': 'id,email,name,gender,location,picture', 'access_token': credentials['access_token'] }
+        URL = 'https://graph.facebook.com/me?'
+        rawProfile = requests.get(url=URL, params=params)
         profile = json.loads(rawProfile.text)
         return profile
