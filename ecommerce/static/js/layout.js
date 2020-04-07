@@ -23,4 +23,9 @@ $("#buyer_login_toggle").click(function (e)
     });
 
 
+    $("#facebookAuth").click(function (e) {
+        e.preventDefault();
+        window.location.href = '/auth/facebook';
+    });
+
 });

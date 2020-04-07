@@ -9,11 +9,6 @@ from ecommerce.dev import facebookKeys
 
 PER_PAGE = 20
 
-props = {     'scope': 'profile+email',
-            'access_type': 'offline',
-            'redirect_uri' : 'http://localhost:5000/auth/google/callback',
-            'client_id' : '1064746606031-kftok01lmpn0rsirm3l036lqr75pp20l.apps.googleusercontent.com',
-                'client_secret':'HVbVI3cNHnK70z7XADuClmuB'}
 
 GoogleAuth = GoogleStrategy(**props)
 FacebookAuth = FacebookStrategy(**facebookKeys)
@@ -42,8 +37,9 @@ def facebook_login():
 def facebook_completeAuth():
     authorizationCode = request.args.get('code')
     profile = FacebookAuth.completeAuth(authorizationCode)
+    buyer = authenticate_buyer_google(profile)
     
-    return f"test {profile}"
+    return redirect(url_for('index'))
 
 
 @app.route('/account', methods = ['GET', 'POST'])

@@ -11,7 +11,7 @@ def authenticate_buyer_google(profile):
         login_user(buyer)
         return buyer
     else:
-        new_buyer = Buyer(username=profile['name'], email=profile['email'], password=random.randint(1, 100000), name=profile['name'])
+        new_buyer = Buyer(username=profile['name'], email=profile['email'], password=str(random.randint(1, 100000)), name=profile['name'])
         db.session.add(new_buyer)
         db.session.commit()
         new_buyer = Buyer.query.filter_by(email= profile['email']).first()
