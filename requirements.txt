@@ -74,6 +74,7 @@ requests==2.18.4
 requests-oauthlib==0.8.0
 rope==0.16.0
 Send2Trash==1.5.0
+sendgrid==6.2.1
 six==1.11.0
 SQLAlchemy==1.2.6
 SQLAlchemy-Utils==0.33.2

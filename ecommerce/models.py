@@ -1,9 +1,16 @@
 from ecommerce import db,login_manager, ma
+import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import datetime
 from ecommerce.functions import save_photo
-#import pdb
+import sendgrid
+from sendgrid.helpers.mail import *
+
+
+sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_SECRET', 'test'))
+from_email = Email("no-reply@buy-bye.com")
+to_email = To("reuvenz102@gmail.com")
 
 
 @login_manager.user_loader
@@ -156,12 +163,20 @@ class Buyer(db.Model, UserMixin):
         self.address = address.lower()
         self.photo = "/static/img/buyers/" + photo
         self.join_time  = datetime.utcnow()
+        self.send_welcome_email()
 
     def check_password(self,password):
         return check_password_hash(self.password_hash , password)
 
     def as_list(self):
         return [self.id ,self.email ,self.username,self.password_hash,self.name,self.address,self.photo,self.orders]
+
+    def send_welcome_email(self):
+        to_email = To(self.email)
+        subject = "Welcome To Buybye"
+        content = Content("text/plain", f"Hello {self.username}, Welcome To Buybye !")
+        mail = Mail(from_email, to_email, subject, content)
+        response = sg.client.mail.send.post(request_body=mail.get())
 
     @property
     def open_cart(self):
