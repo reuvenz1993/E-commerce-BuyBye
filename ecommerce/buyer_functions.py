@@ -5,7 +5,7 @@ from ecommerce.functions import save_photo
 import random 
 
 
-def authenticate_buyer_google(profile):
+def authenticate_buyer_Oauth(profile):
     buyer = Buyer.query.filter_by(email= profile['email']).first()
     if buyer:
         login_user(buyer)

@@ -91,12 +91,12 @@
           </li>
           {% else %}
           <li class="nav-item">
-            <a href="/auth/google" id="google_button" class="fb connect">
+            <a href="{{url_for('google_login')}}" id="google_button" class="fb connect">
               <i class="fab fa-google"></i> Sign in with Google
             </a>
           </li>
           <li class="nav-item">
-            <a href="/auth/facebook" class="fb connect">Sign in with Facebook</a>
+            <a href="{{url_for('facebook_login')}}" class="fb connect">Sign in with Facebook</a>
           </li>
           <li class="nav-item">
             <a id='buyer_login_toggle' class="nav-link border border-light rounded waves-effect"

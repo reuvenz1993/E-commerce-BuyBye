@@ -1,29 +1,49 @@
+import os
 from flask import render_template, redirect, request, url_for , jsonify
 from flask_login import login_required, logout_user, current_user
 from ecommerce import app
 from ecommerce.forms import Forms
 from ecommerce.models import *
-from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search, authenticate_buyer_google
+from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search, authenticate_buyer_Oauth
 from ecommerce.utils.GoogleAuth import GoogleStrategy, FacebookStrategy
-from ecommerce.dev import facebookKeys
+from ecommerce.dev import facebookKeys, GoogleKeys
 
 PER_PAGE = 20
 
+facebookKeys = {'scope': 'email', 
+                'client_id': '265235621140167', 
+                'redirect_uri': 'http://localhost:5000/auth/facebook/callback'}
 
-GoogleAuth = GoogleStrategy(**props)
+GoogleKeys = {  'scope': 'profile+email',
+                'access_type': 'offline',
+                'redirect_uri' : 'http://localhost:5000/auth/google/callback',
+                'client_id' : '1064746606031-kftok01lmpn0rsirm3l036lqr75pp20l.apps.googleusercontent.com'}
+
+
+is_prod = os.environ.get('IS_HEROKU', None)
+
+if is_prod:
+    facebookKeys['client_secret'] = os.environ.get('FACEBOOK_OUATH_SECRET', None)
+    GoogleKeys['client_secret'] = os.environ.get('GOOGLE_OUATH_SECRET', None)
+else:
+    from ecommerce.dev import facebook_oauth_secret, google_oauth_secret
+    facebookKeys['client_secret'] = facebook_oauth_secret
+    GoogleKeys['client_secret'] = google_oauth_secret
+
+GoogleAuth = GoogleStrategy(**GoogleKeys)
 FacebookAuth = FacebookStrategy(**facebookKeys)
 
 
 @app.route('/auth/google', methods=['GET', 'POST'])
-def login():
+def google_login():
     return redirect(GoogleAuth.authenticationLink())
 
 
 @app.route('/auth/google/callback', methods=['GET', 'POST'])
-def completeAuth():
+def google_completeAuth():
     authorizationCode = request.args.get('code')
     profile = GoogleAuth.completeAuth(authorizationCode)
-    buyer = authenticate_buyer_google(profile)
+    buyer = authenticate_buyer_Oauth(profile)
     
     return redirect(url_for('index'))
 
@@ -37,7 +57,7 @@ def facebook_login():
 def facebook_completeAuth():
     authorizationCode = request.args.get('code')
     profile = FacebookAuth.completeAuth(authorizationCode)
-    buyer = authenticate_buyer_google(profile)
+    buyer = authenticate_buyer_Oauth(profile)
     
     return redirect(url_for('index'))
 

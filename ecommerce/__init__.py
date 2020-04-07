@@ -27,6 +27,7 @@ Migrate(app,db)
 Debug(app)
 ma = Marshmallow(app)
 
+
 '''
 app.config.update(dict(
     DEBUG = True,
