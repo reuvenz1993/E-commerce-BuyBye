@@ -4,6 +4,14 @@ from flask_login import login_user, current_user
 from ecommerce.functions import save_photo
 
 
+def authenticate_buyer_google(profile):
+    buyer = Buyer.query.filter_by(email= profile['email']).first()
+    if buyer:
+        login_user(buyer)
+        return buyer
+    else:
+        return False
+
 def handle_forms(forms):
     if forms['login_form'].login.data and forms['login_form'].validate_on_submit():
         return check_login(forms['login_form'])

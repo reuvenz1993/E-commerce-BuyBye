@@ -3,7 +3,7 @@ from flask_login import login_required, logout_user, current_user
 from ecommerce import app
 from ecommerce.forms import Forms
 from ecommerce.models import *
-from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search
+from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search, authenticate_buyer_google
 from ecommerce.utils.GoogleAuth import GoogleStrategy
 
 PER_PAGE = 20
@@ -25,8 +25,9 @@ def login():
 def completeAuth():
     authorizationCode = request.args.get('code')
     profile = GoogleAuth.completeAuth(authorizationCode)
+    buyer = authenticate_buyer_google(profile)
     
-    return f"aa {profile}"
+    return redirect(url_for('index'))
 
 
 @app.route('/account', methods = ['GET', 'POST'])
