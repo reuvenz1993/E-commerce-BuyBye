@@ -56,6 +56,8 @@ class FacebookStrategy():
     def completeAuth(self, authorizationCode):
         credentials = self.getCredentials(authorizationCode)
         profile = self.getProfile(credentials)
+        print("FacebookStrategy.completeAuth(self, authorizationCode):")
+        print(profile)
         return profile
     
     def getCredentials(self, authorizationCode):
