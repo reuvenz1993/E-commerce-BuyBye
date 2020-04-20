@@ -51,14 +51,11 @@ class FacebookStrategy():
 
     def authenticationLink(self):
         ref = f"https://www.facebook.com/v6.0/dialog/oauth?client_id={self.client_id}&redirect_uri={self.redirect_uri}&state={self.state}&scope={self.scope}"
-        print(ref)
         return ref
     
     def completeAuth(self, authorizationCode):
         credentials = self.getCredentials(authorizationCode)
         profile = self.getProfile(credentials)
-        print("FacebookStrategy.completeAuth(self, authorizationCode):")
-        print(profile)
         return profile
     
     def getCredentials(self, authorizationCode):
@@ -74,8 +71,5 @@ class FacebookStrategy():
         params = {'access_token': credentials['access_token'] }
         URL = 'https://graph.facebook.com/me?fields=id,email,name,gender,location,picture'
         rawProfile = requests.get(url=URL, params=params)
-        print(rawProfile.url)
         profile = json.loads(rawProfile.text)
-        print("FacebookStrategy.getProfile:")
-        print(profile)
         return profile
