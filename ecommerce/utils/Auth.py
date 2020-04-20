@@ -70,11 +70,11 @@ class FacebookStrategy():
 
 
     def getProfile(self, credentials):
-        params = { 'fields': 'id,email,name,gender,location,picture', 'access_token': credentials['access_token'] }
-        URL = 'https://graph.facebook.com/me?'
+        params = {'access_token': credentials['access_token'] }
+        URL = 'https://graph.facebook.com/me?fields=id,email,name,gender,location,picture'
         rawProfile = requests.get(url=URL, params=params)
         print(rawProfile.url)
         profile = json.loads(rawProfile.text)
-        #print("FacebookStrategy.getProfile:")
-        #print(profile)
+        print("FacebookStrategy.getProfile:")
+        print(profile)
         return profile

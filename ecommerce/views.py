@@ -5,7 +5,7 @@ from ecommerce import app
 from ecommerce.forms import Forms
 from ecommerce.models import *
 from ecommerce.buyer_functions import handle_forms, update_buyer_message, remove_from_cart, buy_all, buy_one, search, authenticate_buyer_Oauth
-from ecommerce.utils.GoogleAuth import GoogleStrategy, FacebookStrategy
+from ecommerce.utils.Auth import GoogleStrategy, FacebookStrategy
 
 PER_PAGE = 20
 
