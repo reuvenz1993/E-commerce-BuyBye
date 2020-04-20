@@ -9,7 +9,7 @@ from ecommerce.utils.Auth import GoogleStrategy, FacebookStrategy
 
 PER_PAGE = 20
 
-facebookKeys = {'scope': 'email', 
+FacebookKeys = {'scope': 'email', 
                 'client_id': '265235621140167', 
                 'redirect_uri': 'http://localhost:5000/auth/facebook/callback'}
 
@@ -23,17 +23,17 @@ is_prod = os.environ.get('IS_HEROKU', None)
 
 if is_prod:
     domain = os.environ.get('DOMAIN', 'localhost:5000')
-    facebookKeys['client_secret'] = os.environ.get('FACEBOOK_OUATH_SECRET', None)
-    facebookKeys['redirect_uri']= f'{domain}/auth/facebook/callback'
+    FacebookKeys['client_secret'] = os.environ.get('FACEBOOK_OUATH_SECRET', None)
+    FacebookKeys['redirect_uri']= f'{domain}/auth/facebook/callback'
     GoogleKeys['client_secret'] = os.environ.get('GOOGLE_OUATH_SECRET', None)
     GoogleKeys['redirect_uri']= f'{domain}/auth/google/callback'
 else:
     from ecommerce.dev import facebook_oauth_secret, google_oauth_secret
-    facebookKeys['client_secret'] = facebook_oauth_secret
+    FacebookKeys['client_secret'] = facebook_oauth_secret
     GoogleKeys['client_secret'] = google_oauth_secret
 
 GoogleAuth = GoogleStrategy(**GoogleKeys)
-FacebookAuth = FacebookStrategy(**facebookKeys)
+FacebookAuth = FacebookStrategy(**FacebookKeys)
 
 
 @app.route('/auth/google', methods=['GET', 'POST'])

@@ -50,7 +50,8 @@ class FacebookStrategy():
         self.state = state
 
     def authenticationLink(self):
-        ref = f"https://www.facebook.com/v6.0/dialog/oauth?client_id={self.client_id}&redirect_uri={self.redirect_uri}&state={self.state}"
+        ref = f"https://www.facebook.com/v6.0/dialog/oauth?client_id={self.client_id}&redirect_uri={self.redirect_uri}&state={self.state}&scope={self.scope}"
+        print(ref)
         return ref
     
     def completeAuth(self, authorizationCode):
