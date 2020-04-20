@@ -74,4 +74,6 @@ class FacebookStrategy():
         URL = 'https://graph.facebook.com/me?'
         rawProfile = requests.get(url=URL, params=params)
         profile = json.loads(rawProfile.text)
+        print("FacebookStrategy.getProfile:")
+        print(profile)
         return profile
