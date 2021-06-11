@@ -5,10 +5,10 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_debug import Debug
 from flask_marshmallow import Marshmallow
-#from decimal import *
-#from flask_mail import Mail
-#from flask_mail import Message
 
+# from decimal import *
+# from flask_mail import Mail
+# from flask_mail import Message
 
 
 login_manager = LoginManager()
@@ -16,19 +16,21 @@ login_manager = LoginManager()
 app = Flask(__name__)
 
 # Often people will also separate these into a separate config.py file
-app.config['SECRET_KEY'] = 'mysecretkey'
+app.config["SECRET_KEY"] = "mysecretkey"
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+    basedir, "data.sqlite"
+)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 
 db = SQLAlchemy(app)
-Migrate(app,db)
+Migrate(app, db)
 Debug(app)
 ma = Marshmallow(app)
 
 
-'''
+"""
 app.config.update(dict(
     DEBUG = True,
     MAIL_SERVER = 'smtp.gmail.com',
@@ -45,7 +47,7 @@ msg = Message("Hello",
             recipients=["rovenroven1@gmail.com"])
 
 mail.send(msg)
-'''
+"""
 
 # We can now pass in our app to the login manager
 login_manager.init_app(app)
