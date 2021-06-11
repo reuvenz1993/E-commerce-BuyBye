@@ -64,7 +64,7 @@ parso==0.5.2
 pickleshare==0.7.5
 Pillow==7.0.0
 pycparser==2.19
-Pygments==2.5.2
+Pygments==2.7.4
 pylint==2.4.4
 pyrsistent==0.15.7
 python-dateutil==2.7.2
