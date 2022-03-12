@@ -62,7 +62,7 @@ nbformat==5.0.4
 pandocfilters==1.4.2
 parso==0.5.2
 pickleshare==0.7.5
-Pillow==7.0.0
+Pillow==9.0.1
 pycparser==2.19
 Pygments==2.5.2
 pylint==2.4.4
